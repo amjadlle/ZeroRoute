@@ -146,6 +146,29 @@ export const handleRequest = async (req: IncomingMessage, res: ServerResponse) =
     } catch {}
   }
 
+  // Static Knowledge Base & Persona Markdown Files
+  if (req.method === "GET" && (url === "/knowledge.md" || url === "/public/knowledge.md")) {
+    try {
+      const kPath = path.join(process.cwd(), "public", "knowledge.md");
+      if (fs.existsSync(kPath)) {
+        const txt = fs.readFileSync(kPath, "utf-8");
+        res.writeHead(200, { "Content-Type": "text/markdown; charset=utf-8", "Cache-Control": "public, max-age=300", ...corsHeaders });
+        return res.end(txt);
+      }
+    } catch {}
+  }
+
+  if (req.method === "GET" && (url === "/persona.md" || url === "/public/persona.md")) {
+    try {
+      const pPath = path.join(process.cwd(), "public", "persona.md");
+      if (fs.existsSync(pPath)) {
+        const txt = fs.readFileSync(pPath, "utf-8");
+        res.writeHead(200, { "Content-Type": "text/markdown; charset=utf-8", "Cache-Control": "public, max-age=300", ...corsHeaders });
+        return res.end(txt);
+      }
+    } catch {}
+  }
+
   // Embeddable Website Chatbot Widget Script
   if (req.method === "GET" && url === "/widget.js") {
     res.writeHead(200, { "Content-Type": "application/javascript; charset=utf-8", ...corsHeaders });

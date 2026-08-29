@@ -121,12 +121,27 @@ export const dashboardHtml = `<!doctype html>
           <input type="password" id="auth-key" placeholder="Router / Admin Key" oninput="saveKey()" onchange="saveKey()"
             class="w-full pl-8 pr-2.5 py-1.5 text-[11px] font-mono bg-dark-card border border-dark-border rounded-lg text-slate-200 placeholder-slate-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all">
         </div>
-        <button onclick="load()" class="inline-flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-medium bg-dark-card hover:bg-dark-cardHover text-slate-200 border border-dark-border rounded-lg transition-all active:scale-95 shadow-sm shrink-0">
-          <i data-lucide="refresh-cw" class="w-3 h-3 text-slate-400"></i>
-          Sync
-        </button>
       </div>
     </header>
+
+    <!-- Authentication Required Banner (Shows if 401 Unauthorized in incognito/new browser) -->
+    <div id="auth-banner" class="hidden glass-card rounded-2xl p-4 sm:p-5 border-amber-500/30 bg-gradient-to-r from-amber-950/40 via-dark-card to-dark-card flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div class="flex items-center gap-3.5">
+        <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
+          <i data-lucide="lock" class="w-5 h-5 text-amber-400"></i>
+        </div>
+        <div>
+          <h2 class="text-sm font-bold text-white">Gateway Protected — Admin Authentication Required</h2>
+          <p class="text-xs text-slate-400 mt-0.5">Please enter your <code class="text-amber-400 bg-amber-950/60 px-1.5 py-0.5 rounded font-mono text-[11px]">ROUTER_API_KEY</code> to unlock gateway controls, run live benchmarks, and manage providers.</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 w-full sm:w-auto">
+        <input type="password" id="auth-banner-input" placeholder="Enter Router Key..." class="px-3 py-2 text-xs font-mono bg-dark-bg border border-dark-border rounded-xl text-white focus:outline-none focus:border-amber-500 w-full sm:w-56" onkeydown="if(event.key==='Enter') unlockFromBanner()">
+        <button onclick="unlockFromBanner()" class="px-4 py-2 text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white rounded-xl shadow-lg shadow-amber-500/25 transition-all active:scale-95 shrink-0 whitespace-nowrap">
+          Unlock
+        </button>
+      </div>
+    </div>
 
     <!-- Onboarding First-Run Wizard Banner (Shows if 0 keys configured) -->
     <div id="onboarding-banner" class="hidden glass-card rounded-2xl p-4 sm:p-5 border-red-500/30 bg-gradient-to-r from-red-950/40 via-dark-card to-dark-card flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -580,13 +595,13 @@ export const dashboardHtml = `<!doctype html>
 
       <!-- Benchmark Summary & 1-Click Optimizer Footer -->
       <div id="benchmark-footer" class="pt-3 border-t border-dark-border flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 hidden">
-        <div id="benchmark-winner-text" class="text-xs text-emerald-400 font-semibold flex items-center gap-1.5"></div>
-        <div class="flex items-center gap-2">
-          <button onclick="applyOptimalRouting()" id="btn-optimize-route" class="px-3.5 py-1.5 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg shadow-lg shadow-emerald-500/25 transition-all active:scale-95 flex items-center gap-1.5">
+        <div id="benchmark-winner-text" class="text-xs font-semibold flex items-center gap-1.5 min-w-0"></div>
+        <div class="flex items-center gap-2 shrink-0">
+          <button onclick="applyOptimalRouting()" id="btn-optimize-route" class="px-4 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg shadow-lg shadow-emerald-500/25 transition-all active:scale-95 whitespace-nowrap flex items-center gap-1.5 shrink-0">
             <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-            1-Click Optimize Failover Order
+            <span>1-Click Optimize Failover Order</span>
           </button>
-          <button onclick="closeBenchmarkModal()" class="px-3.5 py-1.5 text-xs font-medium bg-dark-card hover:bg-dark-cardHover border border-dark-border text-slate-300 rounded-lg transition-all">
+          <button onclick="closeBenchmarkModal()" class="px-4 py-2 text-xs font-medium bg-dark-card hover:bg-dark-cardHover border border-dark-border text-slate-300 rounded-lg transition-all shrink-0">
             Close
           </button>
         </div>
@@ -620,6 +635,38 @@ export const dashboardHtml = `<!doctype html>
       localStorage.setItem("ai_router_key", el("auth-key").value);
       load();
     };
+
+    function requireKey(action = "perform this action") {
+      const key = getKey();
+      if (!key || !key.trim()) {
+        showToast(\`🔐 Router Key required to \${action}. Please enter your key above.\`);
+        const banner = el("auth-banner");
+        const bannerInput = el("auth-banner-input");
+        const authInput = el("auth-key");
+        
+        if (banner && !banner.classList.contains("hidden") && bannerInput) {
+          bannerInput.focus();
+          bannerInput.classList.add("ring-2", "ring-amber-500", "border-amber-500");
+          setTimeout(() => bannerInput.classList.remove("ring-2", "ring-amber-500", "border-amber-500"), 2500);
+        } else if (authInput) {
+          authInput.focus();
+          authInput.classList.add("ring-2", "ring-amber-500", "border-amber-500");
+          setTimeout(() => authInput.classList.remove("ring-2", "ring-amber-500", "border-amber-500"), 2500);
+        }
+        return false;
+      }
+      return true;
+    }
+
+    function unlockFromBanner() {
+      const input = el("auth-banner-input");
+      if (!input || !input.value.trim()) return;
+      const key = input.value.trim();
+      el("auth-key").value = key;
+      localStorage.setItem("ai_router_key", key);
+      load();
+      showToast("🔑 Key entered! Unlocking gateway...");
+    }
 
     function showToast(msg, duration = 3500) {
       const toast = el("toast");
@@ -667,6 +714,7 @@ export const dashboardHtml = `<!doctype html>
         }
 
         if (pRes.ok) {
+          el("auth-banner")?.classList.add("hidden");
           state = await pRes.json();
           const localSaved = localStorage.getItem("ai_router_provider_config");
           if (localSaved) {
@@ -680,8 +728,13 @@ export const dashboardHtml = `<!doctype html>
               }
             } catch {}
           }
-        } else if (pRes.status === 401 && hData?.providers) {
-          state = hData.providers;
+        } else if (pRes.status === 401) {
+          el("auth-banner")?.classList.remove("hidden");
+          if (hData?.providers) {
+            state = hData.providers;
+          }
+        } else {
+          el("auth-banner")?.classList.add("hidden");
         }
 
         if (mRes.ok) {
@@ -984,6 +1037,7 @@ export const dashboardHtml = `<!doctype html>
     }
 
     async function openKeyModal() {
+      if (!requireKey("manage encrypted API keys")) return;
       const modal = el("key-modal");
       const list = el("key-modal-list");
       modal.classList.remove("hidden");
@@ -991,6 +1045,19 @@ export const dashboardHtml = `<!doctype html>
 
       try {
         const res = await fetch("/api/keys", { headers: getHeaders() });
+        if (res.status === 401) {
+          list.innerHTML = \`
+            <div class="p-6 text-center space-y-3">
+              <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center mx-auto">
+                <i data-lucide="lock" class="w-5 h-5"></i>
+              </div>
+              <h4 class="text-sm font-bold text-white">Admin Key Required</h4>
+              <p class="text-xs text-slate-400 max-w-sm mx-auto">Please enter your <code class="text-amber-400 font-mono">ROUTER_API_KEY</code> at the top of the dashboard to manage encrypted AI credentials.</p>
+            </div>
+          \`;
+          lucide.createIcons();
+          return;
+        }
         keysData = await res.json();
 
         list.innerHTML = keysData.map(k => {
@@ -1282,6 +1349,7 @@ export const dashboardHtml = `<!doctype html>
     }
 
     async function testSingle(id) {
+      if (!requireKey("test provider " + id)) return;
       showToast("Testing " + id + "…");
       try {
         const res = await fetch("/api/providers/" + id + "/test", { method: "POST", headers: getHeaders() });
@@ -1300,6 +1368,7 @@ export const dashboardHtml = `<!doctype html>
     let benchmarkResults = [];
 
     async function testAll() {
+      if (!requireKey("run the live provider speed benchmark")) return;
       const configured = state.filter(p => p.configured);
       if (configured.length === 0) {
         showToast("⚠️ No API keys configured yet. Click 'API Keys' in the top right to add one!");
@@ -1402,11 +1471,22 @@ export const dashboardHtml = `<!doctype html>
       el("benchmark-progress-text").textContent = \`All \${configured.length} providers tested successfully!\`;
       
       const successful = benchmarkResults.filter(r => r.status === "ok").sort((a, b) => a.latencyMs - b.latencyMs);
+      const isAuthError = benchmarkResults.some(r => r.error && (r.error.includes("Unauthorized") || r.error.includes("admin key")));
+      const btnOpt = el("btn-optimize-route");
+
       if (successful.length > 0) {
         const winner = successful[0];
+        winnerText.className = "text-xs text-emerald-400 font-semibold flex items-center gap-1.5";
         winnerText.innerHTML = \`🏆 <span>Winner: <strong>\${winner.name}</strong> is fastest at <span class="text-white font-mono font-bold">\${winner.latencyMs}ms</span>!</span>\`;
+        if (btnOpt) btnOpt.classList.remove("hidden");
+      } else if (isAuthError) {
+        winnerText.className = "text-xs text-amber-400 font-medium flex items-center gap-1.5";
+        winnerText.innerHTML = \`🔐 <span>Admin key required. Please enter your Router Key in the top right to benchmark.</span>\`;
+        if (btnOpt) btnOpt.classList.add("hidden");
       } else {
-        winnerText.innerHTML = \`⚠️ <span class="text-rose-400">All tested providers returned errors. Check your API keys.</span>\`;
+        winnerText.className = "text-xs text-rose-400 font-medium flex items-center gap-1.5";
+        winnerText.innerHTML = \`⚠️ <span>All tested providers returned errors. Check your cloud API keys.</span>\`;
+        if (btnOpt) btnOpt.classList.add("hidden");
       }
 
       footer.classList.remove("hidden");
@@ -1506,6 +1586,7 @@ export const dashboardHtml = `<!doctype html>
     }
 
     async function runLiveTest() {
+      if (!requireKey("test chat completions in playground")) return;
       const prompt = el("test-prompt").value.trim();
       if (!prompt) return;
       const isStream = el("stream-toggle").checked;

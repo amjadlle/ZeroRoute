@@ -82,7 +82,7 @@ export function getLandingHtml(apiKey = ""): string {
   <div class="fixed inset-0 grid-pattern pointer-events-none z-0"></div>
 
   <!-- Main Container -->
-  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24 sm:space-y-32 py-6">
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
 
     <!-- ═══════════════════════════ FLOATING DARK OBSIDIAN GLASS NAVIGATION ═══════════════════════════ -->
     <div class="sticky top-4 z-50 w-full">
@@ -124,11 +124,14 @@ export function getLandingHtml(apiKey = ""): string {
       </header>
     </div>
 
-    <!-- ═══════════════════════════ HERO SECTION ═══════════════════════════ -->
-    <section class="text-center pt-8 sm:pt-14 pb-4 space-y-6 max-w-4xl mx-auto">
-      
-      <!-- Top Announcement Badge -->
-      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-500/10 border border-red-500/25 text-red-400 text-xs font-semibold shadow-sm">
+    <!-- Main Content Wrapper -->
+    <div class="space-y-24 sm:space-y-32 mt-10 sm:mt-16">
+
+      <!-- ═══════════════════════════ HERO SECTION ═══════════════════════════ -->
+      <section class="text-center pt-4 sm:pt-8 pb-4 space-y-6 max-w-4xl mx-auto">
+        
+        <!-- Top Announcement Badge -->
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-500/10 border border-red-500/25 text-red-400 text-xs font-semibold shadow-sm">
         <span class="w-2 h-2 rounded-full bg-red-400 animate-ping"></span>
         <span>⚡ 100% Free & Open-Source Multi-Cloud AI Gateway</span>
       </div>
@@ -549,6 +552,7 @@ print(response.choices[0].message.content)</code></pre>
       </div>
     </footer>
 
+    </div>
   </div>
 
   <!-- ========================================================================= -->
@@ -557,8 +561,9 @@ print(response.choices[0].message.content)</code></pre>
   <script 
     src="/widget.js" 
     data-title="ZeroRoute AI" 
-    data-persona="You are the AI assistant on the ZeroRoute landing page. Answer questions about ZeroRoute features, free cloud providers, and 1-line chatbot embedding concisely." 
-    data-greeting="Hi there! 👋 Ask me anything about ZeroRoute or test my real-time streaming speed!" 
+    data-persona-url="/persona.md" 
+    data-knowledge-url="/knowledge.md" 
+    data-greeting="Hi there! 👋 I'm ZeroRoute AI. Ask me anything about multi-cloud routing, free providers, or test my real-time streaming speed!" 
     data-color="#ef4444" 
     ${authAttr} 
     defer>
