@@ -1,0 +1,1667 @@
+export const dashboardHtml = `<!doctype html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ZeroRoute • $0/mo Multi-Cloud AI Gateway</title>
+  <link rel="icon" type="image/png" href="/logo.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#fef2f2',
+              400: '#f87171',
+              500: '#ef4444',
+              600: '#dc2626',
+              700: '#b91c1c',
+            },
+            dark: {
+              bg: '#050608',
+              card: '#0c0d12',
+              cardHover: '#12141a',
+              border: '#1b1d26',
+              borderLight: '#262936',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #050608;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(239, 68, 68, 0.1) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(185, 28, 28, 0.08) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(220, 38, 38, 0.05) 0px, transparent 50%);
+      background-attachment: fixed;
+    }
+    .glass-card {
+      background: rgba(12, 13, 18, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(27, 29, 38, 0.9);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+    }
+    .glass-card-interactive:hover {
+      background: rgba(18, 20, 26, 0.95);
+      border-color: rgba(239, 68, 68, 0.4);
+      transform: translateY(-1px);
+    }
+    .cursor-blink {
+      display: inline-block;
+      width: 6px;
+      height: 14px;
+      background-color: #ef4444;
+      animation: blink 1s infinite;
+      vertical-align: middle;
+      margin-left: 2px;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #050608; }
+    ::-webkit-scrollbar-thumb { background: #1b1d26; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #ef4444; }
+  </style>
+</head>
+<body class="text-slate-100 min-h-screen p-3 sm:p-6 lg:p-8 selection:bg-red-500 selection:text-white font-sans text-xs antialiased">
+  <div class="w-full max-w-7xl 2xl:max-w-[1600px] mx-auto space-y-4 sm:space-y-5">
+    
+    <!-- Top Navigation / Header -->
+    <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3.5 border-b border-dark-border">
+      <div class="flex items-center gap-3">
+        <img src="/logo.png" alt="ZeroRoute Logo" class="w-9 h-9 object-contain shrink-0">
+        <div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <h1 class="text-sm sm:text-base font-extrabold tracking-tight text-white">ZeroRoute</h1>
+            <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              Gateway Online
+            </span>
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-red-500/10 text-red-400 border border-red-500/20 font-mono">
+              v0.1.0 • $0/mo
+            </span>
+          </div>
+          <p class="text-[10px] font-mono tracking-widest text-slate-400 mt-0.5 uppercase">ZERO COST. MAX ROUTE.</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 w-full sm:w-auto">
+        <a href="/" class="inline-flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-medium bg-dark-card hover:bg-dark-cardHover text-slate-300 hover:text-white border border-dark-border rounded-lg transition-all shadow-sm shrink-0">
+          <i data-lucide="globe" class="w-3.5 h-3.5"></i>
+          Public Site
+        </a>
+
+        <a href="https://github.com/amjadlle/ZeroRoute" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-dark-card hover:bg-dark-cardHover text-slate-200 hover:text-white border border-dark-border hover:border-slate-500 rounded-lg transition-all shadow-sm shrink-0 active:scale-95">
+          <svg class="w-3.5 h-3.5 fill-current text-slate-300" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          <span>Star</span>
+          <span class="text-amber-400 font-mono text-[10px]">★</span>
+        </a>
+
+        <button onclick="openKeyModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-red-600 hover:bg-red-500 text-white rounded-lg shadow-sm shadow-red-500/25 transition-all active:scale-95 shrink-0">
+          <i data-lucide="key-round" class="w-3.5 h-3.5"></i>
+          API Keys
+        </button>
+
+        <div class="relative flex-1 sm:w-56">
+          <i data-lucide="lock" class="w-3 h-3 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500"></i>
+          <input type="password" id="auth-key" placeholder="Router / Admin Key" oninput="saveKey()" onchange="saveKey()"
+            class="w-full pl-8 pr-2.5 py-1.5 text-[11px] font-mono bg-dark-card border border-dark-border rounded-lg text-slate-200 placeholder-slate-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all">
+        </div>
+        <button onclick="load()" class="inline-flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-medium bg-dark-card hover:bg-dark-cardHover text-slate-200 border border-dark-border rounded-lg transition-all active:scale-95 shadow-sm shrink-0">
+          <i data-lucide="refresh-cw" class="w-3 h-3 text-slate-400"></i>
+          Sync
+        </button>
+      </div>
+    </header>
+
+    <!-- Onboarding First-Run Wizard Banner (Shows if 0 keys configured) -->
+    <div id="onboarding-banner" class="hidden glass-card rounded-2xl p-4 sm:p-5 border-red-500/30 bg-gradient-to-r from-red-950/40 via-dark-card to-dark-card flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div class="flex items-center gap-3.5">
+        <div class="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center shrink-0">
+          <i data-lucide="sparkles" class="w-5 h-5 text-red-400"></i>
+        </div>
+        <div>
+          <h2 class="text-sm font-bold text-white">Welcome to ZeroRoute! Connect your first provider</h2>
+          <p class="text-xs text-slate-400 mt-0.5">Add at least one free API key (Groq, SambaNova, Mistral, Gemini, etc.) to start routing requests with zero downtime.</p>
+        </div>
+      </div>
+      <button onclick="openKeyModal()" class="inline-flex items-center gap-2 px-4 py-2 text-xs font-bold bg-red-600 hover:bg-red-500 text-white rounded-xl shadow-lg shadow-red-500/30 transition-all active:scale-95 shrink-0">
+        <i data-lucide="plus-circle" class="w-4 h-4"></i>
+        Connect API Keys
+      </button>
+    </div>
+
+    <!-- Key Metrics Ribbon -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
+      <!-- Total Requests -->
+      <div class="glass-card rounded-xl p-3.5 sm:p-4 transition-all hover:border-slate-700">
+        <div class="flex items-center justify-between text-slate-400 text-[11px] font-medium">
+          <span>Total Requests</span>
+          <i data-lucide="activity" class="w-3.5 h-3.5 text-red-400"></i>
+        </div>
+        <div class="text-lg sm:text-xl font-bold font-mono text-white mt-1.5" id="total-requests">0</div>
+        <div class="text-[10px] text-emerald-400 font-medium mt-0.5 flex items-center gap-1">
+          <i data-lucide="check-circle" class="w-2.5 h-2.5"></i>
+          <span id="success-rate-sub">100% success</span>
+        </div>
+      </div>
+
+      <!-- Cache Hit Ratio & Savings -->
+      <div class="glass-card rounded-xl p-3.5 sm:p-4 transition-all hover:border-red-500/40">
+        <div class="flex items-center justify-between text-slate-400 text-[11px] font-medium">
+          <span>RAM Cache Savings</span>
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-red-400"></i>
+        </div>
+        <div class="text-lg sm:text-xl font-bold font-mono text-emerald-400 mt-1.5" id="cache-savings-val">$0.0000</div>
+        <div class="text-[10px] text-slate-400 mt-0.5" id="cache-hits-sub">0 hits • 0% ratio</div>
+      </div>
+
+      <!-- Avg Latency -->
+      <div class="glass-card rounded-xl p-3.5 sm:p-4 transition-all hover:border-slate-700">
+        <div class="flex items-center justify-between text-slate-400 text-[11px] font-medium">
+          <span>Average Latency</span>
+          <i data-lucide="timer" class="w-3.5 h-3.5 text-amber-400"></i>
+        </div>
+        <div class="text-lg sm:text-xl font-bold font-mono text-white mt-1.5" id="avg-latency">—</div>
+        <div class="text-[10px] text-slate-400 mt-0.5" id="token-count-sub">0 tokens delivered</div>
+      </div>
+
+      <!-- Active Providers -->
+      <div class="glass-card rounded-xl p-3.5 sm:p-4 transition-all hover:border-slate-700">
+        <div class="flex items-center justify-between text-slate-400 text-[11px] font-medium">
+          <span>Active Providers</span>
+          <i data-lucide="layers" class="w-3.5 h-3.5 text-emerald-400"></i>
+        </div>
+        <div class="text-lg sm:text-xl font-bold font-mono text-white mt-1.5" id="active-count">0 / 0</div>
+        <div class="text-[10px] text-slate-400 mt-0.5" id="configured-sub">0 keys configured</div>
+      </div>
+    </div>
+
+    <!-- Main Navigation Tabs -->
+    <div class="flex border-b border-dark-border gap-1">
+      <button onclick="switchTab('providers')" id="tab-btn-providers" class="tab-nav-btn px-3 py-1.5 text-xs font-semibold text-red-500 border-b-2 border-red-500 flex items-center gap-1.5 transition-all">
+        <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
+        Provider Routing
+      </button>
+      <button onclick="switchTab('playground')" id="tab-btn-playground" class="tab-nav-btn px-3 py-1.5 text-xs font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 transition-all">
+        <i data-lucide="terminal" class="w-3.5 h-3.5"></i>
+        Playground
+      </button>
+      <button onclick="switchTab('logs')" id="tab-btn-logs" class="tab-nav-btn px-3 py-1.5 text-xs font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 transition-all">
+        <i data-lucide="list-filter" class="w-3.5 h-3.5"></i>
+        Logs & Failovers
+      </button>
+      <button onclick="switchTab('code')" id="tab-btn-code" class="tab-nav-btn px-3 py-1.5 text-xs font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 transition-all">
+        <i data-lucide="code-2" class="w-3.5 h-3.5"></i>
+        Integration Code
+      </button>
+    </div>
+
+    <!-- TAB 1: PROVIDERS -->
+    <div id="tab-content-providers" class="space-y-4">
+      <div class="glass-card rounded-2xl overflow-hidden">
+        <div class="p-4 sm:px-6 bg-dark-card/60 border-b border-dark-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-sm font-semibold text-white flex items-center gap-2">
+              <i data-lucide="shuffle" class="w-4 h-4 text-red-500"></i>
+              Automatic Failover Chain
+            </h2>
+            <p class="text-[11px] text-slate-400 mt-0.5">Top-priority provider handles traffic first. Click any model name to customize it inline.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="openKeyModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-dark-card hover:bg-dark-cardHover text-slate-200 border border-dark-border rounded-lg transition-all active:scale-95">
+              <i data-lucide="key" class="w-3.5 h-3.5 text-red-400"></i>
+              Manage Keys
+            </button>
+            <button onclick="testAll()" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-red-600 hover:bg-red-500 text-white rounded-lg shadow-sm shadow-red-500/30 transition-all active:scale-95">
+              <i data-lucide="zap" class="w-3.5 h-3.5 fill-white"></i>
+              Benchmark All
+            </button>
+          </div>
+        </div>
+
+        <div id="provider-list" class="divide-y divide-dark-border">
+          <div class="p-8 text-center text-slate-500 text-sm">Loading providers…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: LIVE PLAYGROUND -->
+    <div id="tab-content-playground" class="hidden space-y-4">
+      <div class="glass-card rounded-2xl p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+        <div class="space-y-4">
+          <!-- Optional System Persona -->
+          <div class="space-y-1.5">
+            <button type="button" onclick="toggleSystemPersona()" class="text-[11px] font-semibold text-slate-400 hover:text-slate-200 flex items-center gap-1 transition-all">
+              <i data-lucide="bot" class="w-3.5 h-3.5 text-red-400"></i>
+              <span>System Prompt / Persona (Optional)</span>
+              <i data-lucide="chevron-down" id="persona-chevron" class="w-3 h-3 transition-transform"></i>
+            </button>
+            <div id="persona-container" class="hidden">
+              <textarea id="system-persona" rows="2"
+                class="w-full p-2.5 text-xs bg-dark-card border border-dark-border rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:border-red-500 font-sans transition-all resize-none shadow-inner"
+                placeholder="e.g. You are a senior software architect. Answer in concise bullet points."></textarea>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center gap-1.5">
+              <i data-lucide="message-square" class="w-3.5 h-3.5 text-red-500"></i>
+              Test Prompt
+            </label>
+            <textarea id="test-prompt" rows="4"
+              class="w-full p-3.5 text-xs bg-dark-card border border-dark-border rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 font-sans transition-all resize-none shadow-inner"
+              placeholder="Ask anything to test failover and latency…">Explain quantum computing in one short sentence.</textarea>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-1">
+            <div class="flex items-center gap-3">
+              <div class="relative">
+                <select id="provider-select" class="pl-2.5 pr-8 py-1.5 text-xs font-mono bg-dark-card border border-dark-border rounded-lg text-slate-200 focus:outline-none focus:border-red-500 appearance-none cursor-pointer">
+                  <option value="auto">⚡ Auto Fallback Route</option>
+                </select>
+                <i data-lucide="chevron-down" class="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"></i>
+              </div>
+
+              <label class="inline-flex items-center gap-1.5 cursor-pointer text-xs font-medium text-slate-300">
+                <input type="checkbox" id="stream-toggle" checked class="w-3.5 h-3.5 rounded bg-dark-card border-dark-border text-red-600 focus:ring-red-500">
+                <span>Stream</span>
+              </label>
+            </div>
+
+            <button id="btn-send-test" onclick="runLiveTest()"
+              class="inline-flex items-center justify-center gap-1.5 px-4 py-1.5 text-xs font-bold bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white rounded-lg shadow-md shadow-red-500/20 transition-all active:scale-95">
+              <i data-lucide="play" class="w-3 h-3 fill-white"></i>
+              Send Request
+            </button>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+              <i data-lucide="terminal" class="w-3.5 h-3.5 text-red-400"></i>
+              Live Response Output
+            </span>
+            <div class="flex items-center gap-2">
+              <span id="output-meta" class="px-2 py-0.5 rounded text-[11px] font-mono bg-dark-card border border-dark-border text-slate-400">Idle</span>
+              <button onclick="copyOutput()" title="Copy Response" class="p-1 rounded hover:bg-dark-cardHover border border-dark-border text-slate-400 hover:text-white transition-all">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              </button>
+              <button onclick="clearOutput()" title="Clear Output" class="p-1 rounded hover:bg-dark-cardHover border border-dark-border text-slate-400 hover:text-white transition-all">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+
+          <div id="test-output" class="w-full h-48 sm:h-56 p-4 bg-dark-bg border border-dark-border rounded-xl text-xs font-mono text-slate-200 overflow-y-auto leading-relaxed whitespace-pre-wrap shadow-inner relative">
+            <span class="text-slate-600">Response will stream or return here…</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: REQUEST LOGS -->
+    <div id="tab-content-logs" class="hidden space-y-4">
+      <div class="glass-card rounded-2xl overflow-hidden">
+        <div class="p-4 sm:px-6 bg-dark-card/60 border-b border-dark-border flex items-center justify-between">
+          <div>
+            <h2 class="text-sm font-semibold text-white flex items-center gap-2">
+              <i data-lucide="history" class="w-4 h-4 text-red-500"></i>
+              Real-Time Gateway Traffic
+            </h2>
+            <p class="text-[11px] text-slate-400 mt-0.5">Click on any request row to inspect its full payload, timeline, and failover trace.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="clearCache()" class="px-2.5 py-1 text-xs font-medium bg-dark-card hover:bg-dark-cardHover border border-dark-border rounded-lg text-slate-300 transition-all">
+              🧹 Flush Cache
+            </button>
+            <button onclick="clearLogs()" class="px-2.5 py-1 text-xs font-medium bg-dark-card hover:bg-dark-cardHover border border-dark-border rounded-lg text-slate-300 transition-all">
+              🗑️ Clear Logs
+            </button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto max-h-[420px]">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-dark-card/80 text-slate-400 font-semibold border-b border-dark-border sticky top-0 backdrop-blur">
+              <tr>
+                <th class="py-2.5 px-4">Status</th>
+                <th class="py-2.5 px-4">Time</th>
+                <th class="py-2.5 px-4">User Prompt</th>
+                <th class="py-2.5 px-4">Provider / Route</th>
+                <th class="py-2.5 px-4">Latency</th>
+                <th class="py-2.5 px-4">Tokens</th>
+              </tr>
+            </thead>
+            <tbody id="logs-tbody" class="divide-y divide-dark-border font-mono text-slate-300 cursor-pointer">
+              <tr><td colspan="6" class="p-6 text-center text-slate-500 font-sans">No requests recorded yet. Send a test from the playground!</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: CODE INTEGRATION -->
+    <div id="tab-content-code" class="hidden space-y-4">
+      <div class="glass-card rounded-2xl overflow-hidden">
+        <div class="p-4 sm:px-6 bg-dark-card/60 border-b border-dark-border flex items-center justify-between">
+          <div>
+            <h2 class="text-sm font-semibold text-white flex items-center gap-2">
+              <i data-lucide="plug" class="w-4 h-4 text-red-500"></i>
+              Connect Your Website, Chatbot, or App
+            </h2>
+            <p class="text-[11px] text-slate-400 mt-0.5">Drop-in replacement for OpenAI API clients.</p>
+          </div>
+          <button onclick="copySnippet()" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-dark-card hover:bg-dark-cardHover border border-dark-border rounded-lg text-slate-200 transition-all shadow-sm">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+            Copy Code
+          </button>
+        </div>
+
+          <div class="flex flex-wrap gap-2 mb-3">
+            <button onclick="showSnippet('widget')" id="snip-btn-widget" class="px-3 py-1 text-xs rounded-md bg-red-600 text-white font-semibold transition-all">✨ 1-Line Website Widget (Embed)</button>
+            <button onclick="showSnippet('js')" id="snip-btn-js" class="px-3 py-1 text-xs rounded-md bg-dark-card text-slate-400 hover:text-white font-semibold transition-all">JavaScript / Web Chatbot</button>
+            <button onclick="showSnippet('py')" id="snip-btn-py" class="px-3 py-1 text-xs rounded-md bg-dark-card text-slate-400 hover:text-white font-semibold transition-all">Python (OpenAI SDK)</button>
+            <button onclick="showSnippet('curl')" id="snip-btn-curl" class="px-3 py-1 text-xs rounded-md bg-dark-card text-slate-400 hover:text-white font-semibold transition-all">cURL</button>
+          </div>
+
+          <!-- Widget Knowledge & Persona Customizer -->
+          <div id="widget-customizer" class="mb-4 p-4 bg-dark-card border border-dark-border rounded-xl space-y-3">
+            <div class="text-xs font-bold text-white flex items-center justify-between">
+              <span class="flex items-center gap-1.5"><i data-lucide="sparkles" class="w-3.5 h-3.5 text-red-400"></i> Customize Chatbot Persona & Knowledge Base:</span>
+              <span class="text-[10px] font-normal text-slate-400">Generates custom 1-line embed snippet</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Bot Title</label>
+                <input type="text" id="cfg-widget-title" value="Amjad AI" oninput="updateSnippetView()"
+                  class="w-full px-3 py-1.5 text-xs bg-dark-bg border border-dark-border rounded-lg text-slate-200 focus:outline-none focus:border-red-500 font-mono">
+              </div>
+              <div>
+                <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Brand Color</label>
+                <input type="text" id="cfg-widget-color" value="#ef4444" oninput="updateSnippetView()"
+                  class="w-full px-3 py-1.5 text-xs bg-dark-bg border border-dark-border rounded-lg text-slate-200 focus:outline-none focus:border-red-500 font-mono">
+              </div>
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="block text-[10px] font-semibold text-slate-400 uppercase">1. System Persona (Tone & Role)</label>
+                <span class="text-[10px] text-slate-500 font-mono">or data-persona-url</span>
+              </div>
+              <input type="text" id="cfg-widget-persona" value="You are a helpful, professional portfolio assistant. Answer questions concisely." oninput="updateSnippetView()"
+                class="w-full px-3 py-1.5 text-xs bg-dark-bg border border-dark-border rounded-lg text-slate-200 focus:outline-none focus:border-red-500">
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="block text-[10px] font-semibold text-slate-400 uppercase">2. Knowledge Base (FAQs, Services, Pricing)</label>
+                <label class="text-[10px] text-red-400 hover:text-red-300 font-semibold cursor-pointer flex items-center gap-1">
+                  <i data-lucide="file-up" class="w-3 h-3"></i>
+                  <span>Upload .md / .txt / .json</span>
+                  <input type="file" accept=".md,.txt,.json,.markdown" class="hidden" onchange="handleKnowledgeFileUpload(event)">
+                </label>
+              </div>
+              <textarea id="cfg-widget-knowledge" rows="3" oninput="updateSnippetView()" placeholder="Paste FAQs, services, pricing, or docs here... (e.g. Services: Full-Stack Web App, Pricing: $1500, Email: contact@site.com)"
+                class="w-full px-3 py-2 text-xs bg-dark-bg border border-dark-border rounded-lg text-slate-200 focus:outline-none focus:border-red-500 font-mono resize-y"></textarea>
+            </div>
+          </div>
+
+          <pre id="code-box" class="p-4 bg-dark-card border border-dark-border rounded-xl text-xs font-mono text-red-300 overflow-x-auto leading-relaxed"></pre>
+        </div>
+      </div>
+    <!-- Dashboard Footer -->
+    <footer class="pt-6 pb-2 border-t border-dark-border flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-500">
+      <div>
+        ZeroRoute Gateway • Engineered by <a href="https://amjad.mapki.in" target="_blank" class="text-slate-300 hover:text-white font-semibold">Amjad P A</a>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="https://amjad.mapki.in" target="_blank" class="hover:text-slate-300">Portfolio</a>
+        <a href="https://github.com/amjadlle" target="_blank" class="hover:text-slate-300">GitHub</a>
+        <a href="https://linkedin.com/in/amjadlle" target="_blank" class="hover:text-slate-300">LinkedIn</a>
+        <a href="mailto:hire.amjad@gmail.com" class="hover:text-slate-300">hire.amjad@gmail.com</a>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- API Keys Management Modal -->
+  <div id="key-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="glass-card max-w-xl w-full rounded-2xl border border-dark-borderLight p-6 space-y-4 shadow-2xl relative">
+      <div class="flex items-center justify-between border-b border-dark-border pb-3">
+        <div>
+          <h3 class="font-bold text-sm text-white flex items-center gap-2">
+            <i data-lucide="key-round" class="w-4 h-4 text-red-500"></i>
+            AI Provider Credentials Manager
+          </h3>
+          <p class="text-[11px] text-slate-400 mt-0.5">Keys entered here are encrypted with AES-256 and never exposed in plaintext.</p>
+        </div>
+        <button onclick="closeKeyModal()" class="p-1 rounded hover:bg-dark-border text-slate-400 hover:text-white transition-all">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div id="key-modal-list" class="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
+        <div class="text-center py-6 text-slate-500">Loading keys…</div>
+      </div>
+
+      <!-- Backup Export & Import -->
+      <div class="pt-3 border-t border-dark-border flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+        <div class="text-[11px] text-slate-400">
+          Portable Configuration Backup:
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="exportConfig()" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-dark-card hover:bg-dark-cardHover border border-dark-border rounded-lg text-slate-200 transition-all shadow-sm">
+            <i data-lucide="download" class="w-3.5 h-3.5 text-red-400"></i>
+            Export Backup
+          </button>
+          <button onclick="el('import-file').click()" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-dark-card hover:bg-dark-cardHover border border-dark-border rounded-lg text-slate-200 transition-all shadow-sm">
+            <i data-lucide="upload" class="w-3.5 h-3.5 text-emerald-400"></i>
+            Import Backup
+          </button>
+          <input type="file" id="import-file" accept=".json" class="hidden" onchange="importConfig(event)">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Provider Error Inspector Modal -->
+  <div id="error-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="glass-card max-w-xl w-full rounded-2xl border border-rose-500/30 p-6 space-y-4 shadow-2xl relative">
+      <div class="flex items-center justify-between border-b border-dark-border pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400">
+            <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm text-white" id="error-modal-title">Provider Error Inspector</h3>
+            <p class="text-[11px] text-slate-400" id="error-modal-subtitle">Inspection & troubleshooting</p>
+          </div>
+        </div>
+        <button onclick="closeErrorModal()" class="p-1 rounded hover:bg-dark-border text-slate-400 hover:text-white transition-all">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div id="error-modal-body" class="space-y-3.5 max-h-[60vh] overflow-y-auto text-xs pr-1"></div>
+    </div>
+  </div>
+
+  <!-- Request Log Inspector Modal -->
+  <div id="log-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="glass-card max-w-2xl w-full rounded-2xl border border-dark-borderLight p-6 space-y-4 shadow-2xl relative">
+      <div class="flex items-center justify-between border-b border-dark-border pb-3">
+        <h3 class="font-bold text-sm text-white flex items-center gap-2">
+          <i data-lucide="file-text" class="w-4 h-4 text-red-500"></i>
+          Request Detail Inspector
+        </h3>
+        <button onclick="closeLogModal()" class="p-1 rounded hover:bg-dark-border text-slate-400 hover:text-white transition-all">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div id="log-modal-body" class="space-y-3.5 max-h-[70vh] overflow-y-auto font-mono text-xs pr-1"></div>
+    </div>
+  </div>
+
+  <!-- Model Selector Modal -->
+  <div id="model-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="glass-card max-w-xl w-full rounded-2xl border border-dark-borderLight p-6 space-y-4 shadow-2xl relative">
+      <div class="flex items-center justify-between border-b border-dark-border pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400">
+            <i data-lucide="layers" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm text-white" id="model-modal-title">Select Model</h3>
+            <p class="text-[11px] text-slate-400" id="model-modal-subtitle">Pick from verified models or enter custom</p>
+          </div>
+        </div>
+        <button onclick="closeModelModal()" class="p-1 rounded hover:bg-dark-border text-slate-400 hover:text-white transition-all">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div id="model-modal-body" class="space-y-3 max-h-[60vh] overflow-y-auto pr-1"></div>
+    </div>
+  </div>
+
+  <!-- Live Benchmark Suite Modal -->
+  <div id="benchmark-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="glass-card max-w-2xl w-full rounded-2xl border border-red-500/40 p-6 space-y-4 shadow-2xl relative">
+      <div class="flex items-center justify-between border-b border-dark-border pb-3">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-red-600 to-rose-600 flex items-center justify-center shadow-lg shadow-red-500/30 text-white">
+            <i data-lucide="zap" class="w-5 h-5 fill-white"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm text-white flex items-center gap-2">
+              Live Provider Speed & Latency Benchmark
+            </h3>
+            <p class="text-[11px] text-slate-400 mt-0.5" id="benchmark-progress-text">Racing all configured providers concurrently…</p>
+          </div>
+        </div>
+        <button onclick="closeBenchmarkModal()" class="p-1.5 rounded hover:bg-dark-border text-slate-400 hover:text-white transition-all">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Live Progress Bar -->
+      <div class="space-y-1.5">
+        <div class="flex items-center justify-between text-[11px] font-mono">
+          <span class="text-slate-400" id="benchmark-status-badge">⚡ Concurrency: Running Parallel Requests</span>
+          <span class="text-red-400 font-bold" id="benchmark-percent-text">0%</span>
+        </div>
+        <div class="w-full h-1.5 bg-dark-bg rounded-full overflow-hidden border border-dark-border">
+          <div id="benchmark-progress-bar" class="h-full bg-gradient-to-r from-red-600 to-rose-500 rounded-full transition-all duration-300 w-0"></div>
+        </div>
+      </div>
+
+      <!-- Benchmark Table / Live Waterfall Grid -->
+      <div class="space-y-2 max-h-[50vh] overflow-y-auto pr-1">
+        <div id="benchmark-grid" class="space-y-2 font-mono text-xs"></div>
+      </div>
+
+      <!-- Benchmark Summary & 1-Click Optimizer Footer -->
+      <div id="benchmark-footer" class="pt-3 border-t border-dark-border flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 hidden">
+        <div id="benchmark-winner-text" class="text-xs text-emerald-400 font-semibold flex items-center gap-1.5"></div>
+        <div class="flex items-center gap-2">
+          <button onclick="applyOptimalRouting()" id="btn-optimize-route" class="px-3.5 py-1.5 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg shadow-lg shadow-emerald-500/25 transition-all active:scale-95 flex items-center gap-1.5">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+            1-Click Optimize Failover Order
+          </button>
+          <button onclick="closeBenchmarkModal()" class="px-3.5 py-1.5 text-xs font-medium bg-dark-card hover:bg-dark-cardHover border border-dark-border text-slate-300 rounded-lg transition-all">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-6 right-6 px-4 py-3 rounded-xl bg-dark-card border border-red-500/50 shadow-2xl text-xs font-medium text-slate-100 flex items-center gap-2.5 z-50 transition-all translate-y-20 opacity-0 pointer-events-none"></div>
+
+  <script>
+    let state = [];
+    let logs = [];
+    let keysData = [];
+    let currentSnippet = 'widget';
+
+    const PROVIDER_PORTALS = {
+      groq: "https://console.groq.com/keys",
+      sambanova: "https://cloud.sambanova.ai/apis",
+      mistral: "https://console.mistral.ai/api-keys/",
+      openrouter: "https://openrouter.ai/keys",
+      gemini: "https://aistudio.google.com/app/apikey",
+      nvidia: "https://build.nvidia.com/",
+      cloudflare: "https://dash.cloudflare.com/?to=/:account/workers/ai",
+      cohere: "https://dashboard.cohere.com/api-keys"
+    };
+
+    const el = id => document.getElementById(id);
+    const getKey = () => localStorage.getItem("ai_router_key") || el("auth-key").value;
+    const saveKey = () => {
+      localStorage.setItem("ai_router_key", el("auth-key").value);
+      load();
+    };
+
+    function showToast(msg, duration = 3500) {
+      const toast = el("toast");
+      toast.innerHTML = msg;
+      toast.classList.remove("translate-y-20", "opacity-0", "pointer-events-none");
+      setTimeout(() => {
+        toast.classList.add("translate-y-20", "opacity-0", "pointer-events-none");
+      }, duration);
+    }
+
+    function getHeaders() {
+      const headers = { "Content-Type": "application/json" };
+      const key = getKey();
+      if (key) headers["Authorization"] = "Bearer " + key;
+      return headers;
+    }
+
+    function switchTab(tabId) {
+      ['providers', 'playground', 'logs', 'code'].forEach(t => {
+        el('tab-content-' + t).classList.toggle('hidden', t !== tabId);
+        const btn = el('tab-btn-' + t);
+        if (t === tabId) {
+          btn.className = 'tab-nav-btn px-3 py-1.5 text-xs font-semibold text-red-500 border-b-2 border-red-500 flex items-center gap-1.5 transition-all';
+        } else {
+          btn.className = 'tab-nav-btn px-3 py-1.5 text-xs font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 transition-all';
+        }
+      });
+      lucide.createIcons();
+    }
+
+    async function load() {
+      try {
+        const key = localStorage.getItem("ai_router_key");
+        if (key) el("auth-key").value = key;
+        
+        const [hRes, pRes, mRes] = await Promise.all([
+          fetch("/health"),
+          fetch("/api/providers", { headers: getHeaders() }),
+          fetch("/api/metrics", { headers: getHeaders() })
+        ]);
+
+        let hData = null;
+        if (hRes.ok) {
+          hData = await hRes.json();
+        }
+
+        if (pRes.ok) {
+          state = await pRes.json();
+          const localSaved = localStorage.getItem("ai_router_provider_config");
+          if (localSaved) {
+            try {
+              const parsed = JSON.parse(localSaved);
+              if (Array.isArray(parsed)) {
+                state = state.map(p => {
+                  const match = parsed.find(x => x.id === p.id);
+                  return match ? { ...p, enabled: match.enabled, order: match.order, model: match.model || p.model } : p;
+                }).sort((a, b) => a.order - b.order);
+              }
+            } catch {}
+          }
+        } else if (pRes.status === 401 && hData?.providers) {
+          state = hData.providers;
+        }
+
+        if (mRes.ok) {
+          const mData = await mRes.json();
+          logs = mData.logs || [];
+          renderLogs(logs);
+          renderStats(mData.stats, mData.cacheSize);
+        } else if (hData?.stats) {
+          renderStats(hData.stats, hData.cacheSize || 0);
+          if (mRes.status === 401) {
+            el("logs-tbody").innerHTML = '<tr><td colspan="6" class="p-6 text-center text-amber-400 font-sans"><div class="flex items-center justify-center gap-2"><i data-lucide="lock" class="w-4 h-4"></i><span>Live request logs are protected. Enter your <strong>Router / Admin Key</strong> in the top-right header to unlock live logs.</span></div></td></tr>';
+          }
+        }
+
+        const configuredCount = state.filter(p => p.configured).length;
+        if (configuredCount === 0) {
+          el("onboarding-banner").classList.remove("hidden");
+        } else {
+          el("onboarding-banner").classList.add("hidden");
+        }
+
+        renderProviders();
+        updateSnippetView();
+        lucide.createIcons();
+      } catch (err) {
+        el("provider-list").innerHTML = '<div class="p-8 text-center text-red-400 text-sm">Failed to connect to gateway API. Check server logs.</div>';
+      }
+    }
+
+    function renderStats(stats, cacheSize = 0) {
+      if (!stats) return;
+      el("total-requests").textContent = stats.totalRequests;
+      const rate = stats.totalRequests > 0 ? Math.round((stats.successfulRequests / stats.totalRequests) * 100) : 100;
+      el("success-rate-sub").textContent = rate + "% success";
+
+      const hitRatio = stats.totalRequests > 0 ? Math.round((stats.cacheHits / stats.totalRequests) * 100) : 0;
+      if (el("cache-savings-val")) {
+        el("cache-savings-val").textContent = stats.estimatedSavingsUsd || "$0.0000";
+      }
+      el("cache-hits-sub").textContent = stats.cacheHits + " hits (" + hitRatio + "% • " + (stats.savedTokens || 0) + " tok saved)";
+
+      el("avg-latency").textContent = stats.avgLatencyMs ? stats.avgLatencyMs + "ms" : "—";
+      el("token-count-sub").textContent = (stats.totalTokens ? stats.totalTokens.toLocaleString() : "0") + " tokens delivered";
+
+      const active = state.filter(p => p.enabled);
+      const configured = state.filter(p => p.configured);
+      el("active-count").textContent = active.length + " / " + state.length;
+      el("configured-sub").textContent = configured.length + " keys configured";
+    }
+
+    function getProviderIcon(id) {
+      if (id === 'groq') return '<i data-lucide="zap" class="w-4 h-4 text-red-400"></i>';
+      if (id === 'sambanova') return '<i data-lucide="flame" class="w-4 h-4 text-orange-400"></i>';
+      if (id === 'mistral') return '<i data-lucide="wind" class="w-4 h-4 text-slate-300"></i>';
+      if (id === 'gemini') return '<i data-lucide="sparkles" class="w-4 h-4 text-red-400"></i>';
+      if (id === 'openrouter') return '<i data-lucide="globe" class="w-4 h-4 text-blue-400"></i>';
+      if (id === 'nvidia') return '<i data-lucide="cpu" class="w-4 h-4 text-emerald-400"></i>';
+      if (id === 'cloudflare') return '<i data-lucide="cloud" class="w-4 h-4 text-amber-400"></i>';
+      if (id === 'cohere') return '<i data-lucide="atom" class="w-4 h-4 text-purple-400"></i>';
+      return '<i data-lucide="bot" class="w-4 h-4 text-slate-400"></i>';
+    }
+
+    function getLatencySpeedBadge(ms) {
+      if (!ms) return '<span class="text-slate-400 font-mono">—</span>';
+      if (ms < 600) {
+        return \`<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">⚡ \${ms}ms Fast</span>\`;
+      } else if (ms <= 1500) {
+        return \`<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">🟡 \${ms}ms Normal</span>\`;
+      } else {
+        return \`<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20">⏳ \${ms}ms Slow</span>\`;
+      }
+    }
+
+    const PROVIDER_MODELS = {
+      groq: [
+        { id: "qwen/qwen3.6-27b", desc: "Alibaba Qwen 3.6 27B (Ultra Fast)", status: "working", badge: "⚡ 200 OK (~100ms • Fastest!)" },
+        { id: "openai/gpt-oss-120b", desc: "OpenAI GPT-OSS 120B (High Intelligence)", status: "working", badge: "⚡ 200 OK (~370ms)" },
+        { id: "openai/gpt-oss-20b", desc: "OpenAI GPT-OSS 20B (General Chat)", status: "working", badge: "⚡ 200 OK (~490ms)" },
+        { id: "qwen/qwen3.8-27b", desc: "Alibaba Qwen 3.8 27B (Latest)", status: "working", badge: "⚡ 200 OK (~326ms)" },
+        { id: "groq/compound-mini", desc: "Groq Compound Mini (Agentic)", status: "working", badge: "⚡ 200 OK (~357ms)" },
+        { id: "groq/compound", desc: "Groq Compound (Full Reasoning)", status: "working", badge: "⚡ 200 OK (~845ms)" },
+        { id: "llama-3.3-70b-versatile", desc: "Meta Llama 3.3 70B", status: "rate_limited", badge: "❌ 404 Removed from Groq" },
+        { id: "deepseek-r1-distill-llama-70b", desc: "DeepSeek R1 Distill", status: "rate_limited", badge: "❌ Decommissioned" }
+      ],
+      sambanova: [
+        { id: "MiniMax-M2.7", desc: "Blazing fast text model (417 tok/s)", status: "working", badge: "⚡ 200 OK (~360ms • Fastest!)" },
+        { id: "gemma-4-31B-it", desc: "Google Gemma 4 (Text + Vision multimodal)", status: "working", badge: "⚡ 200 OK (~850ms)" },
+        { id: "Meta-Llama-3.3-70B-Instruct", desc: "Meta 70B flagship", status: "rate_limited", badge: "⏳ 429 Congested on Starter" },
+        { id: "DeepSeek-V3.1", desc: "DeepSeek V3.1 Reasoning", status: "rate_limited", badge: "⏳ 429 Congested on Starter" },
+        { id: "gpt-oss-120b", desc: "OpenAI GPT OSS 120B", status: "rate_limited", badge: "⏳ 429 Congested on Starter" },
+        { id: "MiniMax-M3", desc: "MiniMax M3 (Text + Vision)", status: "rate_limited", badge: "⏳ 429 High Demand" }
+      ],
+      mistral: [
+        { id: "mistral-medium-latest", desc: "Mistral Medium (Balanced & Smart)", status: "working", badge: "⚡ 200 OK (~390ms • Fastest)" },
+        { id: "codestral-latest", desc: "Specialized for Code & Logic", status: "working", badge: "⚡ 200 OK (~350ms)" },
+        { id: "open-mistral-nemo", desc: "Mistral Nemo 12B Fast", status: "working", badge: "⚡ 200 OK (~410ms)" },
+        { id: "ministral-8b-latest", desc: "Ministral 8B Lightweight", status: "working", badge: "⚡ 200 OK (~375ms)" },
+        { id: "mistral-small-latest", desc: "Mistral Small General", status: "working", badge: "⚡ 200 OK (~690ms)" },
+        { id: "mistral-large-latest", desc: "Mistral Large Flagship", status: "rate_limited", badge: "🔒 403 Tier Restricted" }
+      ],
+      gemini: [
+        { id: "gemini-3.5-flash-lite", desc: "Google Gemini 3.5 Flash Lite (Fastest)", status: "working", badge: "⚡ 200 OK (~700ms • Fastest!)" },
+        { id: "gemini-flash-lite-latest", desc: "Gemini Flash Lite (Ultra Fast)", status: "working", badge: "⚡ 200 OK (~940ms)" },
+        { id: "gemini-3.6-flash", desc: "Google Gemini 3.6 Flash (Full)", status: "working", badge: "⚡ 200 OK (~4000ms • Deep Reason)" },
+        { id: "gemini-3-flash-preview", desc: "Gemini 3 Flash Preview", status: "working", badge: "⚡ 200 OK (~1100ms)" }
+      ],
+      openrouter: [
+        { id: "nvidia/nemotron-3.5-lightning:free", desc: "NVIDIA Nemotron Free Tier", status: "working", badge: "⚡ 200 OK (~1500ms)" },
+        { id: "meta-llama/llama-3.3-70b-instruct:free", desc: "Llama 3.3 70B Free Tier", status: "working", badge: "⚡ 200 OK (~2000ms)" },
+        { id: "google/gemini-2.0-flash-exp:free", desc: "Gemini 2.0 Flash Free Tier", status: "working", badge: "⚡ 200 OK (~1200ms)" }
+      ],
+      nvidia: [
+        { id: "nvidia/nemotron-3.5-lightning-30b-a3b", desc: "NVIDIA Nemotron 3.5 Lightning (Ultra Fast)", status: "working", badge: "⚡ 200 OK (~260ms • Fastest!)" },
+        { id: "meta/llama-3.2-11b-vision-instruct", desc: "Meta Llama 3.2 11B Vision (Multimodal)", status: "working", badge: "⚡ 200 OK (~320ms)" },
+        { id: "openai/gpt-oss-20b", desc: "OpenAI GPT OSS 20B on DGX Cloud", status: "working", badge: "⚡ 200 OK (~420ms)" },
+        { id: "openai/gpt-oss-120b", desc: "OpenAI GPT OSS 120B on DGX Cloud", status: "working", badge: "⚡ 200 OK (~2000ms)" }
+      ],
+      cloudflare: [
+        { id: "@cf/meta/llama-3.1-8b-instruct", desc: "Meta Llama 3.1 8B on Cloudflare Edge", status: "working", badge: "⚡ 200 OK (~1100ms)" },
+        { id: "@cf/meta/llama-3-8b-instruct", desc: "Meta Llama 3 8B Instruct", status: "working", badge: "⚡ 200 OK (~1000ms)" },
+        { id: "@cf/mistral/mistral-7b-instruct-v0.1", desc: "Mistral 7B Instruct on Edge", status: "working", badge: "⚡ 200 OK (~900ms)" }
+      ],
+      cohere: [
+        { id: "command-r-plus-08-2024", desc: "Cohere Command R+ Flagship", status: "working", badge: "⚡ 200 OK (~1000ms)" },
+        { id: "command-r-08-2024", desc: "Cohere Command R Fast", status: "working", badge: "⚡ 200 OK (~750ms)" },
+        { id: "command-light", desc: "Cohere Command Light Low Latency", status: "working", badge: "⚡ 200 OK (~500ms)" }
+      ]
+    };
+
+    function editModelName(providerId) {
+      openModelModal(providerId);
+    }
+
+    function openModelModal(providerId) {
+      const p = state.find(x => x.id === providerId);
+      if (!p) return;
+
+      const modal = el("model-modal");
+      el("model-modal-title").textContent = \`Choose Model for \${p.name}\`;
+      el("model-modal-subtitle").textContent = \`Currently active: \${p.model}\`;
+
+      const catalog = PROVIDER_MODELS[providerId] || [];
+      const currentModel = p.model;
+
+      const cardsHtml = catalog.map(m => {
+        const isSelected = m.id.toLowerCase() === currentModel.toLowerCase();
+        const isWorking = m.status === "working";
+        const badgeColor = isWorking 
+          ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" 
+          : "bg-amber-500/10 text-amber-400 border-amber-500/20";
+
+        return \`
+          <div onclick="selectModel('\${p.id}', '\${m.id}')" 
+            class="p-3 bg-dark-bg hover:bg-dark-cardHover border \${isSelected ? 'border-red-500 shadow-md shadow-red-500/15' : 'border-dark-border'} rounded-xl cursor-pointer transition-all flex items-center justify-between gap-3 group">
+            <div class="space-y-1 min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-bold text-xs font-mono text-white group-hover:text-red-400 transition-colors">\${m.id}</span>
+                <span class="inline-flex items-center px-2 py-0.5 rounded text-[9px] font-semibold border \${badgeColor}">
+                  \${m.badge}
+                </span>
+                \${isSelected ? '<span class="text-[9px] font-bold text-red-400 bg-red-500/15 border border-red-500/30 px-1.5 py-0.5 rounded">Active</span>' : ''}
+              </div>
+              <p class="text-[11px] text-slate-400">\${m.desc}</p>
+            </div>
+
+            <button onclick="event.stopPropagation(); selectModel('\${p.id}', '\${m.id}')" 
+              class="px-3 py-1.5 text-xs font-semibold rounded-lg shrink-0 transition-all \${isSelected ? 'bg-red-600 text-white' : 'bg-dark-card border border-dark-border text-slate-300 hover:text-white hover:border-red-500'}">
+              \${isSelected ? 'Selected' : 'Use Model'}
+            </button>
+          </div>
+        \`;
+      }).join('');
+
+      el("model-modal-body").innerHTML = \`
+        <div class="space-y-2">
+          \${cardsHtml}
+        </div>
+
+        <div class="pt-3 border-t border-dark-border space-y-2">
+          <label class="text-[11px] font-semibold text-slate-400 font-sans block">Or Enter Any Custom Model ID</label>
+          <div class="flex items-center gap-2">
+            <input type="text" id="custom-model-input" value="\${currentModel}" placeholder="e.g. meta-llama/llama-3.3-70b-instruct"
+              class="flex-1 px-3 py-1.5 text-xs font-mono bg-dark-bg border border-dark-border rounded-lg text-slate-100 placeholder-slate-600 focus:outline-none focus:border-red-500">
+            <button onclick="saveCustomModel('\${p.id}')" class="px-3.5 py-1.5 text-xs font-semibold bg-red-600 hover:bg-red-500 text-white rounded-lg transition-all active:scale-95 shrink-0">
+              Save Custom
+            </button>
+          </div>
+        </div>
+      \`;
+
+      modal.classList.remove("hidden");
+      lucide.createIcons();
+    }
+
+    function selectModel(providerId, modelName) {
+      state = state.map(p => p.id === providerId ? { ...p, model: modelName } : p);
+      renderProviders();
+      save();
+      closeModelModal();
+      showToast(\`✅ Switched \${providerId} to \${modelName}\`);
+    }
+
+    function saveCustomModel(providerId) {
+      const val = el("custom-model-input")?.value?.trim();
+      if (!val) {
+        showToast("⚠️ Model name cannot be empty");
+        return;
+      }
+      selectModel(providerId, val);
+    }
+
+    function closeModelModal() {
+      el("model-modal").classList.add("hidden");
+    }
+
+    function renderProviders() {
+      const now = Date.now();
+      el("provider-list").innerHTML = state.map((p, i) => {
+        const inCooldown = p.cooldownUntil && p.cooldownUntil > now;
+        const cooldownSec = inCooldown ? Math.ceil((p.cooldownUntil - now) / 1000) : 0;
+        const icon = getProviderIcon(p.id);
+        const portalUrl = PROVIDER_PORTALS[p.id] || '#';
+
+        return \`
+          <div class="p-3.5 sm:px-5 flex items-center gap-3.5 transition-all hover:bg-dark-cardHover \${p.enabled ? '' : 'opacity-40 grayscale'}">
+            <!-- Rank & Reorder -->
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-lg bg-dark-bg border border-dark-border text-[11px] font-mono font-bold flex items-center justify-center text-slate-400">
+                \${i + 1}
+              </span>
+              <div class="flex flex-col gap-0.5">
+                <button onclick="move(\${i}, -1)" \${i === 0 ? 'disabled' : ''} class="p-1 rounded hover:bg-dark-border text-slate-400 hover:text-white disabled:opacity-20 disabled:pointer-events-none transition-all">
+                  <i data-lucide="chevron-up" class="w-3.5 h-3.5"></i>
+                </button>
+                <button onclick="move(\${i}, 1)" \${i === state.length - 1 ? 'disabled' : ''} class="p-1 rounded hover:bg-dark-border text-slate-400 hover:text-white disabled:opacity-20 disabled:pointer-events-none transition-all">
+                  <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Provider Info -->
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <a href="\${portalUrl}" target="_blank" rel="noopener noreferrer" title="Open \${p.name} Developer Console in new tab" class="w-6 h-6 rounded-lg bg-dark-bg border border-dark-border flex items-center justify-center hover:border-red-500 transition-all">
+                  \${icon}
+                </a>
+                <a href="\${portalUrl}" target="_blank" rel="noopener noreferrer" title="Open \${p.name} Developer Console in new tab" class="font-bold text-xs sm:text-sm text-white hover:text-red-400 flex items-center gap-1 transition-colors">
+                  <span>\${p.name}</span>
+                  <i data-lucide="external-link" class="w-3 h-3 text-slate-500 opacity-60"></i>
+                </a>
+                
+                <!-- Editable Model Badge -->
+                <button onclick="editModelName('\${p.id}', '\${p.model}')" title="Click to customize model name" class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono bg-dark-bg border border-dark-border text-slate-300 hover:border-red-500 hover:text-red-400 transition-all">
+                  <span>\${p.model}</span>
+                  <i data-lucide="edit-3" class="w-3 h-3 opacity-60"></i>
+                </button>
+                
+                <button onclick="openKeyModal()" class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold transition-all hover:scale-105 \${p.configured ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}">
+                  \${p.configured ? '● Key Active' : '+ Add Key'}
+                </button>
+
+                \${inCooldown ? \`<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-red-500/10 text-red-400 border border-red-500/20 animate-pulse">⏳ Cooldown (\${cooldownSec}s)</span>\` : ''}
+              </div>
+
+              <div class="flex items-center gap-3 sm:gap-4 mt-1.5 text-[11px] text-slate-400 flex-wrap">
+                <span class="flex items-center gap-1.5">Latency: \${getLatencySpeedBadge(p.lastLatencyMs)}</span>
+                <span>Failures: <span class="font-mono text-slate-200">\${p.consecutiveFailures || 0}</span></span>
+                \${p.lastError ? \`
+                  <button onclick="openProviderErrorModal('\${p.id}')" title="Click to view full error log & troubleshooting" class="inline-flex items-center gap-1 text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/25 px-2 py-0.5 rounded text-[10px] font-mono transition-all">
+                    <i data-lucide="alert-circle" class="w-3 h-3 text-rose-400 shrink-0"></i>
+                    <span class="truncate max-w-[180px] sm:max-w-[280px]">\${p.lastError}</span>
+                    <span class="underline font-sans font-semibold text-rose-300 ml-1">View Full Log</span>
+                  </button>
+                \` : ''}
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center gap-2">
+              <button onclick="toggle('\${p.id}')" class="px-2.5 py-1 rounded-lg text-xs font-semibold transition-all \${p.enabled ? 'bg-red-500/15 text-red-400 border border-red-500/30 hover:bg-red-500/25' : 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700'}">
+                \${p.enabled ? 'Enabled' : 'Disabled'}
+              </button>
+              <button onclick="testSingle('\${p.id}')" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-dark-bg hover:bg-dark-card border border-dark-border text-slate-200 transition-all active:scale-95">
+                Test
+              </button>
+            </div>
+          </div>
+        \`;
+      }).join('');
+      updateProviderSelect();
+      lucide.createIcons();
+    }
+
+    function updateProviderSelect() {
+      const select = el("provider-select");
+      if (!select) return;
+      const currentVal = select.value || "auto";
+      select.innerHTML = '<option value="auto">⚡ Auto Fallback Route</option>' + 
+        state.map(p => \`<option value="\${p.id}" \${p.id === currentVal ? 'selected' : ''}>\${p.name} (\${p.model})</option>\`).join('');
+    }
+
+    async function openKeyModal() {
+      const modal = el("key-modal");
+      const list = el("key-modal-list");
+      modal.classList.remove("hidden");
+      lucide.createIcons();
+
+      try {
+        const res = await fetch("/api/keys", { headers: getHeaders() });
+        keysData = await res.json();
+
+        list.innerHTML = keysData.map(k => {
+          const portalUrl = PROVIDER_PORTALS[k.id] || '#';
+          return \`
+            <div class="p-3 bg-dark-bg border border-dark-border rounded-xl space-y-2">
+              <div class="flex items-center justify-between flex-wrap gap-2">
+                <div class="flex items-center gap-2">
+                  <a href="\${portalUrl}" target="_blank" rel="noopener noreferrer" class="font-bold text-xs text-white hover:text-red-400 flex items-center gap-1 transition-colors">
+                    <span>\${k.name}</span>
+                    <i data-lucide="external-link" class="w-3 h-3 text-slate-500 opacity-60"></i>
+                  </a>
+                  <span class="text-[10px] text-slate-400 font-mono">\${k.model}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <a href="\${portalUrl}" target="_blank" rel="noopener noreferrer" class="text-[10px] text-red-400 hover:text-red-300 hover:underline flex items-center gap-0.5">
+                    <span>Get Key</span>
+                    <i data-lucide="arrow-up-right" class="w-2.5 h-2.5"></i>
+                  </a>
+                  <span class="text-[10px] font-mono \${k.configured ? 'text-emerald-400' : 'text-slate-500'}">
+                    \${k.configured ? (\`● \${k.source.toUpperCase()}: \${k.masked}\`) : '○ Not Configured'}
+                  </span>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <input type="password" id="input-key-\${k.id}" placeholder="Paste API Key here…"
+                  class="flex-1 px-3 py-1.5 text-xs font-mono bg-dark-card border border-dark-border rounded-lg text-slate-100 placeholder-slate-600 focus:outline-none focus:border-red-500">
+                
+                <button onclick="saveProviderKey('\${k.id}')" class="px-3 py-1.5 text-xs font-semibold bg-red-600 hover:bg-red-500 text-white rounded-lg transition-all active:scale-95 shrink-0 shadow-sm shadow-red-500/20">
+                  Save Key
+                </button>
+
+                \${k.configured && k.source === 'ui' ? \`
+                  <button onclick="deleteProviderKey('\${k.id}')" title="Delete stored key" class="p-1.5 rounded-lg border border-dark-border text-slate-400 hover:text-rose-400 hover:bg-dark-card transition-all">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                  </button>
+                \` : ''}
+              </div>
+            </div>
+          \`;
+        }).join('');
+        lucide.createIcons();
+      } catch (err) {
+        list.innerHTML = '<div class="p-4 text-center text-rose-400">Failed to load credentials: ' + err.message + '</div>';
+      }
+    }
+
+    function closeKeyModal() {
+      el("key-modal").classList.add("hidden");
+    }
+
+    async function saveProviderKey(id) {
+      const input = el("input-key-" + id);
+      const val = input.value.trim();
+      if (!val) {
+        showToast("⚠️ Please paste an API key first");
+        return;
+      }
+
+      showToast("🔒 Encrypting & saving key for " + id + "…");
+      try {
+        const res = await fetch("/api/keys", {
+          method: "POST",
+          headers: getHeaders(),
+          body: JSON.stringify({ providerId: id, apiKey: val })
+        });
+        if (res.ok) {
+          showToast("✅ " + id + " key saved & encrypted!");
+          input.value = "";
+          openKeyModal();
+          load();
+        } else {
+          showToast("❌ Failed to save key: " + res.status);
+        }
+      } catch (err) {
+        showToast("❌ Error: " + err.message);
+      }
+    }
+
+    async function deleteProviderKey(id) {
+      if (!confirm("Are you sure you want to remove the stored key for " + id + "?")) return;
+      try {
+        await fetch("/api/keys/" + id, { method: "DELETE", headers: getHeaders() });
+        showToast("🗑️ Key removed for " + id);
+        openKeyModal();
+        load();
+      } catch (err) {
+        showToast("❌ Error: " + err.message);
+      }
+    }
+
+    function renderLogs(logsList) {
+      if (!logsList || logsList.length === 0) {
+        el("logs-tbody").innerHTML = '<tr><td colspan="6" class="p-6 text-center text-slate-500 font-sans">No requests recorded yet. Send a test from the playground!</td></tr>';
+        return;
+      }
+
+      el("logs-tbody").innerHTML = logsList.map((log, index) => {
+        const time = new Date(log.timestamp).toLocaleTimeString();
+        let badge = '<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-sans">200 OK</span>';
+        if (log.isCacheHit) {
+          badge = '<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-red-500/10 text-red-400 border border-red-500/20 font-sans">⚡ RAM Hit</span>';
+        } else if (log.status >= 500) {
+          badge = '<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20 font-sans">502 Fail</span>';
+        }
+
+        const failovers = log.failovers && log.failovers.length > 0 
+          ? \`<span class="text-[10px] text-amber-400/80 block mt-0.5">↳ failovers: \${log.failovers.length}</span>\`
+          : '';
+
+        return \`
+          <tr onclick="openLogModal(\${index})" class="hover:bg-dark-cardHover transition-all cursor-pointer group">
+            <td class="py-2 px-4">\${badge}</td>
+            <td class="py-2 px-4 text-slate-400">\${time}</td>
+            <td class="py-2 px-4 max-w-[240px] truncate text-slate-200 group-hover:text-red-400 transition-colors" title="\${log.promptPreview}">\${log.promptPreview}</td>
+            <td class="py-2 px-4">
+              <span class="font-semibold text-white font-sans">\${log.provider}</span>
+              \${failovers}
+            </td>
+            <td class="py-2 px-4 font-semibold \${log.isCacheHit ? 'text-red-400' : 'text-slate-200'}">\${log.latencyMs}ms</td>
+            <td class="py-2 px-4 text-slate-400">\${log.tokens?.total_tokens ? log.tokens.total_tokens : (log.isCacheHit ? '0' : '—')}</td>
+          </tr>
+        \`;
+      }).join('');
+    }
+
+    function openLogModal(index) {
+      const log = logs[index];
+      if (!log) return;
+      const modal = el("log-modal");
+      const body = el("log-modal-body");
+
+      const failoverHtml = log.failovers && log.failovers.length > 0 
+        ? log.failovers.map(f => \`<div class="p-2 rounded bg-dark-bg border border-dark-border text-rose-400">⚠️ \${f}</div>\`).join('')
+        : '<div class="text-emerald-400 text-xs">✨ Direct fulfillment (zero failovers needed)</div>';
+
+      body.innerHTML = \`
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
+          <div class="p-2 bg-dark-bg rounded-lg border border-dark-border">
+            <div class="text-[10px] text-slate-500 font-sans uppercase">Status</div>
+            <div class="font-bold text-white mt-0.5">\${log.status} \${log.status === 200 ? 'OK' : 'FAIL'}</div>
+          </div>
+          <div class="p-2 bg-dark-bg rounded-lg border border-dark-border">
+            <div class="text-[10px] text-slate-500 font-sans uppercase">Provider</div>
+            <div class="font-bold text-red-400 mt-0.5">\${log.provider}</div>
+          </div>
+          <div class="p-2 bg-dark-bg rounded-lg border border-dark-border">
+            <div class="text-[10px] text-slate-500 font-sans uppercase">Latency</div>
+            <div class="font-bold text-white mt-0.5">\${log.latencyMs}ms</div>
+          </div>
+          <div class="p-2 bg-dark-bg rounded-lg border border-dark-border">
+            <div class="text-[10px] text-slate-500 font-sans uppercase">RAM Cache</div>
+            <div class="font-bold \${log.isCacheHit ? 'text-red-400' : 'text-slate-400'} mt-0.5">\${log.isCacheHit ? 'HIT (0ms)' : 'MISS'}</div>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-[11px] font-semibold text-slate-400 font-sans block mb-1">User Prompt</label>
+          <div class="p-3 bg-dark-bg rounded-lg border border-dark-border text-slate-200 whitespace-pre-wrap max-h-28 overflow-y-auto">\${log.promptPreview}</div>
+        </div>
+
+        \${log.responsePreview ? \`
+          <div>
+            <label class="text-[11px] font-semibold text-slate-400 font-sans block mb-1">Response Output Preview</label>
+            <div class="p-3 bg-dark-bg rounded-lg border border-dark-border text-red-300 whitespace-pre-wrap max-h-36 overflow-y-auto">\${log.responsePreview}</div>
+          </div>
+        \` : ''}
+
+        <div>
+          <label class="text-[11px] font-semibold text-slate-400 font-sans block mb-1">Failover Execution Trace</label>
+          <div class="space-y-1.5">\${failoverHtml}</div>
+        </div>
+      \`;
+
+      modal.classList.remove("hidden");
+      lucide.createIcons();
+    }
+
+    function closeLogModal() {
+      el("log-modal").classList.add("hidden");
+    }
+
+    function openProviderErrorModal(id) {
+      const p = state.find(x => x.id === id);
+      if (!p || !p.lastError) return;
+
+      const modal = el("error-modal");
+      el("error-modal-title").textContent = p.name + " Error Details";
+      el("error-modal-subtitle").textContent = "Model: " + p.model + " • Failures: " + (p.consecutiveFailures || 1);
+
+      let guidance = "";
+      if (p.lastError.includes("429")) {
+        guidance = '<div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs"><strong>💡 Rate Limit (429):</strong> This provider reached its free tier rate limit or quota. The gateway automatically cool down this provider and routed to the next healthy provider in your fallback chain.</div>';
+      } else if (p.lastError.includes("404")) {
+        guidance = '<div class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs"><strong>💡 Model Not Found (404):</strong> The model name <code>' + p.model + '</code> was not found on this API key. Click "Edit Model Name" below to switch to a supported model.</div>';
+      } else if (p.lastError.toLowerCase().includes("timeout") || p.lastError.toLowerCase().includes("aborted")) {
+        guidance = '<div class="p-3 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs"><strong>💡 Upstream Timeout:</strong> The provider did not respond within the 8000ms deadline. The gateway automatically aborted and failed over.</div>';
+      }
+
+      const escapedError = p.lastError.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+      el("error-modal-body").innerHTML = \`
+        \${guidance}
+        
+        <div>
+          <label class="text-[11px] font-semibold text-slate-400 font-sans block mb-1">Full Error Log / Upstream Response</label>
+          <div class="p-3 bg-dark-bg border border-dark-border rounded-xl text-rose-300 font-mono text-xs whitespace-pre-wrap leading-relaxed max-h-48 overflow-y-auto">\${escapedError}</div>
+        </div>
+
+        <div class="flex items-center justify-between pt-2 border-t border-dark-border flex-wrap gap-2">
+          <div class="flex items-center gap-2">
+            <button onclick="editModelName('\${p.id}', '\${p.model}'); closeErrorModal();" class="px-3 py-1.5 text-xs font-semibold bg-dark-card hover:bg-dark-cardHover border border-dark-border rounded-lg text-slate-200 transition-all">
+              ✏️ Edit Model
+            </button>
+            <button onclick="copyErrorText('\${p.id}')" class="px-3 py-1.5 text-xs font-semibold bg-dark-card hover:bg-dark-cardHover border border-dark-border rounded-lg text-slate-200 transition-all">
+              📋 Copy Error
+            </button>
+          </div>
+
+          <button onclick="testSingle('\${p.id}'); closeErrorModal();" class="px-3.5 py-1.5 text-xs font-bold bg-red-600 hover:bg-red-500 text-white rounded-lg transition-all shadow-md shadow-red-500/20">
+            ⚡ Retry Test
+          </button>
+        </div>
+      \`;
+
+      modal.classList.remove("hidden");
+      lucide.createIcons();
+    }
+
+    function closeErrorModal() {
+      el("error-modal").classList.add("hidden");
+    }
+
+    function copyErrorText(id) {
+      const p = state.find(x => x.id === id);
+      if (p?.lastError) {
+        navigator.clipboard.writeText(p.lastError);
+        showToast("📋 Error copied to clipboard!");
+      }
+    }
+
+    function copyOutput() {
+      const out = el("test-output").textContent;
+      if (!out || out.includes("Response will stream or return here")) return;
+      navigator.clipboard.writeText(out);
+      showToast("📋 Response copied to clipboard!");
+    }
+
+    function clearOutput() {
+      el("test-output").innerHTML = '<span class="text-slate-600">Response will stream or return here…</span>';
+      el("output-meta").textContent = "Idle";
+    }
+
+    async function save() {
+      const payload = { providers: state.map((p, i) => ({ id: p.id, enabled: p.enabled, order: i + 1, model: p.model })) };
+      localStorage.setItem("ai_router_provider_config", JSON.stringify(payload.providers));
+      try {
+        const res = await fetch("/api/providers", {
+          method: "PUT",
+          headers: getHeaders(),
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          showToast("💾 Configuration saved & applied");
+          load();
+        } else {
+          showToast("❌ Failed to save: " + res.status);
+        }
+      } catch (err) {
+        showToast("❌ Error: " + err.message);
+      }
+    }
+
+    function toggle(id) {
+      state = state.map(p => p.id === id ? { ...p, enabled: !p.enabled } : p);
+      renderProviders();
+      save();
+    }
+
+    function move(i, direction) {
+      const target = i + direction;
+      if (target < 0 || target >= state.length) return;
+      const temp = state[i];
+      state[i] = state[target];
+      state[target] = temp;
+      renderProviders();
+      save();
+    }
+
+    async function testSingle(id) {
+      showToast("Testing " + id + "…");
+      try {
+        const res = await fetch("/api/providers/" + id + "/test", { method: "POST", headers: getHeaders() });
+        const data = await res.json();
+        if (data.ok) {
+          showToast("✅ " + id + " responded in " + data.latencyMs + "ms (" + data.model + ")");
+        } else {
+          showToast("❌ " + id + " failed. <button onclick=\\"openProviderErrorModal('" + id + "')\\" class=\\"underline font-bold text-rose-300 hover:text-white ml-1.5 cursor-pointer\\">View Error Details →</button>", 6000);
+        }
+        load();
+      } catch (err) {
+        showToast("❌ Error: " + err.message);
+      }
+    }
+
+    let benchmarkResults = [];
+
+    async function testAll() {
+      const configured = state.filter(p => p.configured);
+      if (configured.length === 0) {
+        showToast("⚠️ No API keys configured yet. Click 'API Keys' in the top right to add one!");
+        return;
+      }
+
+      const modal = el("benchmark-modal");
+      const grid = el("benchmark-grid");
+      const progressBar = el("benchmark-progress-bar");
+      const percentText = el("benchmark-percent-text");
+      const footer = el("benchmark-footer");
+      const winnerText = el("benchmark-winner-text");
+
+      modal.classList.remove("hidden");
+      footer.classList.add("hidden");
+      progressBar.style.width = "0%";
+      percentText.textContent = "0%";
+      el("benchmark-progress-text").textContent = \`Racing \${configured.length} providers concurrently…\`;
+      el("benchmark-status-badge").textContent = "⚡ Concurrency: Running Parallel Requests";
+
+      benchmarkResults = configured.map(p => ({
+        id: p.id,
+        name: p.name,
+        model: p.model,
+        status: "running",
+        latencyMs: 0,
+        error: null
+      }));
+
+      function renderBenchmarkGrid() {
+        grid.innerHTML = benchmarkResults.map(r => {
+          let badgeHtml = "";
+          if (r.status === "running") {
+            badgeHtml = \`<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono">
+              <i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i> Testing...
+            </span>\`;
+          } else if (r.status === "ok") {
+            const speedColor = r.latencyMs < 600 ? "text-emerald-400 border-emerald-500/30 bg-emerald-500/10" : "text-amber-400 border-amber-500/30 bg-amber-500/10";
+            badgeHtml = \`<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold \${speedColor} border font-mono">
+              ⚡ \${r.latencyMs}ms OK
+            </span>\`;
+          } else {
+            const errMsg = r.error ? (r.error.length > 32 ? r.error.slice(0, 30) + '…' : r.error) : 'Failed';
+            badgeHtml = \`<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/30 font-mono" title="\${r.error || 'Failed'}">
+              ❌ \${errMsg}
+            </span>\`;
+          }
+
+          return \`
+            <div class="p-3 bg-dark-bg border border-dark-border rounded-xl flex items-center justify-between gap-3">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-6 h-6 rounded-lg bg-dark-card border border-dark-border flex items-center justify-center">
+                  \${getProviderIcon(r.id)}
+                </div>
+                <div class="min-w-0">
+                  <div class="font-bold text-xs text-white truncate">\${r.name}</div>
+                  <div class="text-[10px] text-slate-400 font-mono truncate">\${r.model}</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                \${badgeHtml}
+              </div>
+            </div>
+          \`;
+        }).join('');
+        lucide.createIcons();
+      }
+
+      renderBenchmarkGrid();
+
+      let completedCount = 0;
+
+      const promises = configured.map(async (p, idx) => {
+        try {
+          const res = await fetch("/api/providers/" + p.id + "/test", { method: "POST", headers: getHeaders() });
+          const data = await res.json();
+          if (data.ok) {
+            benchmarkResults[idx].status = "ok";
+            benchmarkResults[idx].latencyMs = data.latencyMs;
+          } else {
+            benchmarkResults[idx].status = "error";
+            benchmarkResults[idx].error = data.error;
+          }
+        } catch (err) {
+          benchmarkResults[idx].status = "error";
+          benchmarkResults[idx].error = err.message;
+        } finally {
+          completedCount++;
+          const percent = Math.round((completedCount / configured.length) * 100);
+          progressBar.style.width = percent + "%";
+          percentText.textContent = percent + "%";
+          renderBenchmarkGrid();
+        }
+      });
+
+      await Promise.allSettled(promises);
+
+      // Finished benchmark
+      el("benchmark-status-badge").textContent = "✅ Benchmark Completed";
+      el("benchmark-progress-text").textContent = \`All \${configured.length} providers tested successfully!\`;
+      
+      const successful = benchmarkResults.filter(r => r.status === "ok").sort((a, b) => a.latencyMs - b.latencyMs);
+      if (successful.length > 0) {
+        const winner = successful[0];
+        winnerText.innerHTML = \`🏆 <span>Winner: <strong>\${winner.name}</strong> is fastest at <span class="text-white font-mono font-bold">\${winner.latencyMs}ms</span>!</span>\`;
+      } else {
+        winnerText.innerHTML = \`⚠️ <span class="text-rose-400">All tested providers returned errors. Check your API keys.</span>\`;
+      }
+
+      footer.classList.remove("hidden");
+      lucide.createIcons();
+      load();
+    }
+
+    function closeBenchmarkModal() {
+      el("benchmark-modal").classList.add("hidden");
+    }
+
+    function applyOptimalRouting() {
+      const working = benchmarkResults.filter(r => r.status === "ok").sort((a, b) => a.latencyMs - b.latencyMs);
+      const workingIds = working.map(r => r.id);
+      
+      // Re-order state: fastest working first, then remaining
+      const sortedState = [];
+      workingIds.forEach(id => {
+        const match = state.find(p => p.id === id);
+        if (match) sortedState.push(match);
+      });
+      state.forEach(p => {
+        if (!workingIds.includes(p.id)) sortedState.push(p);
+      });
+
+      state = sortedState;
+      renderProviders();
+      save();
+      closeBenchmarkModal();
+      showToast("🚀 Gateway route optimized! Fastest providers placed at the top.");
+    }
+
+    async function clearCache() {
+      await fetch("/api/cache/clear", { method: "POST", headers: getHeaders() });
+      showToast("🧹 In-memory RAM cache cleared");
+      load();
+    }
+
+    async function clearLogs() {
+      await fetch("/api/metrics/logs", { method: "DELETE", headers: getHeaders() });
+      showToast("🗑️ Request logs cleared");
+      load();
+    }
+
+    function toggleSystemPersona() {
+      const container = el("persona-container");
+      const chevron = el("persona-chevron");
+      const isHidden = container.classList.contains("hidden");
+      if (isHidden) {
+        container.classList.remove("hidden");
+        chevron.style.transform = "rotate(180deg)";
+      } else {
+        container.classList.add("hidden");
+        chevron.style.transform = "rotate(0deg)";
+      }
+    }
+
+    function exportConfig() {
+      const payload = {
+        version: "1.0",
+        exportedAt: new Date().toISOString(),
+        providers: state.map((p, i) => ({ id: p.id, enabled: p.enabled, order: i + 1, model: p.model }))
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "ai-router-config.json";
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast("📥 Configuration backup exported!");
+    }
+
+    function importConfig(e) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = async (evt) => {
+        try {
+          const parsed = JSON.parse(evt.target.result);
+          if (Array.isArray(parsed?.providers)) {
+            state = state.map(p => {
+              const match = parsed.providers.find(x => x.id === p.id);
+              return match ? { ...p, enabled: match.enabled, order: match.order, model: match.model || p.model } : p;
+            }).sort((a, b) => a.order - b.order);
+            renderProviders();
+            await save();
+            showToast("📤 Configuration imported & applied successfully!");
+          } else {
+            showToast("❌ Invalid configuration file format");
+          }
+        } catch (err) {
+          showToast("❌ Import failed: " + err.message);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    async function runLiveTest() {
+      const prompt = el("test-prompt").value.trim();
+      if (!prompt) return;
+      const isStream = el("stream-toggle").checked;
+      const selectedModel = el("provider-select")?.value;
+      const systemPersona = el("system-persona")?.value.trim();
+      const btn = el("btn-send-test");
+      const out = el("test-output");
+      const meta = el("output-meta");
+
+      btn.disabled = true;
+      btn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i> Generating…';
+      lucide.createIcons();
+      out.textContent = "";
+      meta.textContent = "Connecting…";
+      const start = Date.now();
+
+      const messages = [];
+      if (systemPersona) {
+        messages.push({ role: "system", content: systemPersona });
+      }
+      messages.push({ role: "user", content: prompt });
+
+      try {
+        const res = await fetch("/v1/chat/completions", {
+          method: "POST",
+          headers: getHeaders(),
+          body: JSON.stringify({
+            model: selectedModel && selectedModel !== "auto" ? selectedModel : undefined,
+            stream: isStream,
+            messages
+          })
+        });
+
+        const isCacheHit = res.headers.get("x-cache") === "HIT";
+
+        if (!res.ok) {
+          const err = await res.json();
+          out.textContent = "Error " + res.status + ":\\n" + JSON.stringify(err, null, 2);
+          meta.textContent = "Failed";
+          return;
+        }
+
+        if (isStream) {
+          const reader = res.body.getReader();
+          const decoder = new TextDecoder();
+          let fullText = "";
+          let providerId = "";
+
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            const chunk = decoder.decode(value);
+            const lines = chunk.split("\\n");
+            for (const line of lines) {
+              if (line.startsWith("data: ") && line !== "data: [DONE]") {
+                try {
+                  const json = JSON.parse(line.slice(6));
+                  fullText += json.choices[0]?.delta?.content || "";
+                  providerId = json.provider || providerId;
+                  out.textContent = fullText;
+                } catch {}
+              }
+            }
+          }
+          const latency = Date.now() - start;
+          meta.textContent = (isCacheHit ? "⚡ RAM CACHE • " : (providerId ? providerId + " • " : "")) + latency + "ms";
+        } else {
+          const data = await res.json();
+          const latency = Date.now() - start;
+          out.textContent = data.choices[0]?.message?.content || JSON.stringify(data, null, 2);
+          meta.textContent = (isCacheHit ? "⚡ RAM CACHE • " : data.provider + " • ") + latency + "ms";
+        }
+      } catch (err) {
+        out.textContent = "Network Error: " + err.message;
+        meta.textContent = "Error";
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="play" class="w-3.5 h-3.5 fill-white"></i> Send Request';
+        lucide.createIcons();
+        load();
+      }
+    }
+
+    function showSnippet(tab) {
+      currentSnippet = tab;
+      ['widget', 'js', 'py', 'curl'].forEach(t => {
+        const btn = el('snip-btn-' + t);
+        if (btn) {
+          btn.className = t === tab 
+            ? 'px-3 py-1 text-xs rounded-md bg-red-600 text-white font-semibold transition-all'
+            : 'px-3 py-1 text-xs rounded-md bg-dark-card text-slate-400 hover:text-white font-semibold transition-all';
+        }
+      });
+      updateSnippetView();
+    }
+
+    function handleKnowledgeFileUpload(evt) {
+      const file = evt.target?.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        el('cfg-widget-knowledge').value = e.target.result;
+        updateSnippetView();
+        showToast('📄 Knowledge file loaded into embed snippet!');
+      };
+      reader.readAsText(file);
+    }
+
+    function updateSnippetView() {
+      const host = window.location.origin;
+      const key = getKey() || "";
+      const authAttr = key ? '\\n  data-key="' + key + '"' : '';
+      
+      const customTitle = (el('cfg-widget-title')?.value || 'Amjad AI').trim();
+      const customColor = (el('cfg-widget-color')?.value || '#ef4444').trim();
+      const customPersona = (el('cfg-widget-persona')?.value || '').trim();
+      const customKnowledge = (el('cfg-widget-knowledge')?.value || '').trim();
+
+      const customizerEl = el('widget-customizer');
+      if (customizerEl) {
+        customizerEl.style.display = currentSnippet === 'widget' ? 'block' : 'none';
+      }
+
+      let widgetTag = '<!-- 1-LINE CHATBOT WIDGET: Paste anywhere in your HTML, Webflow, WordPress, Next.js, or React app -->\\n<' + 'script\\n  src="' + host + '/widget.js"\\n  data-title="' + customTitle + '"';
+      
+      if (customPersona.startsWith('http')) {
+        widgetTag += '\\n  data-persona-url="' + customPersona + '"';
+      } else if (customPersona) {
+        widgetTag += '\\n  data-persona="' + customPersona.replace(/"/g, '&quot;') + '"';
+      }
+
+      if (customKnowledge.startsWith('http')) {
+        widgetTag += '\\n  data-knowledge-url="' + customKnowledge + '"';
+      } else if (customKnowledge) {
+        widgetTag += '\\n  data-knowledge="' + customKnowledge.replace(/"/g, '&quot;').replace(/\\n/g, '\\n    ') + '"';
+      }
+
+      widgetTag += '\\n  data-color="' + customColor + '"' + authAttr + '\\n  defer>\\n<' + '/script>';
+
+      const snippets = {
+        widget: widgetTag,
+        js: '// Web Chatbot / Node.js\\nconst response = await fetch("' + host + '/v1/chat/completions", {\\n  method: "POST",\\n  headers: {\\n    "Content-Type": "application/json",\\n    "Authorization": "Bearer ' + (key || "your-router-api-key") + '"\\n  },\\n  body: JSON.stringify({\\n    stream: true,\\n    messages: [\\n      { role: "system", content: "You are an AI assistant." },\\n      { role: "user", content: "Hello!" }\\n    ]\\n  })\\n});',
+        py: '# Python (Official openai SDK)\\nfrom openai import OpenAI\\n\\nclient = OpenAI(\\n    base_url="' + host + '/v1",\\n    api_key="' + (key || "your-router-api-key") + '"\\n)\\n\\nresponse = client.chat.completions.create(\\n    model="default",\\n    messages=[{"role": "user", "content": "Hello!"}]\\n)\\n\\nprint(response.choices[0].message.content)',
+        curl: '# cURL Streaming\\ncurl -N ' + host + '/v1/chat/completions \\\\\\n  -H "Authorization: Bearer ' + (key || "your-router-api-key") + '" \\\\\\n  -H "Content-Type: application/json" \\\\\\n  -d "{\\"stream\\":true,\\"messages\\":[{\\"role\\":\\"user\\",\\"content\\":\\"Hello!\\"}]}"'
+      };
+
+      el("code-box").textContent = snippets[currentSnippet] || snippets.widget;
+    }
+
+    function copySnippet() {
+      navigator.clipboard.writeText(el("code-box").textContent);
+      showToast("📋 Code snippet copied to clipboard!");
+    }
+
+    load();
+    setInterval(load, 15000);
+  </script>
+</body>
+</html>`;

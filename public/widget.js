@@ -1,0 +1,274 @@
+(function() {
+  if (window.__ZeroRouteWidgetLoaded) return;
+  window.__ZeroRouteWidgetLoaded = true;
+
+  var script = document.currentScript || document.querySelector('script[src*="widget.js"]');
+  var endpoint = (script && script.getAttribute('data-endpoint')) || (script && script.src ? new URL(script.src).origin : window.location.origin);
+  var title = (script && script.getAttribute('data-title')) || 'AI Assistant';
+  var persona = (script && script.getAttribute('data-persona')) || 'You are a helpful, professional website AI assistant. Answer questions politely and concisely in markdown.';
+  var personaUrl = (script && script.getAttribute('data-persona-url')) || '';
+  var knowledge = (script && script.getAttribute('data-knowledge')) || '';
+  var knowledgeUrl = (script && script.getAttribute('data-knowledge-url')) || '';
+  var greeting = (script && script.getAttribute('data-greeting')) || 'Hi there! 👋 How can I help you today?';
+  var brandColor = (script && script.getAttribute('data-color')) || '#ef4444';
+  var key = (script && script.getAttribute('data-key')) || '';
+
+  // Inject Styles
+  var style = document.createElement('style');
+  style.textContent = [
+    '.zr-bubble { position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; border-radius: 50%; background: ' + brandColor + '; box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.4), 0 8px 10px -6px rgba(239, 68, 68, 0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 999999; transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); border: 2px solid rgba(255,255,255,0.15); box-sizing: border-box; }',
+    '.zr-bubble:hover { transform: scale(1.08); box-shadow: 0 14px 28px -4px rgba(239, 68, 68, 0.5); }',
+    '.zr-bubble svg { width: 24px; height: 24px; fill: white; pointer-events: none; }',
+    '.zr-window { position: fixed; bottom: 92px; right: 24px; width: 380px; max-width: calc(100vw - 32px); height: 520px; max-height: calc(100vh - 120px); background: #090a0f; border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 0 1px rgba(239,68,68,0.2); z-index: 999999; display: flex; flex-direction: column; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; opacity: 0; pointer-events: none; transform: translateY(20px) scale(0.96); transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); box-sizing: border-box; }',
+    '.zr-window.zr-open { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); }',
+    '.zr-header { padding: 14px 18px; background: #0f111a; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: space-between; box-sizing: border-box; }',
+    '.zr-title-box { display: flex; align-items: center; gap: 10px; }',
+    '.zr-avatar { width: 32px; height: 32px; border-radius: 10px; background: ' + brandColor + '; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px; }',
+    '.zr-title { font-size: 14px; font-weight: 700; color: #f8fafc; line-height: 1.2; }',
+    '.zr-badge { font-size: 10px; color: #10b981; display: flex; align-items: center; gap: 4px; font-weight: 500; }',
+    '.zr-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: #10b981; }',
+    '.zr-close { background: none; border: none; color: #94a3b8; cursor: pointer; padding: 4px; font-size: 14px; border-radius: 6px; display: flex; align-items: center; justify-content: center; }',
+    '.zr-close:hover { color: white; background: rgba(255,255,255,0.1); }',
+    '.zr-messages { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; font-size: 13px; line-height: 1.5; box-sizing: border-box; }',
+    '.zr-msg { max-width: 84%; padding: 10px 14px; border-radius: 14px; word-break: break-word; white-space: pre-wrap; box-sizing: border-box; }',
+    '.zr-msg-bot { align-self: flex-start; background: #151824; color: #e2e8f0; border: 1px solid rgba(255,255,255,0.06); }',
+    '.zr-msg-user { align-self: flex-end; background: ' + brandColor + '; color: #ffffff; font-weight: 500; }',
+    '.zr-footer { padding: 12px 14px; background: #0f111a; border-top: 1px solid rgba(255,255,255,0.08); display: flex; gap: 8px; box-sizing: border-box; }',
+    '.zr-input { flex: 1; background: #181b2a; border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 9px 12px; color: white; font-size: 12px; outline: none; box-sizing: border-box; }',
+    '.zr-input:focus { border-color: ' + brandColor + '; }',
+    '.zr-send { background: ' + brandColor + '; border: none; border-radius: 12px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; font-size: 13px; transition: opacity 0.2s; }',
+    '.zr-send:hover { opacity: 0.9; }',
+    '.zr-send:disabled { opacity: 0.4; cursor: not-allowed; }',
+    '.zr-powered { text-align: center; font-size: 10px; color: #64748b; padding: 4px; background: #090a0f; }',
+    '.zr-powered a { color: #94a3b8; text-decoration: none; font-weight: 600; }'
+  ].join('');
+  document.head.appendChild(style);
+
+  // Floating Bubble
+  var bubble = document.createElement('div');
+  bubble.className = 'zr-bubble';
+  bubble.setAttribute('aria-label', 'Open AI Chat');
+  bubble.innerHTML = '<svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>';
+
+  // Chat Window Container
+  var win = document.createElement('div');
+  win.className = 'zr-window';
+
+  // Header
+  var header = document.createElement('div');
+  header.className = 'zr-header';
+
+  var titleBox = document.createElement('div');
+  titleBox.className = 'zr-title-box';
+
+  var avatar = document.createElement('div');
+  avatar.className = 'zr-avatar';
+  avatar.textContent = '⚡';
+
+  var infoBox = document.createElement('div');
+  var titleEl = document.createElement('div');
+  titleEl.className = 'zr-title';
+  titleEl.textContent = title;
+
+  var badgeEl = document.createElement('div');
+  badgeEl.className = 'zr-badge';
+  var dot = document.createElement('span');
+  dot.className = 'zr-badge-dot';
+  badgeEl.appendChild(dot);
+  var badgeText = document.createTextNode(' Online • ZeroRoute');
+  badgeEl.appendChild(badgeText);
+
+  infoBox.appendChild(titleEl);
+  infoBox.appendChild(badgeEl);
+  titleBox.appendChild(avatar);
+  titleBox.appendChild(infoBox);
+
+  var closeBtn = document.createElement('button');
+  closeBtn.className = 'zr-close';
+  closeBtn.textContent = '✕';
+  closeBtn.setAttribute('aria-label', 'Close AI Chat');
+
+  header.appendChild(titleBox);
+  header.appendChild(closeBtn);
+
+  // Message Area
+  var msgBox = document.createElement('div');
+  msgBox.className = 'zr-messages';
+
+  var initialMsg = document.createElement('div');
+  initialMsg.className = 'zr-msg zr-msg-bot';
+  initialMsg.textContent = greeting;
+  msgBox.appendChild(initialMsg);
+
+  // Footer Input Area
+  var footer = document.createElement('div');
+  footer.className = 'zr-footer';
+
+  var inputBox = document.createElement('input');
+  inputBox.type = 'text';
+  inputBox.className = 'zr-input';
+  inputBox.placeholder = 'Ask a question…';
+
+  var sendBtn = document.createElement('button');
+  sendBtn.className = 'zr-send';
+  sendBtn.textContent = '➤';
+  sendBtn.setAttribute('aria-label', 'Send message');
+
+  footer.appendChild(inputBox);
+  footer.appendChild(sendBtn);
+
+  // Powered By
+  var powered = document.createElement('div');
+  powered.className = 'zr-powered';
+  powered.innerHTML = 'Fast free AI by <a href="https://github.com/amjadlle/ZeroRoute" target="_blank" rel="noopener">ZeroRoute</a>';
+
+  win.appendChild(header);
+  win.appendChild(msgBox);
+  win.appendChild(footer);
+  win.appendChild(powered);
+
+  function mount() {
+    document.body.appendChild(bubble);
+    document.body.appendChild(win);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', mount);
+  } else {
+    mount();
+  }
+
+  var isOpen = false;
+  var isBusy = false;
+  var history = [];
+
+  function toggle() {
+    isOpen = !isOpen;
+    if (isOpen) {
+      win.classList.add('zr-open');
+      inputBox.focus();
+    } else {
+      win.classList.remove('zr-open');
+    }
+  }
+
+  bubble.onclick = toggle;
+  closeBtn.onclick = toggle;
+
+  var loadedPersona = persona;
+  var loadedKnowledge = knowledge;
+
+  async function loadRemoteContext() {
+    if (personaUrl && loadedPersona === persona) {
+      try {
+        var pRes = await fetch(personaUrl);
+        if (pRes.ok) loadedPersona = await pRes.text();
+      } catch (e) {}
+    }
+    if (knowledgeUrl && loadedKnowledge === knowledge) {
+      try {
+        var kRes = await fetch(knowledgeUrl);
+        if (kRes.ok) loadedKnowledge = await kRes.text();
+      } catch (e) {}
+    }
+  }
+  loadRemoteContext();
+
+  function buildFullSystemPrompt() {
+    var p = loadedPersona.trim();
+    if (loadedKnowledge && loadedKnowledge.trim()) {
+      p += '\n\n[VERIFIED BUSINESS KNOWLEDGE BASE]\n' + 
+        'Base your answers strictly on the following verified facts, services, and documentation for this website. ' +
+        'If a specific detail is not covered, politely explain that you do not have that specific information and invite the visitor to contact support:\n\n' + 
+        loadedKnowledge.trim();
+    }
+    return p;
+  }
+
+  async function send() {
+    var text = inputBox.value.trim();
+    if (!text || isBusy) return;
+    inputBox.value = '';
+    isBusy = true;
+    sendBtn.disabled = true;
+
+    // Ensure remote context is loaded
+    if ((personaUrl && loadedPersona === persona) || (knowledgeUrl && loadedKnowledge === knowledge)) {
+      await loadRemoteContext();
+    }
+
+    // Safe user text rendering (XSS protection via textContent)
+    var userEl = document.createElement('div');
+    userEl.className = 'zr-msg zr-msg-user';
+    userEl.textContent = text;
+    msgBox.appendChild(userEl);
+    history.push({ role: 'user', content: text });
+
+    // Safe bot placeholder
+    var botEl = document.createElement('div');
+    botEl.className = 'zr-msg zr-msg-bot';
+    botEl.textContent = '…';
+    msgBox.appendChild(botEl);
+    msgBox.scrollTop = msgBox.scrollHeight;
+
+    try {
+      var headers = { 'Content-Type': 'application/json' };
+      if (key) headers['Authorization'] = 'Bearer ' + key;
+
+      var res = await fetch(endpoint + '/v1/chat/completions', {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify({
+          stream: true,
+          messages: [
+            { role: 'system', content: buildFullSystemPrompt() }
+          ].concat(history)
+        })
+      });
+
+      if (!res.ok) {
+        var errData = await res.json().catch(function() { return {}; });
+        var errMsg = (errData && errData.error && (errData.error.message || errData.error)) || ('HTTP ' + res.status + ' Error');
+        botEl.textContent = '⚠️ ' + errMsg;
+        isBusy = false;
+        sendBtn.disabled = false;
+        return;
+      }
+
+      botEl.textContent = '';
+      var reader = res.body.getReader();
+      var decoder = new TextDecoder();
+      var fullBot = '';
+
+      while (true) {
+        var chunkResult = await reader.read();
+        if (chunkResult.done) break;
+        var chunk = decoder.decode(chunkResult.value);
+        var lines = chunk.split('\n');
+        for (var i = 0; i < lines.length; i++) {
+          var line = lines[i].trim();
+          if (line.startsWith('data:') && line !== 'data: [DONE]') {
+            try {
+              var data = JSON.parse(line.slice(5).trim());
+              var content = (data.choices && data.choices[0] && data.choices[0].delta && data.choices[0].delta.content) || '';
+              fullBot += content;
+              botEl.textContent = fullBot;
+              msgBox.scrollTop = msgBox.scrollHeight;
+            } catch (e) {}
+          }
+        }
+      }
+      history.push({ role: 'assistant', content: fullBot });
+    } catch (err) {
+      botEl.textContent = '⚠️ Network error: ' + (err.message || 'Unable to connect');
+    } finally {
+      isBusy = false;
+      sendBtn.disabled = false;
+    }
+  }
+
+  sendBtn.onclick = send;
+  inputBox.onkeydown = function(e) {
+    if (e.key === 'Enter') send();
+  };
+})();

@@ -1,0 +1,590 @@
+export function getLandingHtml(apiKey = ""): string {
+  const authAttr = apiKey ? `data-key="${apiKey}"` : "";
+  return `<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZeroRoute — $0/mo Multi-Cloud AI Gateway for Solo Founders & Startups</title>
+  <meta name="description" content="Never pay for LLMs again. One OpenAI-compatible endpoint with automatic failover across 8 free cloud AI providers and a 1-line website chatbot widget.">
+  
+  <!-- OpenGraph -->
+  <meta property="og:title" content="ZeroRoute — $0/mo Multi-Cloud AI Gateway">
+  <meta property="og:description" content="Auto-fallback across Groq, SambaNova, Mistral, Gemini, and NVIDIA NIM. 0% downtime, 0 dependencies, 100% free forever.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://zeroroute.vercel.app">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/logo.png">
+
+  <!-- Tailwind & Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          },
+          colors: {
+            dark: {
+              bg: '#050608',
+              card: '#0c0e14',
+              cardHover: '#131620',
+              border: '#1a1f2c'
+            },
+            brand: {
+              400: '#f87171',
+              500: '#ef4444',
+              600: '#dc2626'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #050608;
+      background-image: 
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(239, 68, 68, 0.15), transparent),
+        radial-gradient(ellipse 50% 50% at 80% 80%, rgba(244, 63, 94, 0.05), transparent);
+    }
+    .grid-pattern {
+      background-size: 40px 40px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    }
+    .glow-effect {
+      box-shadow: 0 0 50px -10px rgba(239, 68, 68, 0.3);
+    }
+    .terminal-cursor::after {
+      content: '▋';
+      animation: blink 1s step-start infinite;
+    }
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+  </style>
+</head>
+<body class="text-slate-100 min-h-screen selection:bg-red-500 selection:text-white font-sans antialiased">
+
+  <!-- Grid Background Overlay -->
+  <div class="fixed inset-0 grid-pattern pointer-events-none z-0"></div>
+
+  <!-- Main Container -->
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24 sm:space-y-32 py-6">
+
+    <!-- ═══════════════════════════ FLOATING DARK OBSIDIAN GLASS NAVIGATION ═══════════════════════════ -->
+    <div class="sticky top-4 z-50 w-full">
+      <header class="w-full bg-[#080a0f]/85 backdrop-blur-xl border border-white/[0.08] shadow-2xl shadow-black/80 rounded-xl px-5 sm:px-8 py-3.5 flex items-center justify-between transition-all ring-1 ring-white/5">
+        <!-- Brand Logo & Tagline -->
+        <div class="flex items-center gap-3">
+          <img src="/logo.png" alt="ZeroRoute Logo" class="w-8 h-8 object-contain shrink-0">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-extrabold text-sm sm:text-base tracking-tight text-white">ZeroRoute</span>
+              <span class="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-red-500/10 text-red-400 border border-red-500/20 font-mono">$0/mo</span>
+            </div>
+            <div class="text-[9px] font-mono tracking-widest text-slate-500 uppercase">ZERO COST. MAX ROUTE.</div>
+          </div>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="hidden md:flex items-center gap-8 text-xs font-semibold text-slate-300">
+          <a href="#features" class="hover:text-white transition-colors">Features</a>
+          <a href="#widget" class="hover:text-white transition-colors">1-Line Chatbot</a>
+          <a href="#providers" class="hover:text-white transition-colors">Providers</a>
+          <a href="#quickstart" class="hover:text-white transition-colors">Integration</a>
+          <a href="https://github.com/amjadlle/ZeroRoute" target="_blank" class="hover:text-white transition-colors">Docs</a>
+        </nav>
+
+        <!-- Action CTAs -->
+        <div class="flex items-center gap-3">
+          <a href="https://github.com/amjadlle/ZeroRoute" target="_blank" class="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 hover:text-white border border-white/10 rounded-lg transition-all active:scale-95 shadow-sm">
+            <svg class="w-3.5 h-3.5 fill-current text-slate-300" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            <span>Star</span>
+            <span class="text-amber-400 font-mono text-[11px]">★</span>
+          </a>
+
+          <a href="/app" class="inline-flex items-center gap-2 px-4 py-2 text-xs font-bold bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white rounded-lg shadow-lg shadow-red-600/30 ring-1 ring-red-400/30 transition-all active:scale-95">
+            <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
+            <span>Launch Console</span>
+          </a>
+        </div>
+      </header>
+    </div>
+
+    <!-- ═══════════════════════════ HERO SECTION ═══════════════════════════ -->
+    <section class="text-center pt-8 sm:pt-14 pb-4 space-y-6 max-w-4xl mx-auto">
+      
+      <!-- Top Announcement Badge -->
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-500/10 border border-red-500/25 text-red-400 text-xs font-semibold shadow-sm">
+        <span class="w-2 h-2 rounded-full bg-red-400 animate-ping"></span>
+        <span>⚡ 100% Free & Open-Source Multi-Cloud AI Gateway</span>
+      </div>
+
+      <!-- Main Headline -->
+      <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-[1.1]">
+        Never Pay for LLMs Again. <br/>
+        <span class="bg-gradient-to-r from-red-500 via-rose-400 to-amber-400 bg-clip-text text-transparent">
+          One Endpoint. 8 Free Clouds.
+        </span>
+      </h1>
+
+      <!-- Subtitle -->
+      <p class="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+        Stop hitting free-tier rate limits. ZeroRoute auto-routes between <strong>Groq</strong>, <strong>SambaNova</strong>, <strong>Mistral</strong>, <strong>Gemini</strong>, and <strong>NVIDIA NIM</strong> with zero downtime, instant failover, and a <strong>1-line website AI chatbot</strong>.
+      </p>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-4">
+        <a href="https://vercel.com/new/clone?repository-url=https://github.com/amjadlle/ZeroRoute" target="_blank" 
+          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-bold bg-white text-black hover:bg-slate-200 rounded-xl transition-all shadow-xl active:scale-95">
+          <svg class="w-4 h-4 fill-black" viewBox="0 0 24 24"><path d="M24 22.525H0l12-21.05 12 21.05z"/></svg>
+          <span>Deploy Free to Vercel (1-Click)</span>
+        </a>
+
+        <a href="/app" 
+          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-bold bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30 rounded-xl transition-all active:scale-95">
+          <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+          <span>Open Router Console</span>
+        </a>
+      </div>
+
+      <!-- Quick Metrics Bar -->
+      <div class="pt-8 grid grid-cols-2 sm:grid-cols-4 gap-3.5 max-w-3xl mx-auto border-t border-dark-border/60">
+        <div class="p-3.5 rounded-xl bg-dark-card/60 border border-dark-border text-center shadow-sm">
+          <div class="text-2xl sm:text-3xl font-extrabold text-white font-mono">$0</div>
+          <div class="text-xs text-slate-400 mt-1 font-medium">Monthly Cost</div>
+        </div>
+        <div class="p-3.5 rounded-xl bg-dark-card/60 border border-dark-border text-center shadow-sm">
+          <div class="text-2xl sm:text-3xl font-extrabold text-emerald-400 font-mono">&lt;8ms</div>
+          <div class="text-xs text-slate-400 mt-1 font-medium">Failover Speed</div>
+        </div>
+        <div class="p-3.5 rounded-xl bg-dark-card/60 border border-dark-border text-center shadow-sm">
+          <div class="text-2xl sm:text-3xl font-extrabold text-red-400 font-mono">8</div>
+          <div class="text-xs text-slate-400 mt-1 font-medium">Free Providers</div>
+        </div>
+        <div class="p-3.5 rounded-xl bg-dark-card/60 border border-dark-border text-center shadow-sm">
+          <div class="text-2xl sm:text-3xl font-extrabold text-amber-400 font-mono">0</div>
+          <div class="text-xs text-slate-400 mt-1 font-medium">Dependencies</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════ LIVE TERMINAL FAILOVER DEMO ═══════════════════════════ -->
+    <section class="max-w-4xl mx-auto">
+      <div class="rounded-2xl border border-dark-border bg-dark-card shadow-2xl overflow-hidden glow-effect">
+        <!-- Terminal Header -->
+        <div class="px-4 py-3 bg-[#080a0f] border-b border-dark-border flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-rose-500/80 inline-block"></span>
+            <span class="w-3 h-3 rounded-full bg-amber-500/80 inline-block"></span>
+            <span class="w-3 h-3 rounded-full bg-emerald-500/80 inline-block"></span>
+            <span class="text-xs text-slate-400 font-mono ml-2">zeroroute — auto-failover engine</span>
+          </div>
+          <div class="text-[11px] font-mono text-emerald-400 flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>circuit breaker active</span>
+          </div>
+        </div>
+
+        <!-- Terminal Body -->
+        <div class="p-6 font-mono text-xs sm:text-sm space-y-3 bg-[#07080c] leading-relaxed text-slate-300 overflow-x-auto">
+          <div class="text-slate-500"># Sending prompt: "Summarize user feedback and answer inquiry"</div>
+          <div><span class="text-red-400 font-bold">$</span> curl -N https://zeroroute.vercel.app/v1/chat/completions</div>
+          
+          <div class="pt-2 text-slate-400 flex items-center gap-2">
+            <span class="text-amber-400">▶</span> Attempting primary route: <strong class="text-white">SambaNova (gemma-4-31B-it)</strong>...
+          </div>
+          
+          <div class="text-rose-400 bg-rose-500/10 border border-rose-500/20 p-2.5 rounded-lg">
+            ⚠ HTTP 429: SambaNova rate limit exceeded (Quota exhausted). <br/>
+            ↳ Auto-isolating SambaNova on 60s cooldown timer.
+          </div>
+
+          <div class="text-emerald-400 flex items-center gap-2">
+            <span class="text-emerald-400 font-bold">⚡</span> Instant Failover ➔ Switched to <strong class="text-white">Groq (gpt-oss-20b)</strong> in <span class="bg-emerald-500/20 px-1.5 py-0.5 rounded text-emerald-300 font-bold">4.2ms</span> ✓
+          </div>
+
+          <div class="p-3 bg-dark-card border border-dark-border rounded-lg text-slate-200">
+            <div class="text-[11px] text-slate-500 mb-1">Incoming Stream:</div>
+            "Here is the summarized breakdown: 1. User loved the 1-line chatbot setup. 2. Performance was rated 10/10 with sub-100ms response time..." <span class="text-red-400 terminal-cursor"></span>
+          </div>
+
+          <div class="pt-2 border-t border-white/5 flex flex-wrap items-center justify-between text-[11px] text-slate-500">
+            <span>Latency: <strong class="text-slate-300">98ms</strong></span>
+            <span>Speed: <strong class="text-emerald-400">220 tokens/sec</strong></span>
+            <span>Cost: <strong class="text-emerald-400">$0.0000</strong></span>
+            <span>Cache: <strong class="text-slate-300">SAVED</strong></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════ 1-LINE CHATBOT SHOWCASE ═══════════════════════════ -->
+    <section id="widget" class="space-y-8 scroll-mt-20">
+      <div class="text-center space-y-3 max-w-2xl mx-auto">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold">
+          <span>✨</span> Embed Anywhere in 10 Seconds
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white">
+          The 1-Line Website AI Chatbot
+        </h2>
+        <p class="text-sm text-slate-400">
+          Turn your multi-cloud free quota into a smart, floating AI assistant on your portfolio, Webflow, WordPress, Next.js, or React site.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center max-w-5xl mx-auto">
+        
+        <!-- Left: Code Snippet -->
+        <div class="lg:col-span-7 space-y-4">
+          <div class="bg-dark-card border border-dark-border rounded-2xl p-5 space-y-3">
+            <div class="flex items-center justify-between text-xs text-slate-400 pb-2 border-b border-dark-border">
+              <span class="font-mono text-slate-300">index.html (Paste before &lt;/body&gt;)</span>
+              <button onclick="copyWidgetCode()" class="text-red-400 hover:text-red-300 font-semibold flex items-center gap-1">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span id="copy-btn-text">Copy Script</span>
+              </button>
+            </div>
+            
+            <pre class="font-mono text-xs text-slate-300 leading-relaxed overflow-x-auto p-2 bg-[#080a0f] rounded-lg border border-dark-border" id="widget-code-snippet"><code>&lt;script 
+  src="https://zeroroute.vercel.app/widget.js" 
+  data-title="Amjad AI" 
+  data-persona="You are a friendly portfolio assistant." 
+  data-greeting="Hi! 👋 How can I help you today?" 
+  data-color="#ef4444" 
+  defer&gt;
+&lt;/script&gt;</code></pre>
+          </div>
+
+          <div class="grid grid-cols-3 gap-3 text-center">
+            <div class="p-3 bg-dark-card border border-dark-border rounded-xl">
+              <div class="text-base font-bold text-white font-mono">~8 KB</div>
+              <div class="text-[10px] text-slate-400 mt-0.5">Zero Dependencies</div>
+            </div>
+            <div class="p-3 bg-dark-card border border-dark-border rounded-xl">
+              <div class="text-base font-bold text-emerald-400 font-mono">100%</div>
+              <div class="text-[10px] text-slate-400 mt-0.5">XSS Immune</div>
+            </div>
+            <div class="p-3 bg-dark-card border border-dark-border rounded-xl">
+              <div class="text-base font-bold text-red-400 font-mono">$0/mo</div>
+              <div class="text-[10px] text-slate-400 mt-0.5">Unlimited Visitors</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Live Interactive Demo Box -->
+        <div class="lg:col-span-5 bg-gradient-to-b from-dark-card to-dark-bg border border-dark-border rounded-2xl p-6 text-center space-y-4 shadow-xl">
+          <div class="w-12 h-12 rounded-2xl bg-red-600/20 border border-red-500/30 flex items-center justify-center mx-auto text-red-400">
+            <i data-lucide="sparkles" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-white">Try the Embedded AI Chatbot</h3>
+            <p class="text-xs text-slate-400 mt-1 max-w-xs mx-auto">
+              Test streaming speed, markdown formatting, and multi-cloud failover directly in this page.
+            </p>
+          </div>
+          <button onclick="openChatWidget()" class="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold bg-red-600 hover:bg-red-500 text-white rounded-xl shadow-lg shadow-red-500/25 transition-all active:scale-95">
+            <i data-lucide="message-square" class="w-4 h-4"></i>
+            <span>Open Chatbot Widget</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════ CORE FEATURES FOR FOUNDERS ═══════════════════════════ -->
+    <section id="features" class="space-y-12 scroll-mt-20">
+      <div class="text-center space-y-3 max-w-2xl mx-auto">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold">
+          <span>⚡</span> Built for Solo Founders & Startups
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white">
+          Everything You Need to Scale for Free
+        </h2>
+        <p class="text-sm text-slate-400">
+          Enterprise-grade multi-cloud routing without the \$500/month OpenAI or Anthropic bills.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- Card 1 -->
+        <div class="p-6 bg-dark-card border border-dark-border rounded-2xl space-y-3 hover:border-slate-700 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400">
+            <i data-lucide="layers" class="w-5 h-5"></i>
+          </div>
+          <h3 class="text-base font-bold text-white">Stacked Free Quotas</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Combine the free tiers of Groq, SambaNova, Mistral, Gemini, and NVIDIA NIM into millions of free tokens per day.
+          </p>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="p-6 bg-dark-card border border-dark-border rounded-2xl space-y-3 hover:border-slate-700 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+            <i data-lucide="shield-check" class="w-5 h-5"></i>
+          </div>
+          <h3 class="text-base font-bold text-white">Circuit Breaker Failover</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            When any provider rate limits (429) or throws a 500 error, ZeroRoute switches to the backup in &lt;8ms and puts the failing provider on cooldown.
+          </p>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="p-6 bg-dark-card border border-dark-border rounded-2xl space-y-3 hover:border-slate-700 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+            <i data-lucide="zap" class="w-5 h-5"></i>
+          </div>
+          <h3 class="text-base font-bold text-white">Lightning RAM Caching</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Exact repeat prompts return in 0ms with instant token replay from memory, saving 100% of your provider quota.
+          </p>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="p-6 bg-dark-card border border-dark-border rounded-2xl space-y-3 hover:border-slate-700 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+            <i data-lucide="gauge" class="w-5 h-5"></i>
+          </div>
+          <h3 class="text-base font-bold text-white">Parallel Benchmark Suite</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Race all 8 providers concurrently in real-time. Detect the fastest model and optimize your routing chain in 1-click.
+          </p>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="p-6 bg-dark-card border border-dark-border rounded-2xl space-y-3 hover:border-slate-700 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+            <i data-lucide="key" class="w-5 h-5"></i>
+          </div>
+          <h3 class="text-base font-bold text-white">AES-256 Key Vault</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Configure keys securely via environment variables or encrypted browser storage. Keys are masked and never exposed.
+          </p>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="p-6 bg-dark-card border border-dark-border rounded-2xl space-y-3 hover:border-slate-700 transition-all">
+          <div class="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400">
+            <i data-lucide="server" class="w-5 h-5"></i>
+          </div>
+          <h3 class="text-base font-bold text-white">Zero Dependencies</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Engineered with pure native Node.js HTTP/Fetch. Instant cold starts on Vercel Serverless Edge, Docker, or bare metal.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════ FREE PROVIDERS MATRIX ═══════════════════════════ -->
+    <section id="providers" class="space-y-8 scroll-mt-20 max-w-5xl mx-auto">
+      <div class="text-center space-y-3">
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Supported Free Cloud Providers</h2>
+        <p class="text-sm text-slate-400">Tested and benchmarked out-of-the-box on ZeroRoute</p>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 font-mono text-xs">
+        <div class="p-4 bg-dark-card border border-dark-border rounded-xl space-y-2">
+          <div class="font-bold text-sm text-white">Groq</div>
+          <div class="text-emerald-400 font-bold">~100 ms</div>
+          <div class="text-[11px] text-slate-500 truncate">openai/gpt-oss-20b</div>
+        </div>
+        <div class="p-4 bg-dark-card border border-dark-border rounded-xl space-y-2">
+          <div class="font-bold text-sm text-white">NVIDIA NIM</div>
+          <div class="text-emerald-400 font-bold">~260 ms</div>
+          <div class="text-[11px] text-slate-500 truncate">nemotron-3.5-30b</div>
+        </div>
+        <div class="p-4 bg-dark-card border border-dark-border rounded-xl space-y-2">
+          <div class="font-bold text-sm text-white">SambaNova</div>
+          <div class="text-emerald-400 font-bold">~360 ms</div>
+          <div class="text-[11px] text-slate-500 truncate">gemma-4-31B-it</div>
+        </div>
+        <div class="p-4 bg-dark-card border border-dark-border rounded-xl space-y-2">
+          <div class="font-bold text-sm text-white">Mistral AI</div>
+          <div class="text-emerald-400 font-bold">~390 ms</div>
+          <div class="text-[11px] text-slate-500 truncate">mistral-medium-latest</div>
+        </div>
+        <div class="p-4 bg-dark-card border border-dark-border rounded-xl space-y-2">
+          <div class="font-bold text-sm text-white">Google Gemini</div>
+          <div class="text-amber-400 font-bold">~710 ms</div>
+          <div class="text-[11px] text-slate-500 truncate">gemini-3.6-flash</div>
+        </div>
+        <div class="p-4 bg-dark-card border border-dark-border rounded-xl space-y-2">
+          <div class="font-bold text-sm text-white">OpenRouter</div>
+          <div class="text-slate-300 font-bold">Free Pool</div>
+          <div class="text-[11px] text-slate-500 truncate">nemotron-free</div>
+        </div>
+        <div class="p-4 bg-dark-card border border-dark-border rounded-xl space-y-2">
+          <div class="font-bold text-sm text-white">Cloudflare AI</div>
+          <div class="text-slate-300 font-bold">Edge Free</div>
+          <div class="text-[11px] text-slate-500 truncate">llama-3.1-8b</div>
+        </div>
+        <div class="p-4 bg-dark-card border border-dark-border rounded-xl space-y-2">
+          <div class="font-bold text-sm text-white">Cohere</div>
+          <div class="text-slate-300 font-bold">Trial Tier</div>
+          <div class="text-[11px] text-slate-500 truncate">command-r-plus</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════ INTEGRATION CODE QUICKSTART ═══════════════════════════ -->
+    <section id="quickstart" class="space-y-8 scroll-mt-20 max-w-4xl mx-auto">
+      <div class="text-center space-y-3">
+        <h2 class="text-3xl font-extrabold text-white">Drop-in OpenAI Replacement</h2>
+        <p class="text-sm text-slate-400">Works seamlessly with OpenAI SDK, LangChain, LlamaIndex, Cursor, or direct cURL</p>
+      </div>
+
+      <div class="bg-dark-card border border-dark-border rounded-2xl p-6 space-y-4">
+        <div class="flex items-center justify-between text-xs text-slate-400 pb-3 border-b border-dark-border">
+          <span class="font-mono text-slate-300">python / nodejs / curl</span>
+          <span class="text-red-400 font-mono text-[11px]">base_url: https://zeroroute.vercel.app/v1</span>
+        </div>
+
+        <pre class="font-mono text-xs text-slate-300 leading-relaxed overflow-x-auto p-4 bg-[#080a0f] rounded-xl border border-dark-border"><code># Python Example (Use official openai library with ZeroRoute)
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="https://zeroroute.vercel.app/v1",
+    api_key="your-router-key"
+)
+
+response = client.chat.completions.create(
+    model="default",  # Auto-routes to fastest free provider with failover!
+    messages=[{"role": "user", "content": "Hello!"}]
+)
+
+print(response.choices[0].message.content)</code></pre>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════ FINAL CTA ═══════════════════════════ -->
+    <section class="text-center py-16 px-6 bg-gradient-to-b from-dark-card to-dark-bg border border-dark-border rounded-3xl max-w-4xl mx-auto space-y-6">
+      <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+        Ready to Build with Infinite Free Tokens?
+      </h2>
+      <p class="text-sm sm:text-base text-slate-400 max-w-xl mx-auto leading-relaxed">
+        Deploy your own personal ZeroRoute gateway to Vercel in 30 seconds for $0.00/month.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+        <a href="https://vercel.com/new/clone?repository-url=https://github.com/amjadlle/ZeroRoute" target="_blank" 
+          class="inline-flex items-center gap-2 px-6 py-3 text-sm font-bold bg-white text-black hover:bg-slate-200 rounded-xl transition-all shadow-xl active:scale-95">
+          <svg class="w-4 h-4 fill-black" viewBox="0 0 24 24"><path d="M24 22.525H0l12-21.05 12 21.05z"/></svg>
+          <span>Deploy to Vercel Free</span>
+        </a>
+        <a href="/app" class="inline-flex items-center gap-2 px-6 py-3 text-sm font-bold bg-red-600 hover:bg-red-500 text-white rounded-xl shadow-lg shadow-red-500/25 transition-all active:scale-95">
+          <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+          <span>Launch Gateway Console</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════ FOOTER ═══════════════════════════ -->
+    <footer class="pt-14 pb-8 border-t border-dark-border space-y-8 text-xs text-slate-500">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        <!-- Brand & Mission -->
+        <div class="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
+          <img src="/logo.png" alt="ZeroRoute" class="w-8 h-8 object-contain">
+          <div>
+            <div class="flex items-center gap-2 justify-center sm:justify-start">
+              <span class="font-bold text-sm text-slate-200">ZeroRoute</span>
+              <span class="text-[10px] font-mono text-red-400 font-semibold px-1.5 py-0.5 rounded bg-red-500/10 border border-red-500/20">$0/mo Gateway</span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-0.5">Designed and engineered for solo founders, developers, and startups.</p>
+          </div>
+        </div>
+
+        <!-- Creator Profile Card -->
+        <div class="p-3 bg-[#0d1017] border border-dark-border rounded-xl flex items-center gap-3.5 shadow-lg shadow-black/40">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 via-rose-600 to-red-700 flex items-center justify-center text-white font-extrabold text-xs shrink-0 shadow-md shadow-red-500/25 border border-white/15">
+            AP
+          </div>
+          <div>
+            <div class="text-[12px] font-bold text-white flex items-center gap-1.5">
+              <span>Amjad P A</span>
+              <span class="text-[10px] font-mono text-slate-400 font-normal">• Full-Stack AI Dev</span>
+            </div>
+            <div class="flex items-center gap-3 mt-1.5 text-[11px]">
+              <a href="https://amjad.mapki.in" target="_blank" rel="noopener noreferrer" class="text-red-400 hover:text-red-300 font-semibold transition-colors flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 fill-none stroke-current" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
+                <span>Portfolio</span>
+              </a>
+              <a href="https://github.com/amjadlle" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-white transition-colors flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                <span>GitHub</span>
+              </a>
+              <a href="https://linkedin.com/in/amjadlle" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-white transition-colors flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                <span>LinkedIn</span>
+              </a>
+              <a href="mailto:hire.amjad@gmail.com" class="text-slate-400 hover:text-white transition-colors flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 fill-none stroke-current" stroke-width="2" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                <span>Email</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-dark-border/60 text-[11px]">
+        <div>
+          © 2026 ZeroRoute by <a href="https://amjad.mapki.in" target="_blank" class="text-slate-300 hover:text-white font-medium">Amjad P A</a>. MIT Licensed.
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="https://github.com/amjadlle/ZeroRoute" target="_blank" class="hover:text-slate-300 transition-colors">GitHub Repository</a>
+          <a href="/app" class="hover:text-slate-300 transition-colors">Gateway Console</a>
+          <a href="mailto:hire.amjad@gmail.com" class="hover:text-slate-300 transition-colors">hire.amjad@gmail.com</a>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 💬 1-LINE EMBEDDABLE CHATBOT WIDGET (LIVE TEST ON LANDING PAGE) -->
+  <!-- ========================================================================= -->
+  <script 
+    src="/widget.js" 
+    data-title="ZeroRoute AI" 
+    data-persona="You are the AI assistant on the ZeroRoute landing page. Answer questions about ZeroRoute features, free cloud providers, and 1-line chatbot embedding concisely." 
+    data-greeting="Hi there! 👋 Ask me anything about ZeroRoute or test my real-time streaming speed!" 
+    data-color="#ef4444" 
+    ${authAttr} 
+    defer>
+  </script>
+
+  <script>
+    lucide.createIcons();
+
+    function copyWidgetCode() {
+      const code = document.getElementById('widget-code-snippet').textContent;
+      navigator.clipboard.writeText(code);
+      const btn = document.getElementById('copy-btn-text');
+      btn.textContent = 'Copied! ✓';
+      setTimeout(() => { btn.textContent = 'Copy Script'; }, 2000);
+    }
+
+    function openChatWidget() {
+      const bubble = document.getElementById('zr-toggle-btn');
+      if (bubble) {
+        bubble.click();
+      }
+    }
+  </script>
+</body>
+</html>
+`;
+}
+
+export const landingHtml = getLandingHtml();

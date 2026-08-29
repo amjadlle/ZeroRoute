@@ -1,0 +1,11 @@
+services:
+  ai-router:
+    build: .
+    container_name: ai-router
+    restart: unless-stopped
+    ports:
+      - "8787:8787"
+    env_file:
+      - .env
+    volumes:
+      - ./config.json:/app/config.json
