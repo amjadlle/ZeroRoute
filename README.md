@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <a href="https://dash.cloudflare.com/?to=/:account/pages/new">
+  <a href="https://dash.cloudflare.com/?to=/:account/workers-and-pages/create/pages">
     <img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare" />
   </a>
   &nbsp;
@@ -294,12 +294,21 @@ public/
 
 ## 👨‍💻 Author
 
+<p align="left">
+  <img src="https://doting-octopus-124.convex.cloud/api/storage/730e2173-8a2f-4d38-8976-7624a53bbc88" alt="Amjad P A" width="90" height="90" style="border-radius: 50%; object-fit: cover;" />
+</p>
+
 **Amjad P A** — Full-Stack AI Engineer & Solo Builder
 
-- 🌐 [amjad.mapki.in](https://amjad.mapki.in)
-- 🐙 [@amjadlle](https://github.com/amjadlle)
-- 💼 [linkedin.com/in/amjadlle](https://linkedin.com/in/amjadlle)
-- ✉️ [hire.amjad@gmail.com](mailto:hire.amjad@gmail.com)
+- 🌐 **Portfolio**: [amjad.mapki.in](https://amjad.mapki.in)
+- 🐙 **GitHub**: [@amjadlle](https://github.com/amjadlle)
+- 💼 **LinkedIn**: [linkedin.com/in/amjadlle](https://linkedin.com/in/amjadlle)
+- 𝕏 **X (Twitter)**: [@amjadlle](https://x.com/amjadlle)
+- 📺 **YouTube**: [@reputedculprit](https://youtube.com/@reputedculprit)
+- 📸 **Instagram**: [@amjadlle](https://instagram.com/amjadlle)
+- 🧵 **Threads**: [@amjadlle](https://www.threads.net/@amjadlle)
+- 🤖 **Reddit**: [u/reputed_culprit](https://www.reddit.com/user/reputed_culprit/)
+- ✉️ **Email**: [hire.amjad@gmail.com](mailto:hire.amjad@gmail.com)
 
 ---
 

@@ -75,6 +75,14 @@
     ::-webkit-scrollbar-track { background: #050608; }
     ::-webkit-scrollbar-thumb { background: #1b1d26; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #ef4444; }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-4px); }
+      40%, 80% { transform: translateX(4px); }
+    }
+    .animate-shake {
+      animation: shake 0.4s ease-in-out;
+    }
   </style>
 </head>
 <body class="text-slate-100 min-h-screen p-3 sm:p-6 lg:p-8 selection:bg-red-500 selection:text-white font-sans text-xs antialiased">
@@ -117,7 +125,7 @@
 
         <div class="relative w-full sm:w-56 mt-1 sm:mt-0">
           <i data-lucide="lock" class="w-3 h-3 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500"></i>
-          <input type="password" id="auth-key" placeholder="Router / Admin Key" oninput="saveKey()" onchange="saveKey()"
+          <input type="password" id="auth-key" placeholder="Admin Key" onkeydown="if(event.key==='Enter') saveKey()" onchange="saveKey()"
             class="w-full pl-8 pr-2.5 py-1.5 text-[11px] font-mono bg-dark-card border border-dark-border rounded-lg text-slate-200 placeholder-slate-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all">
         </div>
       </div>
@@ -131,15 +139,12 @@
         </div>
         <div>
           <h2 class="text-sm font-bold text-white">Gateway Protected — Admin Authentication Required</h2>
-          <p class="text-xs text-slate-400 mt-0.5">Please enter your <code class="text-amber-400 bg-amber-950/60 px-1.5 py-0.5 rounded font-mono text-[11px]">ADMIN_KEY</code> to unlock gateway controls, run live benchmarks, and manage providers.</p>
+          <p class="text-xs text-slate-400 mt-0.5">Please enter your <code class="text-amber-400 bg-amber-950/60 px-1.5 py-0.5 rounded font-mono text-[11px]">ADMIN_KEY</code> in the top-right box to unlock gateway controls and live benchmarks.</p>
         </div>
       </div>
-      <div class="flex items-center gap-2 w-full sm:w-auto">
-        <input type="password" id="auth-banner-input" placeholder="Enter ADMIN_KEY..." class="px-3 py-2 text-xs font-mono bg-dark-bg border border-dark-border rounded-xl text-white focus:outline-none focus:border-amber-500 w-full sm:w-56" onkeydown="if(event.key==='Enter') unlockFromBanner()">
-        <button onclick="unlockFromBanner()" class="px-4 py-2 text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white rounded-xl shadow-lg shadow-amber-500/25 transition-all active:scale-95 shrink-0 whitespace-nowrap">
-          Unlock
-        </button>
-      </div>
+      <button onclick="unlockFromBanner()" class="px-4 py-2 text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white rounded-xl shadow-lg shadow-amber-500/25 transition-all active:scale-95 shrink-0 whitespace-nowrap">
+        Unlock Gateway
+      </button>
     </div>
 
     <!-- Onboarding First-Run Wizard Banner (Shows if 0 keys configured) -->
@@ -442,14 +447,20 @@
       </div>
     <!-- Dashboard Footer -->
     <footer class="pt-6 pb-2 border-t border-dark-border flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-500">
-      <div>
-        ZeroRoute Gateway • Engineered by <a href="https://amjad.mapki.in" target="_blank" class="text-slate-300 hover:text-white font-semibold">Amjad P A</a>
+      <div class="flex items-center gap-2.5">
+        <img src="https://doting-octopus-124.convex.cloud/api/storage/730e2173-8a2f-4d38-8976-7624a53bbc88" alt="Amjad P A" class="w-6 h-6 rounded-full object-cover ring-1 ring-red-500/40">
+        <span>ZeroRoute Gateway • Engineered by <a href="https://amjad.mapki.in" target="_blank" class="text-slate-300 hover:text-white font-semibold">Amjad P A</a></span>
       </div>
-      <div class="flex items-center gap-4">
-        <a href="https://amjad.mapki.in" target="_blank" class="hover:text-slate-300">Portfolio</a>
-        <a href="https://github.com/amjadlle" target="_blank" class="hover:text-slate-300">GitHub</a>
-        <a href="https://linkedin.com/in/amjadlle" target="_blank" class="hover:text-slate-300">LinkedIn</a>
-        <a href="mailto:hire.amjad@gmail.com" class="hover:text-slate-300">hire.amjad@gmail.com</a>
+      <div class="flex items-center gap-3.5 flex-wrap justify-center text-[10.5px]">
+        <a href="https://amjad.mapki.in" target="_blank" class="hover:text-slate-200 transition-colors">Portfolio</a>
+        <a href="https://github.com/amjadlle" target="_blank" class="hover:text-slate-200 transition-colors">GitHub</a>
+        <a href="https://linkedin.com/in/amjadlle" target="_blank" class="hover:text-slate-200 transition-colors">LinkedIn</a>
+        <a href="https://x.com/amjadlle" target="_blank" class="hover:text-slate-200 transition-colors">X</a>
+        <a href="https://youtube.com/@reputedculprit" target="_blank" class="hover:text-slate-200 transition-colors">YouTube</a>
+        <a href="https://instagram.com/amjadlle" target="_blank" class="hover:text-slate-200 transition-colors">Instagram</a>
+        <a href="https://www.threads.net/@amjadlle" target="_blank" class="hover:text-slate-200 transition-colors">Threads</a>
+        <a href="https://www.reddit.com/user/reputed_culprit/" target="_blank" class="hover:text-slate-200 transition-colors">Reddit</a>
+        <a href="mailto:hire.amjad@gmail.com" class="hover:text-slate-200 transition-colors">Email</a>
       </div>
     </footer>
 
@@ -630,48 +641,50 @@
 
     const el = id => document.getElementById(id);
     const getKey = () => sessionStorage.getItem("ai_router_key") || el("auth-key").value;
+    
+    function highlightKeyInputs(isSuccess) {
+      const inp = el("auth-key");
+      if (!inp) return;
+      if (isSuccess) {
+        inp.classList.remove("ring-2", "ring-rose-500", "border-rose-500", "animate-shake");
+        inp.classList.add("ring-2", "ring-emerald-500", "border-emerald-500");
+        setTimeout(() => inp.classList.remove("ring-2", "ring-emerald-500", "border-emerald-500"), 2500);
+      } else {
+        inp.classList.remove("ring-2", "ring-emerald-500", "border-emerald-500");
+        inp.classList.add("ring-2", "ring-rose-500", "border-rose-500", "animate-shake");
+        setTimeout(() => inp.classList.remove("ring-2", "ring-rose-500", "border-rose-500", "animate-shake"), 3000);
+      }
+    }
+
     const saveKey = () => {
-      sessionStorage.setItem("ai_router_key", el("auth-key").value);
-      load();
+      const val = el("auth-key").value.trim();
+      sessionStorage.setItem("ai_router_key", val);
+      load(true);
     };
 
     function requireKey(action = "perform this action") {
       const key = getKey();
       if (!key || !key.trim()) {
-        showToast(`🔐 Router Key required to ${action}. Please enter your key above.`);
-        const banner = el("auth-banner");
-        const bannerInput = el("auth-banner-input");
+        showToast(`🔐 Admin Key required to ${action}. Please enter your key in the top box.`);
+        highlightKeyInputs(false);
         const authInput = el("auth-key");
-        
-        if (banner && !banner.classList.contains("hidden") && bannerInput) {
-          bannerInput.focus();
-          bannerInput.classList.add("ring-2", "ring-amber-500", "border-amber-500");
-          setTimeout(() => bannerInput.classList.remove("ring-2", "ring-amber-500", "border-amber-500"), 2500);
-        } else if (authInput) {
-          authInput.focus();
-          authInput.classList.add("ring-2", "ring-amber-500", "border-amber-500");
-          setTimeout(() => authInput.classList.remove("ring-2", "ring-amber-500", "border-amber-500"), 2500);
-        }
+        if (authInput) authInput.focus();
         return false;
       }
       return true;
     }
 
     function unlockFromBanner() {
-      const bannerInput = el("auth-banner-input");
       const authInput = el("auth-key");
-      const key = (bannerInput && bannerInput.value.trim()) || (authInput && authInput.value.trim());
+      const key = authInput && authInput.value.trim();
       if (!key) {
-        showToast("⚠️ Please enter your ADMIN_KEY to unlock");
-        if (bannerInput) bannerInput.focus();
-        else if (authInput) authInput.focus();
+        showToast("⚠️ Please enter your ADMIN_KEY in the top-right box and click Unlock");
+        highlightKeyInputs(false);
+        if (authInput) authInput.focus();
         return;
       }
-      el("auth-key").value = key;
-      if (bannerInput) bannerInput.value = key;
       sessionStorage.setItem("ai_router_key", key);
-      load();
-      showToast("🔑 Key entered! Unlocking gateway...");
+      load(true);
     }
 
     // isHtml=true is only for trusted static HTML (e.g. action buttons with known provider IDs)
@@ -708,10 +721,10 @@
       lucide.createIcons();
     }
 
-    async function load() {
+    async function load(triggeredByUser = false) {
       try {
         const key = sessionStorage.getItem("ai_router_key");
-        if (key) el("auth-key").value = key;
+        if (key && !el("auth-key").value) el("auth-key").value = key;
         
         const [hRes, pRes, mRes] = await Promise.all([
           fetch("/health"),
@@ -726,6 +739,10 @@
 
         if (pRes.ok) {
           el("auth-banner")?.classList.add("hidden");
+          if (triggeredByUser) {
+            highlightKeyInputs(true);
+            showToast("✅ Gateway Unlocked! Admin access authenticated.");
+          }
           state = await pRes.json();
           const localSaved = localStorage.getItem("ai_router_provider_config");
           if (localSaved) {
@@ -749,6 +766,10 @@
           el("auth-banner")?.classList.remove("hidden");
           el("onboarding-banner")?.classList.add("hidden");
           el("provider-list").innerHTML = '<div class="p-8 text-center text-amber-400 text-sm font-sans flex flex-col items-center justify-center gap-2"><i data-lucide="lock" class="w-5 h-5 text-amber-400 mb-0.5"></i><span>Gateway controls are locked.</span><span class="text-xs text-slate-400">Enter your <strong>ADMIN_KEY</strong> above to unlock.</span></div>';
+          if (triggeredByUser) {
+            highlightKeyInputs(false);
+            showToast("❌ Invalid ADMIN_KEY — Authentication failed. Check ADMIN_KEY in your .env", 4500);
+          }
         } else {
           el("auth-banner")?.classList.add("hidden");
         }
@@ -1631,9 +1652,13 @@
         const isCacheHit = res.headers.get("x-cache") === "HIT";
 
         if (!res.ok) {
-          const err = await res.json();
+          const err = await res.json().catch(() => ({ error: { message: "HTTP " + res.status } }));
           out.textContent = "Error " + res.status + ":\n" + JSON.stringify(err, null, 2);
           meta.textContent = "Failed";
+          if (res.status === 401) {
+            highlightKeyInputs(false);
+            showToast("❌ 401 Unauthorized: Invalid Router API Key or Admin Key", 4500);
+          }
           return;
         }
 

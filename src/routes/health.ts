@@ -12,6 +12,7 @@ export const handleHealth = (_req: IncomingMessage, res: ServerResponse): void =
   const stats = metricsLogger.getStats();
   sendJson(res, 200, {
     status: "ok",
+    version: "0.1.0",
     uptime: Math.floor(process.uptime()),
     requests: {
       total:      stats.totalRequests,
