@@ -183,17 +183,17 @@ async function* fallbackStreamFromGenerate(
 
 export const providers: Provider[] = [
   {
-    id: "sambanova",
-    name: "SambaNova",
-    model: process.env.SAMBANOVA_MODEL ?? "gemma-4-31B-it",
+    id: "mistral",
+    name: "Mistral AI",
+    model: process.env.MISTRAL_MODEL ?? "mistral-small-latest",
     generate: async function (r, s) {
-      const key = getProviderApiKey("sambanova");
-      const res = await openAIStyle("sambanova", "https://api.sambanova.ai/v1/chat/completions", key, this.model, r, s);
-      return normalize("sambanova", this.model, await parseJsonOrError(res, "sambanova"));
+      const key = getProviderApiKey("mistral");
+      const res = await openAIStyle("mistral", "https://api.mistral.ai/v1/chat/completions", key, this.model, r, s);
+      return normalize("mistral", this.model, await parseJsonOrError(res, "mistral"));
     },
     generateStream: function (r, s) {
-      const key = getProviderApiKey("sambanova");
-      return openAIStyleStream("sambanova", "https://api.sambanova.ai/v1/chat/completions", key, this.model, r, s);
+      const key = getProviderApiKey("mistral");
+      return openAIStyleStream("mistral", "https://api.mistral.ai/v1/chat/completions", key, this.model, r, s);
     }
   },
   {
@@ -211,31 +211,82 @@ export const providers: Provider[] = [
     }
   },
   {
-    id: "mistral",
-    name: "Mistral AI",
-    model: process.env.MISTRAL_MODEL ?? "mistral-small-latest",
+    id: "cohere",
+    name: "Cohere",
+    model: process.env.COHERE_MODEL ?? "command-r-plus-08-2024",
     generate: async function (r, s) {
-      const key = getProviderApiKey("mistral");
-      const res = await openAIStyle("mistral", "https://api.mistral.ai/v1/chat/completions", key, this.model, r, s);
-      return normalize("mistral", this.model, await parseJsonOrError(res, "mistral"));
+      const key = getProviderApiKey("cohere");
+      if (!key) throw new Error("cohere API key is not configured");
+      const system = r.messages.find(m => m.role === "system")?.content;
+      const history = r.messages
+        .filter(m => m.role !== "system")
+        .slice(0, -1)
+        .map(m => ({ role: m.role === "assistant" ? "CHATBOT" : "USER", message: m.content }));
+      const last = r.messages[r.messages.length - 1];
+
+      const res = await fetch("https://api.cohere.com/v1/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+        body: JSON.stringify({
+          model: this.model,
+          message: last.content,
+          chat_history: history,
+          preamble: system,
+          temperature: r.temperature ?? 0.3
+        }),
+        signal: s
+      });
+      const data = await parseJsonOrError(res, "cohere");
+      return normalize("cohere", this.model, {
+        choices: [{ message: { content: data.text } }],
+        usage: data.meta?.tokens
+          ? {
+              prompt_tokens: data.meta.tokens.input_tokens,
+              completion_tokens: data.meta.tokens.output_tokens,
+              total_tokens: (data.meta.tokens.input_tokens || 0) + (data.meta.tokens.output_tokens || 0)
+            }
+          : undefined
+      });
     },
     generateStream: function (r, s) {
-      const key = getProviderApiKey("mistral");
-      return openAIStyleStream("mistral", "https://api.mistral.ai/v1/chat/completions", key, this.model, r, s);
+      return fallbackStreamFromGenerate(this, r, s);
     }
   },
   {
-    id: "openrouter",
-    name: "OpenRouter",
-    model: process.env.OPENROUTER_MODEL ?? "nvidia/nemotron-3.5-lightning:free",
+    id: "cloudflare",
+    name: "Cloudflare Workers AI",
+    model: process.env.CLOUDFLARE_MODEL ?? "@cf/meta/llama-3.1-8b-instruct",
     generate: async function (r, s) {
-      const key = getProviderApiKey("openrouter");
-      const res = await openAIStyle("openrouter", "https://openrouter.ai/api/v1/chat/completions", key, this.model, r, s);
-      return normalize("openrouter", this.model, await parseJsonOrError(res, "openrouter"));
+      const key = getProviderApiKey("cloudflare") || process.env.CLOUDFLARE_API_TOKEN;
+      const account = process.env.CLOUDFLARE_ACCOUNT_ID;
+      if (!key || !account) throw new Error("cloudflare credentials are not configured");
+      const res = await fetch(`https://api.cloudflare.com/client/v4/accounts/${account}/ai/run/${this.model}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+        body: JSON.stringify({ messages: r.messages }),
+        signal: s
+      });
+      const data = await parseJsonOrError(res, "cloudflare");
+      return normalize("cloudflare", this.model, {
+        choices: [{ message: { content: data.result?.response } }]
+      });
     },
     generateStream: function (r, s) {
-      const key = getProviderApiKey("openrouter");
-      return openAIStyleStream("openrouter", "https://openrouter.ai/api/v1/chat/completions", key, this.model, r, s);
+      return fallbackStreamFromGenerate(this, r, s);
+    }
+  },
+  {
+    id: "sambanova",
+    name: "SambaNova",
+    model: process.env.SAMBANOVA_MODEL ?? "gemma-4-31B-it",
+    generate: async function (r, s) {
+      const key = getProviderApiKey("sambanova");
+      const res = await openAIStyle("sambanova", "https://api.sambanova.ai/v1/chat/completions", key, this.model, r, s);
+      return normalize("sambanova", this.model, await parseJsonOrError(res, "sambanova"));
+    },
+    generateStream: function (r, s) {
+      const key = getProviderApiKey("sambanova");
+      return openAIStyleStream("sambanova", "https://api.sambanova.ai/v1/chat/completions", key, this.model, r, s);
     }
   },
   {
@@ -343,6 +394,20 @@ export const providers: Provider[] = [
     }
   },
   {
+    id: "openrouter",
+    name: "OpenRouter",
+    model: process.env.OPENROUTER_MODEL ?? "nvidia/nemotron-3.5-lightning:free",
+    generate: async function (r, s) {
+      const key = getProviderApiKey("openrouter");
+      const res = await openAIStyle("openrouter", "https://openrouter.ai/api/v1/chat/completions", key, this.model, r, s);
+      return normalize("openrouter", this.model, await parseJsonOrError(res, "openrouter"));
+    },
+    generateStream: function (r, s) {
+      const key = getProviderApiKey("openrouter");
+      return openAIStyleStream("openrouter", "https://openrouter.ai/api/v1/chat/completions", key, this.model, r, s);
+    }
+  },
+  {
     id: "nvidia",
     name: "NVIDIA NIM",
     model: process.env.NVIDIA_MODEL ?? "nvidia/nemotron-3.5-lightning-30b-a3b",
@@ -354,71 +419,6 @@ export const providers: Provider[] = [
     generateStream: function (r, s) {
       const key = getProviderApiKey("nvidia");
       return openAIStyleStream("nvidia", "https://integrate.api.nvidia.com/v1/chat/completions", key, this.model, r, s);
-    }
-  },
-  {
-    id: "cloudflare",
-    name: "Cloudflare Workers AI",
-    model: process.env.CLOUDFLARE_MODEL ?? "@cf/meta/llama-3.1-8b-instruct",
-    generate: async function (r, s) {
-      const key = getProviderApiKey("cloudflare") || process.env.CLOUDFLARE_API_TOKEN;
-      const account = process.env.CLOUDFLARE_ACCOUNT_ID;
-      if (!key || !account) throw new Error("cloudflare credentials are not configured");
-      const res = await fetch(`https://api.cloudflare.com/client/v4/accounts/${account}/ai/run/${this.model}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
-        body: JSON.stringify({ messages: r.messages }),
-        signal: s
-      });
-      const data = await parseJsonOrError(res, "cloudflare");
-      return normalize("cloudflare", this.model, {
-        choices: [{ message: { content: data.result?.response } }]
-      });
-    },
-    generateStream: function (r, s) {
-      return fallbackStreamFromGenerate(this, r, s);
-    }
-  },
-  {
-    id: "cohere",
-    name: "Cohere",
-    model: process.env.COHERE_MODEL ?? "command-r-plus-08-2024",
-    generate: async function (r, s) {
-      const key = getProviderApiKey("cohere");
-      if (!key) throw new Error("cohere API key is not configured");
-      const system = r.messages.find(m => m.role === "system")?.content;
-      const history = r.messages
-        .filter(m => m.role !== "system")
-        .slice(0, -1)
-        .map(m => ({ role: m.role === "assistant" ? "CHATBOT" : "USER", message: m.content }));
-      const last = r.messages[r.messages.length - 1];
-
-      const res = await fetch("https://api.cohere.com/v1/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
-        body: JSON.stringify({
-          model: this.model,
-          message: last.content,
-          chat_history: history,
-          preamble: system,
-          temperature: r.temperature ?? 0.3
-        }),
-        signal: s
-      });
-      const data = await parseJsonOrError(res, "cohere");
-      return normalize("cohere", this.model, {
-        choices: [{ message: { content: data.text } }],
-        usage: data.meta?.tokens
-          ? {
-              prompt_tokens: data.meta.tokens.input_tokens,
-              completion_tokens: data.meta.tokens.output_tokens,
-              total_tokens: (data.meta.tokens.input_tokens || 0) + (data.meta.tokens.output_tokens || 0)
-            }
-          : undefined
-      });
-    },
-    generateStream: function (r, s) {
-      return fallbackStreamFromGenerate(this, r, s);
     }
   }
 ];

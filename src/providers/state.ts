@@ -13,7 +13,7 @@ import type { ProviderRuntimeState } from "./types.js";
 export const TIMEOUT_MS  = Number(process.env.TIMEOUT_MS  ?? 12000);
 export const COOLDOWN_MS = Number(process.env.COOLDOWN_MS ?? 60000);
 
-const configuredOrder = (process.env.PROVIDER_ORDER ?? "sambanova,groq,mistral,openrouter,gemini,nvidia,cloudflare,cohere")
+const configuredOrder = (process.env.PROVIDER_ORDER ?? "mistral,groq,cohere,cloudflare,sambanova,gemini,openrouter,nvidia")
   .split(",")
   .map(x => x.trim())
   .filter(Boolean);

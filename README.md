@@ -38,29 +38,29 @@
 
 As solo founders, indie hackers, and small teams, we want intelligent AI chatbots and APIs in our products — but paying **$20–$200+/month** for commercial LLM APIs before finding product-market fit is prohibitive.
 
-Top cloud AI companies (Groq, SambaNova, Mistral, Google Gemini, OpenRouter, NVIDIA NIM, Cloudflare, Cohere) all offer **generous 100% FREE developer tiers**. The catch? Any single free tier has rate limits (RPM/RPD) or occasional congestion.
+Top cloud AI companies (Mistral, Groq, Cohere, Cloudflare, SambaNova, Google Gemini, OpenRouter, NVIDIA NIM) all offer **generous 100% FREE developer tiers**. The catch? Any single free tier has rate limits (RPM/RPD) or occasional congestion.
 
 **ZeroRoute aggregates all 8 free tiers into one resilient, OpenAI-compatible gateway.**
 
-- If Groq hits a rate limit → fails over to SambaNova in milliseconds.
-- If SambaNova is congested → falls back to Mistral, Gemini, OpenRouter, or NVIDIA NIM.
+- If Mistral hits a rate limit → fails over to Groq or Cohere in milliseconds.
+- If Groq is congested → falls back to Cloudflare, SambaNova, Gemini, OpenRouter, or NVIDIA NIM.
 - Identical queries → served from **in-memory SHA-256 cache at 0ms latency**.
 - **Result:** Millions of monthly tokens and near 100% uptime for **$0.00/month**.
 
 ---
 
-## ⚡ 8 Free-Tier Providers, Out-of-the-Box
+## ⚡ 8 Free-Tier Providers, Out-of-the-Box (Optimal Failover Order)
 
-| Provider | Default Model | Speed | Strengths |
-|---|---|---|---|
-| ⚡ **Groq** | openai/gpt-oss-20b | ~100ms | Ultra-fast LPU inference |
-| 🔥 **SambaNova** | gemma-4-31B-it | ~360ms | 417+ tokens/sec, SN40L chips |
-| 🌪️ **Mistral AI** | mistral-small-latest | ~390ms | European privacy, reasoning |
-| 💎 **Google Gemini** | gemini-3.6-flash | ~710ms | 1M+ context, multimodal |
-| 🌐 **OpenRouter** | nvidia/nemotron-3.5-lightning:free | ~1500ms | 100% free open-source models |
-| 🚀 **NVIDIA NIM** | nvidia/nemotron-3.5-lightning-30b-a3b | ~260ms | DGX enterprise infrastructure |
-| ☁️ **Cloudflare** | @cf/meta/llama-3.1-8b-instruct | ~1100ms | 300+ global edge datacenters |
-| ⚛️ **Cohere** | command-r-plus-08-2024 | ~1000ms | Enterprise reasoning |
+| Priority | Provider | Default Model | Typical Speed | Strengths |
+|:---:|---|---|---|---|
+| 1 | 🌪️ **Mistral AI** | mistral-small-latest | ~390ms | European privacy, fast reasoning |
+| 2 | ⚡ **Groq** | openai/gpt-oss-20b | ~100ms | Ultra-fast LPU inference |
+| 3 | ⚛️ **Cohere** | command-r-plus-08-2024 | ~650ms | Enterprise reasoning & search |
+| 4 | ☁️ **Cloudflare** | @cf/meta/llama-3.1-8b-instruct | ~700ms | 300+ global edge datacenters |
+| 5 | 🔥 **SambaNova** | gemma-4-31B-it | ~800ms | 417+ tokens/sec, SN40L chips |
+| 6 | 💎 **Google Gemini** | gemini-3.6-flash | ~850ms | 1M+ context, multimodal |
+| 7 | 🌐 **OpenRouter** | nvidia/nemotron-3.5-lightning:free | ~1000ms | 100% free open-source models |
+| 8 | 🚀 **NVIDIA NIM** | nvidia/nemotron-3.5-lightning-30b-a3b | ~1100ms | DGX enterprise infrastructure |
 
 ---
 
@@ -254,17 +254,17 @@ curl -N https://your-zeroroute.vercel.app/v1/chat/completions \
 ---
 
 ## 🔑 How to Get Free API Keys
-
+ 
 | Provider | URL |
 |---|---|
-| Groq | [console.groq.com/keys](https://console.groq.com/keys) |
-| SambaNova | [cloud.sambanova.ai](https://cloud.sambanova.ai) |
 | Mistral AI | [console.mistral.ai](https://console.mistral.ai) |
+| Groq | [console.groq.com/keys](https://console.groq.com/keys) |
+| Cohere | [dashboard.cohere.com](https://dashboard.cohere.com) |
+| Cloudflare AI | [dash.cloudflare.com](https://dash.cloudflare.com) |
+| SambaNova | [cloud.sambanova.ai](https://cloud.sambanova.ai) |
 | Google Gemini | [aistudio.google.com](https://aistudio.google.com) |
 | OpenRouter | [openrouter.ai/keys](https://openrouter.ai/keys) |
 | NVIDIA NIM | [build.nvidia.com](https://build.nvidia.com) |
-| Cloudflare AI | [dash.cloudflare.com](https://dash.cloudflare.com) |
-| Cohere | [dashboard.cohere.com](https://dashboard.cohere.com) |
 
 ---
 
