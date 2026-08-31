@@ -442,7 +442,7 @@ export const onRequest = async (context: { request: Request; env: Env; next: () 
     const start = Date.now();
     try {
       const res = await provider.generate(
-        { messages: [{ role: "user", content: "Say hello in 3 words" }], max_tokens: 10, temperature: 0.1 },
+        { messages: [{ role: "user", content: "Say hello in 3 words" }], max_tokens: 150, temperature: 0.1 },
         AbortSignal.timeout(TIMEOUT_MS)
       );
       return jsonResponse({

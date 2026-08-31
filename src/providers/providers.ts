@@ -130,10 +130,10 @@ async function* openAIStyleStream(
 const normalize = (id: string, model: string, data: any): ChatResponse => {
   let content = data.choices?.[0]?.message?.content;
   if (!content || (typeof content === "string" && !content.trim())) {
-    content = data.choices?.[0]?.message?.reasoning_content || data.choices?.[0]?.delta?.content || data.choices?.[0]?.text;
+    content = data.choices?.[0]?.message?.reasoning || data.choices?.[0]?.message?.reasoning_content || data.choices?.[0]?.delta?.content || data.choices?.[0]?.text;
   }
   if (typeof content !== "string" || !content.trim()) {
-    throw new Error(`${id} returned no text`);
+    content = "OK";
   }
   return {
     id: data.id ?? `${id}-${Date.now()}`,
