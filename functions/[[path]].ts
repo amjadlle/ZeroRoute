@@ -35,8 +35,49 @@ const jsonResponse = (data: unknown, status = 200, origin?: string | null, extra
   });
 };
 
-const checkAuth = (request: Request, requiredKey?: string, isRouterAuth = false): boolean => {
+const isOriginAllowedByPattern = (origin: string, patternString?: string): boolean => {
+  if (!patternString || patternString === "*") return true;
+  const patterns = patternString.split(",").map(p => p.trim());
+  for (const pattern of patterns) {
+    if (pattern === origin) return true;
+    if (pattern.startsWith("*.")) {
+      const base = pattern.slice(2);
+      if (origin.endsWith("." + base) || origin === "https://" + base || origin === "http://" + base) return true;
+    }
+  }
+  return false;
+};
+
+const checkAuth = (request: Request, requiredKey?: string, isRouterAuth = false, corsOrigin?: string): boolean => {
   if (!requiredKey || requiredKey.trim() === "") return true; // Public mode
+
+  // Allow dynamic same-origin & configured CORS domain requests for the embedded chatbot
+  if (isRouterAuth) {
+    const url = new URL(request.url);
+    const host = url.host;
+    const hostname = url.hostname.toLowerCase();
+    const origin = request.headers.get("Origin");
+    const referer = request.headers.get("Referer");
+    const secFetchSite = request.headers.get("Sec-Fetch-Site");
+
+    if (secFetchSite === "same-origin") return true;
+    if (origin) {
+      if (origin === `http://${host}` || origin === `https://${host}` || origin === url.origin) return true;
+      try {
+        const orgHost = new URL(origin).hostname.toLowerCase();
+        if (orgHost === hostname) return true;
+      } catch {}
+      if (corsOrigin && isOriginAllowedByPattern(origin, corsOrigin)) return true;
+    }
+    if (referer) {
+      try {
+        const refUrl = new URL(referer);
+        if (refUrl.host === host || refUrl.hostname.toLowerCase() === hostname) return true;
+        if (corsOrigin && isOriginAllowedByPattern(refUrl.origin, corsOrigin)) return true;
+      } catch {}
+    }
+  }
+
   const authHeader = request.headers.get("Authorization") || "";
   const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7).trim() : authHeader.trim();
   if (token === requiredKey) return true;
@@ -66,6 +107,7 @@ export const onRequest = async (context: { request: Request; env: Env; next: () 
 
   const ROUTER_API_KEY = env?.ROUTER_API_KEY || process.env.ROUTER_API_KEY;
   const ADMIN_KEY = env?.ADMIN_KEY || process.env.ADMIN_KEY || ROUTER_API_KEY;
+  const CORS_ORIGIN = env?.CORS_ORIGIN || process.env.CORS_ORIGIN;
 
   // 1. CORS Preflight
   if (request.method === "OPTIONS") {
@@ -94,7 +136,7 @@ export const onRequest = async (context: { request: Request; env: Env; next: () 
 
   // 3. Models list — GET /v1/models
   if (request.method === "GET" && pathname === "/v1/models") {
-    if (!checkAuth(request, ROUTER_API_KEY, true)) {
+    if (!checkAuth(request, ROUTER_API_KEY, true, CORS_ORIGIN)) {
       return jsonResponse({ error: { message: "Unauthorized: Invalid router API key" } }, 401, origin);
     }
     const modelList = getRuntimeProviders()
@@ -113,7 +155,7 @@ export const onRequest = async (context: { request: Request; env: Env; next: () 
 
   // 4. Chat Completions — POST /v1/chat/completions
   if (request.method === "POST" && pathname === "/v1/chat/completions") {
-    if (!checkAuth(request, ROUTER_API_KEY, true)) {
+    if (!checkAuth(request, ROUTER_API_KEY, true, CORS_ORIGIN)) {
       return jsonResponse({ error: { message: "Invalid router API key" } }, 401, origin);
     }
 

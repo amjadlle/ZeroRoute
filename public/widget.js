@@ -58,6 +58,7 @@
     '  .zr-header { padding: 10px 12px; }',
     '  .zr-messages { padding: 10px; font-size: 12px; }',
     '  .zr-footer { padding: 8px 10px; }',
+    '  .zr-input { font-size: 16px !important; }',
     '}'
   ].join('');
   document.head.appendChild(style);

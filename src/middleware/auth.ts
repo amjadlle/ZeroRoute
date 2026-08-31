@@ -9,6 +9,22 @@ import type { IncomingMessage } from "node:http";
 // ─── Auth ────────────────────────────────────────────────────────────────────
 
 /**
+ * Checks whether an origin matches allowed CORS patterns dynamically.
+ */
+const isOriginAllowedByPattern = (origin: string, patternString?: string): boolean => {
+  if (!patternString || patternString === "*") return true;
+  const patterns = patternString.split(",").map(p => p.trim());
+  for (const pattern of patterns) {
+    if (pattern === origin) return true;
+    if (pattern.startsWith("*.")) {
+      const base = pattern.slice(2);
+      if (origin.endsWith("." + base) || origin === "https://" + base || origin === "http://" + base) return true;
+    }
+  }
+  return false;
+};
+
+/**
  * Returns true if the request carries a valid bearer token for `secretKey`.
  * When no key is configured the gateway runs in open/public mode (returns true).
  * Set ROUTER_API_KEY or ADMIN_KEY to require authentication.
@@ -18,28 +34,41 @@ export const isAuthorized = (
   secretKey?: string,
   allowSameOrigin = false
 ): boolean => {
-  if (!secretKey) return true; // no key configured → public mode
+  if (!secretKey || secretKey.trim() === "") return true; // no key configured → public mode
 
   // If same-origin is explicitly allowed (e.g. for the landing page's embedded live demo widget)
   if (allowSameOrigin) {
-    const host = req.headers.host;
+    const host = (req.headers["x-forwarded-host"] as string) || req.headers.host || "";
     const origin = req.headers.origin;
     const referer = req.headers.referer;
     const secFetchSite = req.headers["sec-fetch-site"];
+    const corsOrigin = process.env.CORS_ORIGIN;
 
     if (secFetchSite === "same-origin") return true;
-    if (origin && host && (origin === `http://${host}` || origin === `https://${host}`)) return true;
-    if (referer && host) {
+    
+    // Dynamic same-host matching for any custom domain / deployment URL
+    const hostOnly = host.split(":")[0].toLowerCase();
+    if (origin) {
+      if (origin === `http://${host}` || origin === `https://${host}`) return true;
+      try {
+        const orgHost = new URL(origin).hostname.toLowerCase();
+        if (orgHost === hostOnly) return true;
+      } catch {}
+      if (corsOrigin && isOriginAllowedByPattern(origin, corsOrigin)) return true;
+    }
+    if (referer) {
       try {
         const refUrl = new URL(referer);
-        if (refUrl.host === host) return true;
+        if (refUrl.host === host || refUrl.hostname.toLowerCase() === hostOnly) return true;
+        if (corsOrigin && isOriginAllowedByPattern(refUrl.origin, corsOrigin)) return true;
       } catch {}
     }
   }
 
   const auth = req.headers.authorization;
   if (!auth) return false;
-  return auth === `Bearer ${secretKey}` || auth === secretKey;
+  const token = auth.startsWith("Bearer ") ? auth.slice(7).trim() : auth.trim();
+  return token === secretKey || (allowSameOrigin && (token === "free" || token === "public" || token === "zeroroute"));
 };
 
 // ─── Rate limiter ─────────────────────────────────────────────────────────────

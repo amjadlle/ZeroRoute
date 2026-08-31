@@ -72,6 +72,12 @@
     @keyframes blink {
       50% { opacity: 0; }
     }
+    /* Prevent unwanted iOS Safari zoom on input focus */
+    @media screen and (max-width: 768px) {
+      input, textarea, select {
+        font-size: 16px !important;
+      }
+    }
   </style>
 </head>
 <body class="text-slate-100 min-h-screen selection:bg-red-500 selection:text-white font-sans antialiased">
