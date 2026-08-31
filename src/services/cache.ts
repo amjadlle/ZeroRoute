@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import type { ChatRequest, ChatResponse, ChatStreamChunk } from "./types.js";
+import type { ChatRequest, ChatResponse, ChatStreamChunk } from "../providers/types.js";
 
 export type CacheEntry = {
   response: ChatResponse;
@@ -16,6 +16,7 @@ class ResponseCache {
 
   public generateKey(request: ChatRequest): string {
     const normalized = {
+      model: request.model ?? "",
       messages: request.messages,
       temperature: request.temperature ?? 0.3,
       max_tokens: request.max_tokens ?? 1024,

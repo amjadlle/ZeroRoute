@@ -17,19 +17,29 @@ const ENV_MAP: Record<string, string> = {
 
 type SecretsStore = Record<string, string>; // providerId -> encrypted ciphertext
 
+// In-memory cache — avoids disk reads on every request
+let _cachedStore: SecretsStore | null = null;
+
 function loadSecretsStore(): SecretsStore {
+  if (_cachedStore !== null) return _cachedStore;
   try {
-    if (!existsSync(SECRETS_FILE)) return {};
+    if (!existsSync(SECRETS_FILE)) {
+      _cachedStore = {};
+      return _cachedStore;
+    }
     const raw = readFileSync(SECRETS_FILE, "utf-8");
-    return JSON.parse(raw) as SecretsStore;
+    _cachedStore = JSON.parse(raw) as SecretsStore;
+    return _cachedStore;
   } catch {
-    return {};
+    _cachedStore = {};
+    return _cachedStore;
   }
 }
 
 function saveSecretsStore(store: SecretsStore): boolean {
   try {
     writeFileSync(SECRETS_FILE, JSON.stringify(store, null, 2), "utf-8");
+    _cachedStore = store; // keep cache in sync after write
     return true;
   } catch {
     return false;

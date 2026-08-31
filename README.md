@@ -6,13 +6,21 @@
 <p align="center"><code>ZERO COST. MAX ROUTE.</code></p>
 
 <p align="center">
-  <strong>The $0/mo Multi-Cloud AI Gateway for Solo Founders & Startups.</strong><br />
-  <em>Pool 100% free cloud LLM quotas across Groq, SambaNova, Mistral, Google Gemini, NVIDIA NIM, Cloudflare, and Cohere into one unstoppable, zero-downtime OpenAI-compatible API.</em>
+  <strong>The $0/mo Multi-Cloud AI Gateway for Solo Founders &amp; Startups.</strong><br />
+  <em>Pool 100% free cloud LLM quotas across Groq, SambaNova, Mistral, Google Gemini, NVIDIA NIM, Cloudflare, OpenRouter, and Cohere into one unstoppable, zero-downtime OpenAI-compatible API.</em>
 </p>
 
 <p align="center">
-  <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Famjadlle%2FZeroRoute&env=GROQ_API_KEY,MISTRAL_API_KEY,GEMINI_API_KEY,SAMBANOVA_API_KEY,OPENROUTER_API_KEY,NVIDIA_API_KEY,ROUTER_API_KEY&envDescription=Enter%20your%20free-tier%20AI%20provider%20API%20keys%20(add%20at%20least%20one)&envLink=https%3A%2F%2Fgithub.com%2Famjadlle%2FZeroRoute%23how-to-get-free-api-keys">
+  <a href="https://dash.cloudflare.com/?to=/:account/pages/new">
+    <img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare" />
+  </a>
+  &nbsp;
+  <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Famjadlle%2FZeroRoute&env=GROQ_API_KEY,MISTRAL_API_KEY,GEMINI_API_KEY,SAMBANOVA_API_KEY,OPENROUTER_API_KEY,NVIDIA_API_KEY,ROUTER_API_KEY,ADMIN_KEY&envDescription=Enter%20your%20free-tier%20AI%20provider%20API%20keys%20(add%20at%20least%20one)&envLink=https%3A%2F%2Fgithub.com%2Famjadlle%2FZeroRoute%23-how-to-get-free-api-keys">
     <img src="https://vercel.com/button" alt="Deploy with Vercel" />
+  </a>
+  &nbsp;
+  <a href="https://render.com/deploy?repo=https://github.com/amjadlle/ZeroRoute">
+    <img src="https://render.com/images/deploy-to-render-button.svg" alt="Deploy to Render" />
   </a>
 </p>
 
@@ -26,142 +34,151 @@
 
 ---
 
-## 💡 The Founder's Story: Why ZeroRoute?
+## 💡 Why ZeroRoute?
 
-As solo founders, indie hackers, and small business owners, we want to add intelligent AI chatbots, customer support assistants, and content generators to our websites and portfolio apps. 
+As solo founders, indie hackers, and small teams, we want intelligent AI chatbots and APIs in our products — but paying **$20–$200+/month** for commercial LLM APIs before finding product-market fit is prohibitive.
 
-However, paying **\ to \+/month** for commercial LLM APIs before finding product-market fit can be prohibitive. 
+Top cloud AI companies (Groq, SambaNova, Mistral, Google Gemini, OpenRouter, NVIDIA NIM, Cloudflare, Cohere) all offer **generous 100% FREE developer tiers**. The catch? Any single free tier has rate limits (RPM/RPD) or occasional congestion.
 
-Meanwhile, top cloud AI infrastructure companies (Groq, SambaNova, Mistral, Google Gemini, OpenRouter, NVIDIA NIM, Cloudflare, Cohere) offer **generous 100% FREE developer tiers**. The catch? Any single free tier has rate limits (RPM / RPD) or occasional congestion.
+**ZeroRoute aggregates all 8 free tiers into one resilient, OpenAI-compatible gateway.**
 
-### 🎯 The Solution:
-**ZeroRoute aggregates all 8 free cloud tiers into one unified, resilient, high-speed OpenAI-compatible gateway.** 
-- If Groq is busy, it automatically fails over to SambaNova in milliseconds.
-- If SambaNova hits a rate limit, it falls back to Mistral, Gemini, OpenRouter, or NVIDIA NIM.
-- Exact queries are served from **in-memory RAM cache at 0ms latency for .00**.
-- **Result:** You get **millions of monthly tokens and near 100% uptime for \.00/month!**
+- If Groq hits a rate limit → fails over to SambaNova in milliseconds.
+- If SambaNova is congested → falls back to Mistral, Gemini, OpenRouter, or NVIDIA NIM.
+- Identical queries → served from **in-memory SHA-256 cache at 0ms latency**.
+- **Result:** Millions of monthly tokens and near 100% uptime for **$0.00/month**.
 
 ---
 
-## ⚡ 8 Free-Tier Cloud Providers Supported Out-Of-The-Box
+## ⚡ 8 Free-Tier Providers, Out-of-the-Box
 
-| Provider | Default Verified Model | Speed / Latency | Key Strengths |
+| Provider | Default Model | Speed | Strengths |
 |---|---|---|---|
-| ⚡ **Groq** | qwen/qwen3.6-27b / openai/gpt-oss-120b | **~100ms** | Ultra-fast LPU inference, instant streaming |
-| 🔥 **SambaNova** | MiniMax-M2.7 / gemma-4-31B-it | **~360ms** | 417+ tokens/sec throughput, SN40L chips |
-| 🌪️ **Mistral AI** | mistral-medium-latest / codestral-latest | **~390ms** | European privacy, specialized coding & reasoning |
-| 💎 **Google Gemini** | gemini-3.5-flash-lite / gemini-flash-lite-latest | **~710ms** | 1M+ token context window, Google multimodal |
-| 🌐 **OpenRouter** | 
-vidia/nemotron-3.5-lightning:free | **~1500ms** | 100% free open-source models aggregator |
-| 🚀 **NVIDIA NIM** | 
-vidia/nemotron-3.5-lightning-30b-a3b | **~260ms** | Accelerated enterprise DGX cloud infrastructure |
-| ☁️ **Cloudflare Workers AI** | @cf/meta/llama-3.1-8b-instruct | **~1100ms** | Global edge network with 300+ datacenters |
-| ⚛️ **Cohere** | command-r-plus-08-2024 | **~1000ms** | Enterprise conversational reasoning |
+| ⚡ **Groq** | openai/gpt-oss-20b | ~100ms | Ultra-fast LPU inference |
+| 🔥 **SambaNova** | gemma-4-31B-it | ~360ms | 417+ tokens/sec, SN40L chips |
+| 🌪️ **Mistral AI** | mistral-small-latest | ~390ms | European privacy, reasoning |
+| 💎 **Google Gemini** | gemini-3.6-flash | ~710ms | 1M+ context, multimodal |
+| 🌐 **OpenRouter** | nvidia/nemotron-3.5-lightning:free | ~1500ms | 100% free open-source models |
+| 🚀 **NVIDIA NIM** | nvidia/nemotron-3.5-lightning-30b-a3b | ~260ms | DGX enterprise infrastructure |
+| ☁️ **Cloudflare** | @cf/meta/llama-3.1-8b-instruct | ~1100ms | 300+ global edge datacenters |
+| ⚛️ **Cohere** | command-r-plus-08-2024 | ~1000ms | Enterprise reasoning |
 
 ---
 
 ## ✨ Key Features
 
-- **🔄 Zero-Downtime Provider Failover**: Automatic multi-hop routing if any upstream provider encounters a 429, 500, or Timeout.
-- **⚡ Parallel Concurrency Benchmark Suite**: Races all 8 providers in parallel (~1.5s total) with an animated progress bar, winner podium, and **1-Click Optimal Order Sorting**.
-- **🔄 Self-Healing Background Heartbeat**: Automatically probes cooling providers every 30s and restores them to active traffic the instant their rate limit clears.
-- **⚡ Real-Time SSE Streaming (	ext/event-stream)**: Smooth token-by-token streaming for web chatbots and terminal clients.
-- **💾 In-Memory SHA-256 Response Cache**: Serves identical requests instantly at **0ms latency** with live dollar savings estimation.
-- **🛡️ AES-256-GCM Encrypted Key Storage**: API keys are encrypted at rest on disk with PBKDF2 key derivation and never exposed over client network payloads.
-- **🎛️ Obsidian & Crimson Brand Dashboard**: Interactive model catalog modal, raw error inspector, request waterfall trace, and live playground with custom system persona prompts.
-- **📦 Zero Runtime NPM Dependencies**: Built purely with native Node.js HTTP and Fetch APIs.
+- **🔄 Automatic Failover** — Multi-hop routing on 429, 500, or timeout. Zero manual intervention.
+- **💚 Self-Healing Heartbeat** — Probes cooling providers every 30s, auto-restores on recovery.
+- **⚡ SSE Streaming** — Real-time `text/event-stream` for chatbots and terminal clients.
+- **💾 In-Memory Cache** — SHA-256 keyed response cache serves repeated queries instantly.
+- **🛡️ AES-256-GCM Encrypted Keys** — Provider keys encrypted at rest, never exposed to clients.
+- **🎛️ Admin Dashboard** — Live playground, benchmark suite, request waterfall, key manager.
+- **🌐 Wildcard CORS** — `CORS_ORIGIN=*.yourdomain.com` — allow all your subdomains in one line.
+- **📦 Zero Runtime Dependencies** — Pure Node.js `http` and `fetch`. No `node_modules` at runtime.
 
 ---
 
-## 🚀 1-Click Cloud Deployment (Vercel)
+## 🚀 Deployment Options
 
-Deploy your own private AI Gateway to Vercel in 30 seconds:
+### 1. Cloudflare Pages (100% Free Edge Hosting — Zero Card Needed)
 
-1. Click the **Deploy with Vercel** button above.
-2. Paste at least one free API key (e.g. GROQ_API_KEY, MISTRAL_API_KEY, or GEMINI_API_KEY).
-3. Your gateway and live dashboard are instantly live globally on https://your-project.vercel.app!
+1. Fork or push this repository to your GitHub account.
+2. Go to [dash.cloudflare.com](https://dash.cloudflare.com/) → **Workers & Pages** → **Create application** → **Pages** → **Connect to Git**.
+3. Select your repository:
+   - **Framework preset:** `None`
+   - **Build output directory:** `public`
+4. Under **Environment variables**, add:
+   - `GROQ_API_KEY`, `GEMINI_API_KEY`, or other provider keys
+   - `ROUTER_API_KEY` (for chat auth)
+   - `ADMIN_KEY` (for dashboard auth)
+5. Click **Save and Deploy**. Your full-stack AI Gateway & Dashboard is live globally on `https://your-project.pages.dev`!
+
+---
+
+### 2. 1-Click Vercel Deployment
+
+1. Click **Deploy with Vercel** above (or import the repo in Vercel).
+2. Paste at least one free API key (e.g. `GROQ_API_KEY`).
+3. Set `ROUTER_API_KEY` (for chat auth) and `ADMIN_KEY` (for dashboard — **use a different value**).
+4. Your gateway is live globally on `https://your-project.vercel.app`.
+
+> **Security tip:** `ROUTER_API_KEY` and `ADMIN_KEY` should be different values. The router key is semi-public (used in widgets); the admin key protects your dashboard and should never be shared.
+
+---
+
+### 3. 1-Click Render Deployment
+
+1. Click **Deploy to Render** above (or connect your GitHub repo on [render.com](https://render.com)).
+2. Render automatically detects [`render.yaml`](./render.yaml) and configures the web service on the free tier.
+3. Fill in your environment variables and click **Apply**.
+
+
 
 ---
 
 ## 💻 Local Quickstart
 
-### 1. Clone & Setup
-\\\ash
+```bash
 git clone https://github.com/amjadlle/ZeroRoute.git
 cd ZeroRoute
-cp .env.example .env
+cp .env.example .env   # add your API keys
 npm install
-\\\
+npm run dev            # http://localhost:8787
+```
 
-### 2. Configure Keys
-Open .env and add any free API keys you have:
-\\\env
-# Fast Free Tiers
-GROQ_API_KEY=gsk_...
-SAMBANOVA_API_KEY=...
-MISTRAL_API_KEY=...
-GEMINI_API_KEY=AIzaSy...
-\\\
-
-### 3. Start the Gateway
-\\\ash
-npm run dev
-\\\
-Visit **http://localhost:8787** to open your live dashboard!
+Dashboard: `http://localhost:8787/app`
 
 ---
 
-## 🐳 Docker Deployment
+## 🐳 Docker
 
-Run with Docker Compose in 1 command:
-\\\ash
+```bash
 docker compose up -d
-\\\
+```
+
+Or build manually:
+
+```bash
+docker build -t zeroroute .
+docker run -p 8787:8787 --env-file .env zeroroute
+```
 
 ---
 
-## 🔌 Integration Guide (Drop-In OpenAI Replacement)
+## 🔌 Integration Guide
 
-### 💬 1. 1-Line Embeddable Website Chatbot Widget
-Drop this single line of HTML anywhere in your website (`index.html`, Next.js, React, Vue, WordPress, Webflow, or Shopify) to add an AI floating chatbot bubble powered by your free cloud LLM tiers:
+### 1. Embeddable Chatbot Widget
+
+Drop one `<script>` tag into any website (HTML, Next.js, React, Vue, WordPress, Webflow):
 
 ```html
-<script 
-  src="https://your-zeroroute.vercel.app/widget.js" 
-  data-title="Amjad AI" 
-  data-persona="You are Amjad's portfolio assistant. Answer questions politely and concisely." 
-  data-greeting="Hi there! 👋 How can I help you today?" 
-  data-color="#ef4444" 
+<script
+  src="https://your-zeroroute.vercel.app/widget.js"
+  data-title="My AI Assistant"
+  data-persona="You are a helpful support agent for Acme Corp."
+  data-greeting="Hi! How can I help you today? 👋"
+  data-color="#6366f1"
+  data-key="your-router-api-key"
   defer>
 </script>
 ```
 
-#### 📚 Adding a Business Knowledge Base & Custom Persona (Zero DB Needed!):
-You can attach your company FAQs, bio, documentation, or pricing by passing inline text OR a remote `.md` / `.txt` / `.json` file URL:
-
-```html
-<script 
-  src="https://your-zeroroute.vercel.app/widget.js" 
-  data-title="Acme Support AI" 
-  data-persona-url="https://your-website.com/persona.txt"
-  data-knowledge-url="https://raw.githubusercontent.com/username/repo/main/faq.md"
-  data-color="#ef4444"
-  defer>
-</script>
-```
+#### Widget Attributes
 
 | Attribute | Description | Example |
 |---|---|---|
-| `data-title` | Header title of the chatbot window | `Amjad AI` |
-| `data-persona` | Inline system prompt & tone | `You are a helpful customer support agent.` |
-| `data-persona-url` | Remote URL to a system prompt `.txt` / `.md` file | `https://site.com/prompt.md` |
-| `data-knowledge` | Inline business facts, FAQs, or pricing text | `Pricing: $0/mo, Support: help@acme.com` |
-| `data-knowledge-url` | Remote URL to a live `.md`, `.txt`, or `.json` file | `https://site.com/knowledge.md` |
-| `data-greeting` | First message sent to visitors | `Hi! How can I help you?` |
-| `data-color` | Primary brand accent color | `#ef4444` or `#6366f1` |
-| `data-key` | Your `ROUTER_API_KEY` (if protected) | `amjadisthebest` |
+| `data-title` | Chatbot window title | `Acme Support` |
+| `data-persona` | Inline system prompt | `You are a helpful assistant.` |
+| `data-persona-url` | URL to a `.txt` / `.md` system prompt | `https://site.com/prompt.md` |
+| `data-knowledge` | Inline FAQs or business facts | `Hours: 9am–6pm. Email: help@acme.com` |
+| `data-knowledge-url` | URL to a live `.md` / `.txt` / `.json` file | `https://site.com/knowledge.md` |
+| `data-greeting` | First message sent to visitors | `Hi! How can I help?` |
+| `data-color` | Primary accent color | `#6366f1` |
+| `data-key` | Your `ROUTER_API_KEY` (if auth enabled) | `your-secret-key` |
 
-### 2. Web Chatbot / JavaScript (Direct API)
+> **Note on `data-key`:** If `ROUTER_API_KEY` is not set in your `.env`, the widget works without a key (public mode). If it is set, pass it via `data-key`. Be aware the key is visible in your page's HTML source — see [Security](#️-security) below.
+
+### 2. JavaScript / Fetch
+
 ```javascript
 const response = await fetch("https://your-zeroroute.vercel.app/v1/chat/completions", {
   method: "POST",
@@ -172,15 +189,16 @@ const response = await fetch("https://your-zeroroute.vercel.app/v1/chat/completi
   body: JSON.stringify({
     stream: true,
     messages: [
-      { role: "system", content: "You are a helpful customer support chatbot." },
-      { role: "user", content: "Hello! What are your business hours?" }
+      { role: "system", content: "You are a helpful assistant." },
+      { role: "user", content: "Hello!" }
     ]
   })
 });
 ```
 
-### 3. Python (Official OpenAI SDK)
-\\\python
+### 3. Python (OpenAI SDK)
+
+```python
 from openai import OpenAI
 
 client = OpenAI(
@@ -189,55 +207,99 @@ client = OpenAI(
 )
 
 response = client.chat.completions.create(
-    model="default",  # Or specify exact provider/model
-    messages=[
-        {"role": "system", "content": "You are a professional assistant."},
-        {"role": "user", "content": "Summarize this article."}
-    ]
+    model="default",
+    messages=[{"role": "user", "content": "Explain quantum computing briefly."}]
 )
-
 print(response.choices[0].message.content)
-\\\
+```
 
 ### 4. cURL
+
 ```bash
 curl -N https://your-zeroroute.vercel.app/v1/chat/completions \
   -H "Authorization: Bearer your-router-api-key" \
   -H "Content-Type: application/json" \
-  -d '{"stream":true,"messages":[{"role":"user","content":"Explain quantum computing in one sentence."}]}'
-\\\
+  -d '{"stream":true,"messages":[{"role":"user","content":"Hello!"}]}'
+```
 
 ---
 
 ## 🔑 How to Get Free API Keys
 
-- **Groq Console**: [console.groq.com/keys](https://console.groq.com/keys)
-- **SambaNova Cloud**: [cloud.sambanova.ai](https://cloud.sambanova.ai)
-- **Mistral AI Console**: [console.mistral.ai](https://console.mistral.ai)
-- **Google AI Studio**: [aistudio.google.com](https://aistudio.google.com)
-- **OpenRouter**: [openrouter.ai/keys](https://openrouter.ai/keys)
-- **NVIDIA NIM**: [build.nvidia.com](https://build.nvidia.com)
-- **Cloudflare AI**: [dash.cloudflare.com](https://dash.cloudflare.com)
-- **Cohere Dashboard**: [dashboard.cohere.com](https://dashboard.cohere.com)
+| Provider | URL |
+|---|---|
+| Groq | [console.groq.com/keys](https://console.groq.com/keys) |
+| SambaNova | [cloud.sambanova.ai](https://cloud.sambanova.ai) |
+| Mistral AI | [console.mistral.ai](https://console.mistral.ai) |
+| Google Gemini | [aistudio.google.com](https://aistudio.google.com) |
+| OpenRouter | [openrouter.ai/keys](https://openrouter.ai/keys) |
+| NVIDIA NIM | [build.nvidia.com](https://build.nvidia.com) |
+| Cloudflare AI | [dash.cloudflare.com](https://dash.cloudflare.com) |
+| Cohere | [dashboard.cohere.com](https://dashboard.cohere.com) |
 
 ---
 
-## 🛡️ Security & Privacy
+## 🛡️ Security
 
-- **Encrypted Local Credentials**: Saved keys are encrypted using AES-256-GCM (secrets.json + .master.key).
-- **Masked Secrets**: Keys are never transmitted in full to the client (irst4••••••••last4).
-- **Git Shield**: All credential files (.env, secrets.json, .master.key) are in .gitignore.
+### Two separate keys
+
+| Key | Protects | Who uses it |
+|---|---|---|
+| `ROUTER_API_KEY` | `/v1/chat/completions`, `/v1/models` | Your widget, apps, API clients |
+| `ADMIN_KEY` | `/api/*`, dashboard | Only you — never share this |
+
+**Always set these to different values in production.**
+
+### CORS — restrict which domains can call your gateway
+
+```env
+# Allow any origin (default — good for open/public deployments)
+CORS_ORIGIN=*
+
+# Lock to your domain and all subdomains
+CORS_ORIGIN=*.yourdomain.com
+
+# Multiple specific domains
+CORS_ORIGIN=https://app.yourdomain.com,https://yourdomain.com
+```
+
+### Other protections
+
+- Provider API keys encrypted at rest with **AES-256-GCM + PBKDF2** (`secrets.json` + `.master.key`).
+- Keys masked as `first4••••last4` in all API responses — full secrets never sent to clients.
+- Rate limiting: **60 req/min** per IP on chat, **10 req/min** per IP on provider test.
+- `.env`, `secrets.json`, `.master.key` are in `.gitignore` by default.
 
 ---
 
-## 👨‍💻 Author & Creator
+## 🗂️ Architecture
+
+See [ARCHITECTURE.md](./docs/ARCHITECTURE.md) for a full codebase map, concept explanations, and how to add a new provider.
+
+```
+src/
+  server.ts          Entry point — ~90 lines, pure dispatcher
+  middleware/        Auth & sliding-window rate limiter
+  providers/         AI provider implementations, state, and types
+  routes/            Route handlers (chat, providers, keys, metrics, static, health)
+  services/          Encryption, response cache, metrics logger, and config store
+  utils/             Shared HTTP utilities & dynamic CORS
+public/
+  index.html         Landing page
+  dashboard.html     Admin UI
+  widget.js          Embeddable chatbot
+```
+
+---
+
+## 👨‍💻 Author
 
 **Amjad P A** — Full-Stack AI Engineer & Solo Builder
 
-- 🌐 **Portfolio**: [amjad.mapki.in](https://amjad.mapki.in)
-- 🐙 **GitHub**: [@amjadlle](https://github.com/amjadlle)
-- 💼 **LinkedIn**: [in/amjadlle](https://linkedin.com/in/amjadlle)
-- ✉️ **Email**: [hire.amjad@gmail.com](mailto:hire.amjad@gmail.com)
+- 🌐 [amjad.mapki.in](https://amjad.mapki.in)
+- 🐙 [@amjadlle](https://github.com/amjadlle)
+- 💼 [linkedin.com/in/amjadlle](https://linkedin.com/in/amjadlle)
+- ✉️ [hire.amjad@gmail.com](mailto:hire.amjad@gmail.com)
 
 ---
 

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- provider responses are dynamic JSON */
 import type { ChatRequest, ChatResponse, ChatStreamChunk, Provider } from "./types.js";
-import { getProviderApiKey } from "./secrets.js";
+import { getProviderApiKey } from "../services/secrets.js";
 
 const parseJsonOrError = async (response: Response, name: string) => {
   if (!response.ok) {
@@ -250,9 +250,9 @@ export const providers: Provider[] = [
           parts: [{ text: m.content }]
         }));
 
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${this.model}:generateContent?key=${key}`, {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${this.model}:generateContent`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-goog-api-key": key },
         body: JSON.stringify({
           systemInstruction: system ? { parts: [{ text: system }] } : undefined,
           contents,
@@ -289,9 +289,9 @@ export const providers: Provider[] = [
           parts: [{ text: m.content }]
         }));
 
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${this.model}:streamGenerateContent?alt=sse&key=${key}`, {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${this.model}:streamGenerateContent?alt=sse`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-goog-api-key": key },
         body: JSON.stringify({
           systemInstruction: system ? { parts: [{ text: system }] } : undefined,
           contents,

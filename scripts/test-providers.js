@@ -1,4 +1,4 @@
-import { providers } from "./dist/providers.js";
+import { providers } from "../dist/providers/providers.js";
 
 console.log("==================================================");
 console.log("⚡ TESTING ALL 8 AI PROVIDERS");

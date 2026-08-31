@@ -20,9 +20,15 @@ RUN npm ci --omit=dev
 
 COPY --from=builder /app/dist ./dist
 
-# Create volume mount point for persistent configuration
-VOLUME ["/app/data"]
+# Static HTML/JS assets (landing page, dashboard, widget, logo, knowledge)
+COPY public/ ./public/
+
+# Persist runtime configuration (config.json, secrets.json written to /app)
+VOLUME ["/app"]
 
 EXPOSE 8787
+
+# Run as non-root for security
+USER node
 
 CMD ["node", "dist/server.js"]

@@ -1,36 +1,53 @@
-﻿# ZeroRoute Knowledge Base
+# ZeroRoute — Verified Knowledge Base
 
 ## Product Overview
-ZeroRoute is a 100% free, open-source multi-cloud AI Gateway and 1-line embeddable website chatbot created for solo founders, developers, and startups. It pools free-tier API quotas across 8 cloud providers into one zero-downtime OpenAI-compatible endpoint.
+ZeroRoute is an open-source, $0/mo multi-cloud AI gateway that aggregates free-tier API quotas from 8 cloud providers into one OpenAI-compatible endpoint with automatic failover and an embeddable 1-line website chatbot.
 
-## Supported Free Cloud Providers & Models
-1. **Groq**: Fastest inference (~100ms), models: openai/gpt-oss-20b, llama-3.3-70b-versatile.
-2. **NVIDIA NIM**: Ultra-fast (~260ms), model: meta/llama-3.3-70b-instruct.
-3. **SambaNova Cloud**: Fast (~360ms), models: Meta-Llama-3.1-70B-Instruct, Qwen2.5-72B-Instruct.
-4. **Mistral AI**: Highly reliable (~390ms), model: mistral-medium-latest.
-5. **Google Gemini**: Massive 1,000,000 token context window (~710ms), model: gemini-2.0-flash.
-6. **OpenRouter**: Free model pool (
-emotron-free, mistral-free).
-7. **Cloudflare Workers AI**: Edge inference (llama-3.1-8b).
-8. **Cohere**: Trial tier (command-r-plus).
+## Core Capabilities
+- **Automatic Failover**: Instantly re-routes to the next provider on 429, 500, or timeout.
+- **In-Memory RAM Cache**: SHA-256 keyed cache serves identical prompts in 0ms with zero API token consumption.
+- **Self-Healing Heartbeat**: Background probe checks cooling providers every 30s and restores them to traffic.
+- **Zero Runtime Dependencies**: Native Node.js HTTP and Fetch.
+- **Encrypted Keys**: AES-256-GCM encrypted key storage for provider API keys.
+- **Wildcard Subdomain CORS**: `CORS_ORIGIN=*.yourdomain.com` allows all subdomains.
 
-## Key Features & Architecture
-- **1-Line Embeddable Chatbot**: Drop <script src='/widget.js' ...> on any HTML, Next.js, React, Vue, WordPress, Shopify, or Webflow site.
-- **Zero-Database Knowledge Base**: Attach any .md, .txt, or .json file using data-knowledge-url or data-knowledge for instant /mo RAG.
-- **Zero Runtime Dependencies**: Built purely with native Node.js HTTP and Fetch. Instant 0ms cold starts.
-- **AES-256 Key Encryption**: Military-grade authenticated encrypted credentials vault for API keys.
-- **Circuit Breaker Auto-Failover**: Auto-detects 429 rate limits or timeouts (<8ms) and seamlessly fails over to the next fastest provider.
-- **In-Memory RAM Cache**: Exact duplicate questions replay instantly in 0ms without consuming any API tokens.
+## Supported Cloud Providers & Free Tiers
+1. **Groq**: ~100ms ultra-fast inference (`openai/gpt-oss-20b`)
+2. **SambaNova**: ~360ms high throughput (`gemma-4-31B-it`)
+3. **Mistral AI**: ~390ms European privacy & reasoning (`mistral-small-latest`)
+4. **Google Gemini**: ~710ms 1M+ token context (`gemini-3.6-flash`)
+5. **NVIDIA NIM**: ~260ms DGX cloud infrastructure (`nvidia/nemotron-3.5-lightning-30b-a3b`)
+6. **OpenRouter**: Free open-source model pool (`nvidia/nemotron-3.5-lightning:free`)
+7. **Cloudflare Workers AI**: Global edge inference (`@cf/meta/llama-3.1-8b-instruct`)
+8. **Cohere**: Conversational reasoning (`command-r-plus-08-2024`)
+
+## How to Embed the Chatbot Widget
+Add a single script tag before `</body>`:
+```html
+<script 
+  src="https://your-domain.com/widget.js" 
+  data-title="ZeroRoute AI" 
+  data-greeting="Hi! How can I help you?"
+  data-color="#ef4444"
+  defer>
+</script>
+```
+
+Optional widget attributes:
+- `data-persona="You are a helpful support agent."` (Inline prompt)
+- `data-persona-url="https://site.com/persona.md"` (Remote prompt file)
+- `data-knowledge="Hours: 9am-5pm. Email: contact@site.com"` (Inline facts)
+- `data-knowledge-url="https://site.com/knowledge.md"` (Remote knowledge file)
+- `data-key="your-router-key"` (If authentication is required)
 
 ## Deployment Options
-- **Vercel**: 1-Click Edge Serverless deployment (ercel.json + server.js).
-- **Render**: 1-Click continuous Node.js service (ender.yaml).
-- **Docker / Railway / Fly.io / VPS**: Multi-stage production container (docker compose up -d).
+- **Cloudflare Pages**: 1-click Edge deployment (`functions/[[path]].ts` + `public/`) with 100k free requests/day (no credit card required).
+- **Vercel**: 1-click Serverless edge deployment (`api/index.ts` + `vercel.json`).
+- **Render**: 1-click Web Service deployment (`render.yaml`).
+- **Docker / VPS**: `docker compose up -d` or `docker build -t zeroroute .` (AWS EC2, Azure VM, Oracle Cloud).
+- **Local Node.js**: `npm run build && npm start` (port 8787).
 
-## Creator & Contact Information
-- **Creator**: Amjad P A (Full-Stack AI Engineer & Solo Builder)
-- **Portfolio**: [amjad.mapki.in](https://amjad.mapki.in)
-- **GitHub**: [@amjadlle](https://github.com/amjadlle)
-- **LinkedIn**: [in/amjadlle](https://linkedin.com/in/amjadlle)
-- **Email**: [hire.amjad@gmail.com](mailto:hire.amjad@gmail.com)
-- **License**: MIT License (100% Free for personal, commercial, and open-source use)
+## Links
+- **GitHub**: https://github.com/amjadlle/ZeroRoute
+- **Documentation**: https://github.com/amjadlle/ZeroRoute/blob/main/docs/ARCHITECTURE.md
+- **License**: MIT License

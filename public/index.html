@@ -1,6 +1,4 @@
-export function getLandingHtml(apiKey = ""): string {
-  const authAttr = apiKey ? `data-key="${apiKey}"` : "";
-  return `<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
@@ -19,7 +17,7 @@ export function getLandingHtml(apiKey = ""): string {
 
   <!-- Tailwind & Fonts -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/lucide@0.461.0"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -150,15 +148,31 @@ export function getLandingHtml(apiKey = ""): string {
       </p>
 
       <!-- Action Buttons -->
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-4">
-        <a href="https://vercel.com/new/clone?repository-url=https://github.com/amjadlle/ZeroRoute" target="_blank" 
-          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-bold bg-white text-black hover:bg-slate-200 rounded-xl transition-all shadow-xl active:scale-95">
-          <svg class="w-4 h-4 fill-black" viewBox="0 0 24 24"><path d="M24 22.525H0l12-21.05 12 21.05z"/></svg>
-          <span>Deploy Free to Vercel (1-Click)</span>
+      <div class="flex flex-wrap items-center justify-center gap-3 pt-4">
+        <!-- Cloudflare Pages 1-Click -->
+        <a href="https://dash.cloudflare.com/?to=/:account/pages/new" target="_blank" 
+          class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-[#f38020]/15 hover:bg-[#f38020]/25 text-[#f38020] border border-[#f38020]/40 rounded-xl transition-all shadow-lg active:scale-95">
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M18.34 16.5c.34-.45.54-1 .54-1.6 0-1.57-1.27-2.85-2.84-2.85-.14 0-.28.01-.41.04C15.15 9.77 13.2 8 10.84 8c-2.3 0-4.22 1.68-4.73 3.91-.32-.09-.66-.14-1.01-.14-2.26 0-4.1 1.84-4.1 4.1 0 .22.02.43.05.63H18.34z"/></svg>
+          <span>Deploy to Cloudflare</span>
         </a>
 
+        <!-- Vercel 1-Click -->
+        <a href="https://vercel.com/new/clone?repository-url=https://github.com/amjadlle/ZeroRoute" target="_blank" 
+          class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-white text-black hover:bg-slate-200 rounded-xl transition-all shadow-xl active:scale-95">
+          <svg class="w-3.5 h-3.5 fill-black" viewBox="0 0 24 24"><path d="M24 22.525H0l12-21.05 12 21.05z"/></svg>
+          <span>Deploy to Vercel</span>
+        </a>
+
+        <!-- Render 1-Click -->
+        <a href="https://render.com/deploy?repo=https://github.com/amjadlle/ZeroRoute" target="_blank" 
+          class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/40 rounded-xl transition-all shadow-lg active:scale-95">
+          <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M17.857 0a6.143 6.143 0 0 0-6.143 6.143c0 .285.02.564.057.838l-7.39 7.39A6.113 6.113 0 0 0 .857 14.857H0v9.143h9.143v-.857a6.113 6.113 0 0 0 .486-3.527l7.39-7.39c.274.037.553.057.838.057A6.143 6.143 0 0 0 24 6.143 6.143 6.143 0 0 0 17.857 0z"/></svg>
+          <span>Deploy to Render</span>
+        </a>
+
+        <!-- Console -->
         <a href="/app" 
-          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-bold bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30 rounded-xl transition-all active:scale-95">
+          class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30 rounded-xl transition-all active:scale-95">
           <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
           <span>Open Router Console</span>
         </a>
@@ -264,7 +278,7 @@ export function getLandingHtml(apiKey = ""): string {
             
             <pre class="font-mono text-xs text-slate-300 leading-relaxed overflow-x-auto p-2 bg-[#080a0f] rounded-lg border border-dark-border" id="widget-code-snippet"><code>&lt;script 
   src="https://zeroroute.vercel.app/widget.js" 
-  data-title="Amjad AI" 
+  data-title="ZeroRoute AI" 
   data-persona="You are a friendly portfolio assistant." 
   data-greeting="Hi! 👋 How can I help you today?" 
   data-color="#ef4444" 
@@ -317,7 +331,7 @@ export function getLandingHtml(apiKey = ""): string {
           Everything You Need to Scale for Free
         </h2>
         <p class="text-sm text-slate-400">
-          Enterprise-grade multi-cloud routing without the \$500/month OpenAI or Anthropic bills.
+          Enterprise-grade multi-cloud routing without the $500/month OpenAI or Anthropic bills.
         </p>
       </div>
 
@@ -478,17 +492,27 @@ print(response.choices[0].message.content)</code></pre>
         Ready to Build with Infinite Free Tokens?
       </h2>
       <p class="text-sm sm:text-base text-slate-400 max-w-xl mx-auto leading-relaxed">
-        Deploy your own personal ZeroRoute gateway to Vercel in 30 seconds for $0.00/month.
+        Deploy your own personal ZeroRoute gateway to Cloudflare Pages, Vercel, or Render in seconds for $0.00/month.
       </p>
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-        <a href="https://vercel.com/new/clone?repository-url=https://github.com/amjadlle/ZeroRoute" target="_blank" 
-          class="inline-flex items-center gap-2 px-6 py-3 text-sm font-bold bg-white text-black hover:bg-slate-200 rounded-xl transition-all shadow-xl active:scale-95">
-          <svg class="w-4 h-4 fill-black" viewBox="0 0 24 24"><path d="M24 22.525H0l12-21.05 12 21.05z"/></svg>
-          <span>Deploy to Vercel Free</span>
+      <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+        <a href="https://dash.cloudflare.com/?to=/:account/pages/new" target="_blank" 
+          class="inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-[#f38020]/15 hover:bg-[#f38020]/25 text-[#f38020] border border-[#f38020]/40 rounded-xl transition-all shadow-lg active:scale-95">
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M18.34 16.5c.34-.45.54-1 .54-1.6 0-1.57-1.27-2.85-2.84-2.85-.14 0-.28.01-.41.04C15.15 9.77 13.2 8 10.84 8c-2.3 0-4.22 1.68-4.73 3.91-.32-.09-.66-.14-1.01-.14-2.26 0-4.1 1.84-4.1 4.1 0 .22.02.43.05.63H18.34z"/></svg>
+          <span>Deploy to Cloudflare</span>
         </a>
-        <a href="/app" class="inline-flex items-center gap-2 px-6 py-3 text-sm font-bold bg-red-600 hover:bg-red-500 text-white rounded-xl shadow-lg shadow-red-500/25 transition-all active:scale-95">
+        <a href="https://vercel.com/new/clone?repository-url=https://github.com/amjadlle/ZeroRoute" target="_blank" 
+          class="inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-white text-black hover:bg-slate-200 rounded-xl transition-all shadow-xl active:scale-95">
+          <svg class="w-3.5 h-3.5 fill-black" viewBox="0 0 24 24"><path d="M24 22.525H0l12-21.05 12 21.05z"/></svg>
+          <span>Deploy to Vercel</span>
+        </a>
+        <a href="https://render.com/deploy?repo=https://github.com/amjadlle/ZeroRoute" target="_blank" 
+          class="inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/40 rounded-xl transition-all shadow-lg active:scale-95">
+          <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M17.857 0a6.143 6.143 0 0 0-6.143 6.143c0 .285.02.564.057.838l-7.39 7.39A6.113 6.113 0 0 0 .857 14.857H0v9.143h9.143v-.857a6.113 6.113 0 0 0 .486-3.527l7.39-7.39c.274.037.553.057.838.057A6.143 6.143 0 0 0 24 6.143 6.143 6.143 0 0 0 17.857 0z"/></svg>
+          <span>Deploy to Render</span>
+        </a>
+        <a href="/app" class="inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-red-600 hover:bg-red-500 text-white rounded-xl shadow-lg shadow-red-500/25 transition-all active:scale-95">
           <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
-          <span>Launch Gateway Console</span>
+          <span>Launch Console</span>
         </a>
       </div>
     </section>
@@ -565,7 +589,7 @@ print(response.choices[0].message.content)</code></pre>
     data-knowledge-url="/knowledge.md" 
     data-greeting="Hi there! 👋 I'm ZeroRoute AI. Ask me anything about multi-cloud routing, free providers, or test my real-time streaming speed!" 
     data-color="#ef4444" 
-    ${authAttr} 
+     
     defer>
   </script>
 
@@ -581,7 +605,11 @@ print(response.choices[0].message.content)</code></pre>
     }
 
     function openChatWidget() {
-      const bubble = document.getElementById('zr-toggle-btn');
+      if (window.ZeroRoute && typeof window.ZeroRoute.open === 'function') {
+        window.ZeroRoute.open();
+        return;
+      }
+      const bubble = document.getElementById('zr-toggle-btn') || document.querySelector('.zr-bubble');
       if (bubble) {
         bubble.click();
       }
@@ -589,7 +617,3 @@ print(response.choices[0].message.content)</code></pre>
   </script>
 </body>
 </html>
-`;
-}
-
-export const landingHtml = getLandingHtml();

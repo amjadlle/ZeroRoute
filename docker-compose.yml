@@ -1,7 +1,7 @@
 services:
-  ai-router:
+  zeroroute:
     build: .
-    container_name: ai-router
+    container_name: zeroroute
     restart: unless-stopped
     ports:
       - "8787:8787"

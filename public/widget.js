@@ -12,6 +12,7 @@
   var greeting = (script && script.getAttribute('data-greeting')) || 'Hi there! 👋 How can I help you today?';
   var brandColor = (script && script.getAttribute('data-color')) || '#ef4444';
   var key = (script && script.getAttribute('data-key')) || '';
+  var logo = (script && script.getAttribute('data-logo')) || (endpoint + '/logo.png');
 
   // Inject Styles
   var style = document.createElement('style');
@@ -23,16 +24,26 @@
     '.zr-window.zr-open { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); }',
     '.zr-header { padding: 14px 18px; background: #0f111a; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: space-between; box-sizing: border-box; }',
     '.zr-title-box { display: flex; align-items: center; gap: 10px; }',
-    '.zr-avatar { width: 32px; height: 32px; border-radius: 10px; background: ' + brandColor + '; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px; }',
+    '.zr-avatar { width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px; flex-shrink: 0; }',
+    '.zr-avatar img { width: 100%; height: 100%; object-fit: contain; }',
     '.zr-title { font-size: 14px; font-weight: 700; color: #f8fafc; line-height: 1.2; }',
     '.zr-badge { font-size: 10px; color: #10b981; display: flex; align-items: center; gap: 4px; font-weight: 500; }',
     '.zr-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: #10b981; }',
     '.zr-close { background: none; border: none; color: #94a3b8; cursor: pointer; padding: 4px; font-size: 14px; border-radius: 6px; display: flex; align-items: center; justify-content: center; }',
     '.zr-close:hover { color: white; background: rgba(255,255,255,0.1); }',
-    '.zr-messages { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; font-size: 13px; line-height: 1.5; box-sizing: border-box; }',
+    '.zr-messages { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; font-size: 13px; line-height: 1.5; box-sizing: border-box; scrollbar-width: none; -ms-overflow-style: none; }',
+    '.zr-messages::-webkit-scrollbar { display: none; width: 0; height: 0; }',
     '.zr-msg { max-width: 84%; padding: 10px 14px; border-radius: 14px; word-break: break-word; white-space: pre-wrap; box-sizing: border-box; }',
-    '.zr-msg-bot { align-self: flex-start; background: #151824; color: #e2e8f0; border: 1px solid rgba(255,255,255,0.06); }',
+    '.zr-msg-bot { align-self: flex-start; background: #151824; color: #e2e8f0; border: 1px solid rgba(255,255,255,0.06); line-height: 1.6; }',
     '.zr-msg-user { align-self: flex-end; background: ' + brandColor + '; color: #ffffff; font-weight: 500; }',
+    '.zr-msg pre.zr-code-block { background: #0b0d14; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 8px 10px; font-family: "JetBrains Mono", Menlo, monospace; font-size: 11px; overflow-x: auto; margin: 6px 0; color: #cbd5e1; white-space: pre; }',
+    '.zr-msg code.zr-inline-code { background: rgba(255,255,255,0.08); padding: 1.5px 5px; border-radius: 4px; font-family: "JetBrains Mono", Menlo, monospace; font-size: 11.5px; color: #f87171; }',
+    '.zr-msg a.zr-link { color: #60a5fa; text-decoration: underline; word-break: break-all; }',
+    '.zr-msg a.zr-link:hover { color: #93c5fd; }',
+    '.zr-msg .zr-md-header { display: block; font-size: 13.5px; font-weight: 700; color: #ffffff; margin-top: 8px; margin-bottom: 3px; }',
+    '.zr-msg .zr-list-item { display: block; margin: 2px 0; }',
+    '.zr-msg .zr-para-gap { height: 8px; }',
+    '.zr-msg strong { font-weight: 700; color: #ffffff; }',
     '.zr-footer { padding: 12px 14px; background: #0f111a; border-top: 1px solid rgba(255,255,255,0.08); display: flex; gap: 8px; box-sizing: border-box; }',
     '.zr-input { flex: 1; background: #181b2a; border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 9px 12px; color: white; font-size: 12px; outline: none; box-sizing: border-box; }',
     '.zr-input:focus { border-color: ' + brandColor + '; }',
@@ -47,6 +58,7 @@
   // Floating Bubble
   var bubble = document.createElement('div');
   bubble.className = 'zr-bubble';
+  bubble.id = 'zr-toggle-btn';
   bubble.setAttribute('aria-label', 'Open AI Chat');
   bubble.innerHTML = '<svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>';
 
@@ -63,7 +75,20 @@
 
   var avatar = document.createElement('div');
   avatar.className = 'zr-avatar';
-  avatar.textContent = '⚡';
+  if (logo) {
+    var avatarImg = document.createElement('img');
+    avatarImg.src = logo;
+    avatarImg.alt = title;
+    avatarImg.onerror = function() {
+      avatarImg.remove();
+      avatar.textContent = '⚡';
+      avatar.style.background = brandColor;
+      avatar.style.borderRadius = '10px';
+    };
+    avatar.appendChild(avatarImg);
+  } else {
+    avatar.textContent = '⚡';
+  }
 
   var infoBox = document.createElement('div');
   var titleEl = document.createElement('div');
@@ -152,6 +177,12 @@
     }
   }
 
+  window.ZeroRoute = {
+    toggle: toggle,
+    open: function() { if (!isOpen) toggle(); },
+    close: function() { if (isOpen) toggle(); }
+  };
+
   bubble.onclick = toggle;
   closeBtn.onclick = toggle;
 
@@ -235,6 +266,51 @@
         return;
       }
 
+      function escapeHtml(str) {
+        return str
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function renderMarkdown(md) {
+        if (!md) return '';
+        var safe = escapeHtml(md);
+
+        // Code blocks ```...```
+        safe = safe.replace(/```([a-zA-Z0-9_+-]*)\n?([\s\S]*?)```/g, function(_, lang, code) {
+          return '<pre class="zr-code-block"><code>' + code.trim() + '</code></pre>';
+        });
+
+        // Inline code `...`
+        safe = safe.replace(/`([^`\n]+)`/g, '<code class="zr-inline-code">$1</code>');
+
+        // Headers (###, ##, #)
+        safe = safe.replace(/^(?:###|##|#)\s+(.+)$/gm, '<span class="zr-md-header">$1</span>');
+
+        // Bold (**text** or __text__)
+        safe = safe.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+        safe = safe.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+
+        // Italic (*text* or _text_)
+        safe = safe.replace(/(^|[^\*])\*([^\*\n]+)\*([^\*]|$)/g, '$1<em>$2</em>$3');
+
+        // Links [text](url) - safe protocols only
+        safe = safe.replace(/\[([^\]]+)\]\((https?:\/\/[^\s\)]+|mailto:[^\s\)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="zr-link">$1</a>');
+
+        // Lists
+        safe = safe.replace(/^[\*\-]\s+(.+)$/gm, '<span class="zr-list-item">• $1</span>');
+        safe = safe.replace(/^(\d+)\.\s+(.+)$/gm, '<span class="zr-list-item"><strong style="color:#ffffff;">$1.</strong> $2</span>');
+
+        // Paragraph gaps & newlines
+        safe = safe.replace(/\n\n+/g, '<div class="zr-para-gap"></div>');
+        safe = safe.replace(/\n/g, '<br>');
+
+        return safe;
+      }
+
       botEl.textContent = '';
       var reader = res.body.getReader();
       var decoder = new TextDecoder();
@@ -252,7 +328,7 @@
               var data = JSON.parse(line.slice(5).trim());
               var content = (data.choices && data.choices[0] && data.choices[0].delta && data.choices[0].delta.content) || '';
               fullBot += content;
-              botEl.textContent = fullBot;
+              botEl.innerHTML = renderMarkdown(fullBot);
               msgBox.scrollTop = msgBox.scrollHeight;
             } catch (e) {}
           }

@@ -1,4 +1,4 @@
-export const dashboardHtml = `<!doctype html>
+<!doctype html>
 <html lang="en" class="dark">
 <head>
   <meta charset="utf-8">
@@ -9,7 +9,7 @@ export const dashboardHtml = `<!doctype html>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/lucide@0.461.0"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -405,7 +405,7 @@ export const dashboardHtml = `<!doctype html>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Bot Title</label>
-                <input type="text" id="cfg-widget-title" value="Amjad AI" oninput="updateSnippetView()"
+                <input type="text" id="cfg-widget-title" value="ZeroRoute AI" oninput="updateSnippetView()"
                   class="w-full px-3 py-1.5 text-xs bg-dark-bg border border-dark-border rounded-lg text-slate-200 focus:outline-none focus:border-red-500 font-mono">
               </div>
               <div>
@@ -630,16 +630,16 @@ export const dashboardHtml = `<!doctype html>
     };
 
     const el = id => document.getElementById(id);
-    const getKey = () => localStorage.getItem("ai_router_key") || el("auth-key").value;
+    const getKey = () => sessionStorage.getItem("ai_router_key") || el("auth-key").value;
     const saveKey = () => {
-      localStorage.setItem("ai_router_key", el("auth-key").value);
+      sessionStorage.setItem("ai_router_key", el("auth-key").value);
       load();
     };
 
     function requireKey(action = "perform this action") {
       const key = getKey();
       if (!key || !key.trim()) {
-        showToast(\`🔐 Router Key required to \${action}. Please enter your key above.\`);
+        showToast(`🔐 Router Key required to ${action}. Please enter your key above.`);
         const banner = el("auth-banner");
         const bannerInput = el("auth-banner-input");
         const authInput = el("auth-key");
@@ -663,14 +663,19 @@ export const dashboardHtml = `<!doctype html>
       if (!input || !input.value.trim()) return;
       const key = input.value.trim();
       el("auth-key").value = key;
-      localStorage.setItem("ai_router_key", key);
+      sessionStorage.setItem("ai_router_key", key);
       load();
       showToast("🔑 Key entered! Unlocking gateway...");
     }
 
-    function showToast(msg, duration = 3500) {
+    // isHtml=true is only for trusted static HTML (e.g. action buttons with known provider IDs)
+    function showToast(msg, duration = 3500, isHtml = false) {
       const toast = el("toast");
-      toast.innerHTML = msg;
+      if (isHtml) {
+        toast.innerHTML = msg;
+      } else {
+        toast.textContent = msg; // safe default — no XSS risk from upstream error strings
+      }
       toast.classList.remove("translate-y-20", "opacity-0", "pointer-events-none");
       setTimeout(() => {
         toast.classList.add("translate-y-20", "opacity-0", "pointer-events-none");
@@ -699,7 +704,7 @@ export const dashboardHtml = `<!doctype html>
 
     async function load() {
       try {
-        const key = localStorage.getItem("ai_router_key");
+        const key = sessionStorage.getItem("ai_router_key");
         if (key) el("auth-key").value = key;
         
         const [hRes, pRes, mRes] = await Promise.all([
@@ -730,9 +735,7 @@ export const dashboardHtml = `<!doctype html>
           }
         } else if (pRes.status === 401) {
           el("auth-banner")?.classList.remove("hidden");
-          if (hData?.providers) {
-            state = hData.providers;
-          }
+          // Note: /health no longer returns provider list for security reasons
         } else {
           el("auth-banner")?.classList.add("hidden");
         }
@@ -742,11 +745,9 @@ export const dashboardHtml = `<!doctype html>
           logs = mData.logs || [];
           renderLogs(logs);
           renderStats(mData.stats, mData.cacheSize);
-        } else if (hData?.stats) {
-          renderStats(hData.stats, hData.cacheSize || 0);
-          if (mRes.status === 401) {
-            el("logs-tbody").innerHTML = '<tr><td colspan="6" class="p-6 text-center text-amber-400 font-sans"><div class="flex items-center justify-center gap-2"><i data-lucide="lock" class="w-4 h-4"></i><span>Live request logs are protected. Enter your <strong>Router / Admin Key</strong> in the top-right header to unlock live logs.</span></div></td></tr>';
-          }
+        } else if (mRes.status === 401) {
+          // Metrics require auth — show locked message without leaking stats
+          el("logs-tbody").innerHTML = '<tr><td colspan="6" class="p-6 text-center text-amber-400 font-sans"><div class="flex items-center justify-center gap-2"><i data-lucide="lock" class="w-4 h-4"></i><span>Live request logs are protected. Enter your <strong>Router / Admin Key</strong> in the top-right header to unlock live logs.</span></div></td></tr>';
         }
 
         const configuredCount = state.filter(p => p.configured).length;
@@ -800,11 +801,11 @@ export const dashboardHtml = `<!doctype html>
     function getLatencySpeedBadge(ms) {
       if (!ms) return '<span class="text-slate-400 font-mono">—</span>';
       if (ms < 600) {
-        return \`<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">⚡ \${ms}ms Fast</span>\`;
+        return `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">⚡ ${ms}ms Fast</span>`;
       } else if (ms <= 1500) {
-        return \`<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">🟡 \${ms}ms Normal</span>\`;
+        return `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">🟡 ${ms}ms Normal</span>`;
       } else {
-        return \`<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20">⏳ \${ms}ms Slow</span>\`;
+        return `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20">⏳ ${ms}ms Slow</span>`;
       }
     }
 
@@ -873,8 +874,8 @@ export const dashboardHtml = `<!doctype html>
       if (!p) return;
 
       const modal = el("model-modal");
-      el("model-modal-title").textContent = \`Choose Model for \${p.name}\`;
-      el("model-modal-subtitle").textContent = \`Currently active: \${p.model}\`;
+      el("model-modal-title").textContent = `Choose Model for ${p.name}`;
+      el("model-modal-subtitle").textContent = `Currently active: ${p.model}`;
 
       const catalog = PROVIDER_MODELS[providerId] || [];
       const currentModel = p.model;
@@ -886,44 +887,44 @@ export const dashboardHtml = `<!doctype html>
           ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" 
           : "bg-amber-500/10 text-amber-400 border-amber-500/20";
 
-        return \`
-          <div onclick="selectModel('\${p.id}', '\${m.id}')" 
-            class="p-3 bg-dark-bg hover:bg-dark-cardHover border \${isSelected ? 'border-red-500 shadow-md shadow-red-500/15' : 'border-dark-border'} rounded-xl cursor-pointer transition-all flex items-center justify-between gap-3 group">
+        return `
+          <div onclick="selectModel('${p.id}', '${m.id}')" 
+            class="p-3 bg-dark-bg hover:bg-dark-cardHover border ${isSelected ? 'border-red-500 shadow-md shadow-red-500/15' : 'border-dark-border'} rounded-xl cursor-pointer transition-all flex items-center justify-between gap-3 group">
             <div class="space-y-1 min-w-0">
               <div class="flex items-center gap-2 flex-wrap">
-                <span class="font-bold text-xs font-mono text-white group-hover:text-red-400 transition-colors">\${m.id}</span>
-                <span class="inline-flex items-center px-2 py-0.5 rounded text-[9px] font-semibold border \${badgeColor}">
-                  \${m.badge}
+                <span class="font-bold text-xs font-mono text-white group-hover:text-red-400 transition-colors">${m.id}</span>
+                <span class="inline-flex items-center px-2 py-0.5 rounded text-[9px] font-semibold border ${badgeColor}">
+                  ${m.badge}
                 </span>
-                \${isSelected ? '<span class="text-[9px] font-bold text-red-400 bg-red-500/15 border border-red-500/30 px-1.5 py-0.5 rounded">Active</span>' : ''}
+                ${isSelected ? '<span class="text-[9px] font-bold text-red-400 bg-red-500/15 border border-red-500/30 px-1.5 py-0.5 rounded">Active</span>' : ''}
               </div>
-              <p class="text-[11px] text-slate-400">\${m.desc}</p>
+              <p class="text-[11px] text-slate-400">${m.desc}</p>
             </div>
 
-            <button onclick="event.stopPropagation(); selectModel('\${p.id}', '\${m.id}')" 
-              class="px-3 py-1.5 text-xs font-semibold rounded-lg shrink-0 transition-all \${isSelected ? 'bg-red-600 text-white' : 'bg-dark-card border border-dark-border text-slate-300 hover:text-white hover:border-red-500'}">
-              \${isSelected ? 'Selected' : 'Use Model'}
+            <button onclick="event.stopPropagation(); selectModel('${p.id}', '${m.id}')" 
+              class="px-3 py-1.5 text-xs font-semibold rounded-lg shrink-0 transition-all ${isSelected ? 'bg-red-600 text-white' : 'bg-dark-card border border-dark-border text-slate-300 hover:text-white hover:border-red-500'}">
+              ${isSelected ? 'Selected' : 'Use Model'}
             </button>
           </div>
-        \`;
+        `;
       }).join('');
 
-      el("model-modal-body").innerHTML = \`
+      el("model-modal-body").innerHTML = `
         <div class="space-y-2">
-          \${cardsHtml}
+          ${cardsHtml}
         </div>
 
         <div class="pt-3 border-t border-dark-border space-y-2">
           <label class="text-[11px] font-semibold text-slate-400 font-sans block">Or Enter Any Custom Model ID</label>
           <div class="flex items-center gap-2">
-            <input type="text" id="custom-model-input" value="\${currentModel}" placeholder="e.g. meta-llama/llama-3.3-70b-instruct"
+            <input type="text" id="custom-model-input" value="${currentModel}" placeholder="e.g. meta-llama/llama-3.3-70b-instruct"
               class="flex-1 px-3 py-1.5 text-xs font-mono bg-dark-bg border border-dark-border rounded-lg text-slate-100 placeholder-slate-600 focus:outline-none focus:border-red-500">
-            <button onclick="saveCustomModel('\${p.id}')" class="px-3.5 py-1.5 text-xs font-semibold bg-red-600 hover:bg-red-500 text-white rounded-lg transition-all active:scale-95 shrink-0">
+            <button onclick="saveCustomModel('${p.id}')" class="px-3.5 py-1.5 text-xs font-semibold bg-red-600 hover:bg-red-500 text-white rounded-lg transition-all active:scale-95 shrink-0">
               Save Custom
             </button>
           </div>
         </div>
-      \`;
+      `;
 
       modal.classList.remove("hidden");
       lucide.createIcons();
@@ -934,7 +935,7 @@ export const dashboardHtml = `<!doctype html>
       renderProviders();
       save();
       closeModelModal();
-      showToast(\`✅ Switched \${providerId} to \${modelName}\`);
+      showToast(`✅ Switched ${providerId} to ${modelName}`);
     }
 
     function saveCustomModel(providerId) {
@@ -958,18 +959,18 @@ export const dashboardHtml = `<!doctype html>
         const icon = getProviderIcon(p.id);
         const portalUrl = PROVIDER_PORTALS[p.id] || '#';
 
-        return \`
-          <div class="p-3.5 sm:px-5 flex items-center gap-3.5 transition-all hover:bg-dark-cardHover \${p.enabled ? '' : 'opacity-40 grayscale'}">
+        return `
+          <div class="p-3.5 sm:px-5 flex items-center gap-3.5 transition-all hover:bg-dark-cardHover ${p.enabled ? '' : 'opacity-40 grayscale'}">
             <!-- Rank & Reorder -->
             <div class="flex items-center gap-2">
               <span class="w-6 h-6 rounded-lg bg-dark-bg border border-dark-border text-[11px] font-mono font-bold flex items-center justify-center text-slate-400">
-                \${i + 1}
+                ${i + 1}
               </span>
               <div class="flex flex-col gap-0.5">
-                <button onclick="move(\${i}, -1)" \${i === 0 ? 'disabled' : ''} class="p-1 rounded hover:bg-dark-border text-slate-400 hover:text-white disabled:opacity-20 disabled:pointer-events-none transition-all">
+                <button onclick="move(${i}, -1)" ${i === 0 ? 'disabled' : ''} class="p-1 rounded hover:bg-dark-border text-slate-400 hover:text-white disabled:opacity-20 disabled:pointer-events-none transition-all">
                   <i data-lucide="chevron-up" class="w-3.5 h-3.5"></i>
                 </button>
-                <button onclick="move(\${i}, 1)" \${i === state.length - 1 ? 'disabled' : ''} class="p-1 rounded hover:bg-dark-border text-slate-400 hover:text-white disabled:opacity-20 disabled:pointer-events-none transition-all">
+                <button onclick="move(${i}, 1)" ${i === state.length - 1 ? 'disabled' : ''} class="p-1 rounded hover:bg-dark-border text-slate-400 hover:text-white disabled:opacity-20 disabled:pointer-events-none transition-all">
                   <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
                 </button>
               </div>
@@ -978,51 +979,51 @@ export const dashboardHtml = `<!doctype html>
             <!-- Provider Info -->
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2 flex-wrap">
-                <a href="\${portalUrl}" target="_blank" rel="noopener noreferrer" title="Open \${p.name} Developer Console in new tab" class="w-6 h-6 rounded-lg bg-dark-bg border border-dark-border flex items-center justify-center hover:border-red-500 transition-all">
-                  \${icon}
+                <a href="${portalUrl}" target="_blank" rel="noopener noreferrer" title="Open ${p.name} Developer Console in new tab" class="w-6 h-6 rounded-lg bg-dark-bg border border-dark-border flex items-center justify-center hover:border-red-500 transition-all">
+                  ${icon}
                 </a>
-                <a href="\${portalUrl}" target="_blank" rel="noopener noreferrer" title="Open \${p.name} Developer Console in new tab" class="font-bold text-xs sm:text-sm text-white hover:text-red-400 flex items-center gap-1 transition-colors">
-                  <span>\${p.name}</span>
+                <a href="${portalUrl}" target="_blank" rel="noopener noreferrer" title="Open ${p.name} Developer Console in new tab" class="font-bold text-xs sm:text-sm text-white hover:text-red-400 flex items-center gap-1 transition-colors">
+                  <span>${p.name}</span>
                   <i data-lucide="external-link" class="w-3 h-3 text-slate-500 opacity-60"></i>
                 </a>
                 
                 <!-- Editable Model Badge -->
-                <button onclick="editModelName('\${p.id}', '\${p.model}')" title="Click to customize model name" class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono bg-dark-bg border border-dark-border text-slate-300 hover:border-red-500 hover:text-red-400 transition-all">
-                  <span>\${p.model}</span>
+                <button onclick="editModelName('${p.id}', '${p.model}')" title="Click to customize model name" class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono bg-dark-bg border border-dark-border text-slate-300 hover:border-red-500 hover:text-red-400 transition-all">
+                  <span>${p.model}</span>
                   <i data-lucide="edit-3" class="w-3 h-3 opacity-60"></i>
                 </button>
                 
-                <button onclick="openKeyModal()" class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold transition-all hover:scale-105 \${p.configured ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}">
-                  \${p.configured ? '● Key Active' : '+ Add Key'}
+                <button onclick="openKeyModal()" class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold transition-all hover:scale-105 ${p.configured ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}">
+                  ${p.configured ? '● Key Active' : '+ Add Key'}
                 </button>
 
-                \${inCooldown ? \`<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-red-500/10 text-red-400 border border-red-500/20 animate-pulse">⏳ Cooldown (\${cooldownSec}s)</span>\` : ''}
+                ${inCooldown ? `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-semibold bg-red-500/10 text-red-400 border border-red-500/20 animate-pulse">⏳ Cooldown (${cooldownSec}s)</span>` : ''}
               </div>
 
               <div class="flex items-center gap-3 sm:gap-4 mt-1.5 text-[11px] text-slate-400 flex-wrap">
-                <span class="flex items-center gap-1.5">Latency: \${getLatencySpeedBadge(p.lastLatencyMs)}</span>
-                <span>Failures: <span class="font-mono text-slate-200">\${p.consecutiveFailures || 0}</span></span>
-                \${p.lastError ? \`
-                  <button onclick="openProviderErrorModal('\${p.id}')" title="Click to view full error log & troubleshooting" class="inline-flex items-center gap-1 text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/25 px-2 py-0.5 rounded text-[10px] font-mono transition-all">
+                <span class="flex items-center gap-1.5">Latency: ${getLatencySpeedBadge(p.lastLatencyMs)}</span>
+                <span>Failures: <span class="font-mono text-slate-200">${p.consecutiveFailures || 0}</span></span>
+                ${p.lastError ? `
+                  <button onclick="openProviderErrorModal('${p.id}')" title="Click to view full error log & troubleshooting" class="inline-flex items-center gap-1 text-rose-400 hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/25 px-2 py-0.5 rounded text-[10px] font-mono transition-all">
                     <i data-lucide="alert-circle" class="w-3 h-3 text-rose-400 shrink-0"></i>
-                    <span class="truncate max-w-[180px] sm:max-w-[280px]">\${p.lastError}</span>
+                    <span class="truncate max-w-[180px] sm:max-w-[280px]">${p.lastError}</span>
                     <span class="underline font-sans font-semibold text-rose-300 ml-1">View Full Log</span>
                   </button>
-                \` : ''}
+                ` : ''}
               </div>
             </div>
 
             <!-- Actions -->
             <div class="flex items-center gap-2">
-              <button onclick="toggle('\${p.id}')" class="px-2.5 py-1 rounded-lg text-xs font-semibold transition-all \${p.enabled ? 'bg-red-500/15 text-red-400 border border-red-500/30 hover:bg-red-500/25' : 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700'}">
-                \${p.enabled ? 'Enabled' : 'Disabled'}
+              <button onclick="toggle('${p.id}')" class="px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${p.enabled ? 'bg-red-500/15 text-red-400 border border-red-500/30 hover:bg-red-500/25' : 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700'}">
+                ${p.enabled ? 'Enabled' : 'Disabled'}
               </button>
-              <button onclick="testSingle('\${p.id}')" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-dark-bg hover:bg-dark-card border border-dark-border text-slate-200 transition-all active:scale-95">
+              <button onclick="testSingle('${p.id}')" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-dark-bg hover:bg-dark-card border border-dark-border text-slate-200 transition-all active:scale-95">
                 Test
               </button>
             </div>
           </div>
-        \`;
+        `;
       }).join('');
       updateProviderSelect();
       lucide.createIcons();
@@ -1033,7 +1034,7 @@ export const dashboardHtml = `<!doctype html>
       if (!select) return;
       const currentVal = select.value || "auto";
       select.innerHTML = '<option value="auto">⚡ Auto Fallback Route</option>' + 
-        state.map(p => \`<option value="\${p.id}" \${p.id === currentVal ? 'selected' : ''}>\${p.name} (\${p.model})</option>\`).join('');
+        state.map(p => `<option value="${p.id}" ${p.id === currentVal ? 'selected' : ''}>${p.name} (${p.model})</option>`).join('');
     }
 
     async function openKeyModal() {
@@ -1046,7 +1047,7 @@ export const dashboardHtml = `<!doctype html>
       try {
         const res = await fetch("/api/keys", { headers: getHeaders() });
         if (res.status === 401) {
-          list.innerHTML = \`
+          list.innerHTML = `
             <div class="p-6 text-center space-y-3">
               <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center mx-auto">
                 <i data-lucide="lock" class="w-5 h-5"></i>
@@ -1054,7 +1055,7 @@ export const dashboardHtml = `<!doctype html>
               <h4 class="text-sm font-bold text-white">Admin Key Required</h4>
               <p class="text-xs text-slate-400 max-w-sm mx-auto">Please enter your <code class="text-amber-400 font-mono">ROUTER_API_KEY</code> at the top of the dashboard to manage encrypted AI credentials.</p>
             </div>
-          \`;
+          `;
           lucide.createIcons();
           return;
         }
@@ -1062,43 +1063,43 @@ export const dashboardHtml = `<!doctype html>
 
         list.innerHTML = keysData.map(k => {
           const portalUrl = PROVIDER_PORTALS[k.id] || '#';
-          return \`
+          return `
             <div class="p-3 bg-dark-bg border border-dark-border rounded-xl space-y-2">
               <div class="flex items-center justify-between flex-wrap gap-2">
                 <div class="flex items-center gap-2">
-                  <a href="\${portalUrl}" target="_blank" rel="noopener noreferrer" class="font-bold text-xs text-white hover:text-red-400 flex items-center gap-1 transition-colors">
-                    <span>\${k.name}</span>
+                  <a href="${portalUrl}" target="_blank" rel="noopener noreferrer" class="font-bold text-xs text-white hover:text-red-400 flex items-center gap-1 transition-colors">
+                    <span>${k.name}</span>
                     <i data-lucide="external-link" class="w-3 h-3 text-slate-500 opacity-60"></i>
                   </a>
-                  <span class="text-[10px] text-slate-400 font-mono">\${k.model}</span>
+                  <span class="text-[10px] text-slate-400 font-mono">${k.model}</span>
                 </div>
                 <div class="flex items-center gap-2">
-                  <a href="\${portalUrl}" target="_blank" rel="noopener noreferrer" class="text-[10px] text-red-400 hover:text-red-300 hover:underline flex items-center gap-0.5">
+                  <a href="${portalUrl}" target="_blank" rel="noopener noreferrer" class="text-[10px] text-red-400 hover:text-red-300 hover:underline flex items-center gap-0.5">
                     <span>Get Key</span>
                     <i data-lucide="arrow-up-right" class="w-2.5 h-2.5"></i>
                   </a>
-                  <span class="text-[10px] font-mono \${k.configured ? 'text-emerald-400' : 'text-slate-500'}">
-                    \${k.configured ? (\`● \${k.source.toUpperCase()}: \${k.masked}\`) : '○ Not Configured'}
+                  <span class="text-[10px] font-mono ${k.configured ? 'text-emerald-400' : 'text-slate-500'}">
+                    ${k.configured ? (`● ${k.source.toUpperCase()}: ${k.masked}`) : '○ Not Configured'}
                   </span>
                 </div>
               </div>
 
               <div class="flex items-center gap-2">
-                <input type="password" id="input-key-\${k.id}" placeholder="Paste API Key here…"
+                <input type="password" id="input-key-${k.id}" placeholder="Paste API Key here…"
                   class="flex-1 px-3 py-1.5 text-xs font-mono bg-dark-card border border-dark-border rounded-lg text-slate-100 placeholder-slate-600 focus:outline-none focus:border-red-500">
                 
-                <button onclick="saveProviderKey('\${k.id}')" class="px-3 py-1.5 text-xs font-semibold bg-red-600 hover:bg-red-500 text-white rounded-lg transition-all active:scale-95 shrink-0 shadow-sm shadow-red-500/20">
+                <button onclick="saveProviderKey('${k.id}')" class="px-3 py-1.5 text-xs font-semibold bg-red-600 hover:bg-red-500 text-white rounded-lg transition-all active:scale-95 shrink-0 shadow-sm shadow-red-500/20">
                   Save Key
                 </button>
 
-                \${k.configured && k.source === 'ui' ? \`
-                  <button onclick="deleteProviderKey('\${k.id}')" title="Delete stored key" class="p-1.5 rounded-lg border border-dark-border text-slate-400 hover:text-rose-400 hover:bg-dark-card transition-all">
+                ${k.configured && k.source === 'ui' ? `
+                  <button onclick="deleteProviderKey('${k.id}')" title="Delete stored key" class="p-1.5 rounded-lg border border-dark-border text-slate-400 hover:text-rose-400 hover:bg-dark-card transition-all">
                     <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                   </button>
-                \` : ''}
+                ` : ''}
               </div>
             </div>
-          \`;
+          `;
         }).join('');
         lucide.createIcons();
       } catch (err) {
@@ -1166,22 +1167,22 @@ export const dashboardHtml = `<!doctype html>
         }
 
         const failovers = log.failovers && log.failovers.length > 0 
-          ? \`<span class="text-[10px] text-amber-400/80 block mt-0.5">↳ failovers: \${log.failovers.length}</span>\`
+          ? `<span class="text-[10px] text-amber-400/80 block mt-0.5">↳ failovers: ${log.failovers.length}</span>`
           : '';
 
-        return \`
-          <tr onclick="openLogModal(\${index})" class="hover:bg-dark-cardHover transition-all cursor-pointer group">
-            <td class="py-2 px-4">\${badge}</td>
-            <td class="py-2 px-4 text-slate-400">\${time}</td>
-            <td class="py-2 px-4 max-w-[240px] truncate text-slate-200 group-hover:text-red-400 transition-colors" title="\${log.promptPreview}">\${log.promptPreview}</td>
+        return `
+          <tr onclick="openLogModal(${index})" class="hover:bg-dark-cardHover transition-all cursor-pointer group">
+            <td class="py-2 px-4">${badge}</td>
+            <td class="py-2 px-4 text-slate-400">${time}</td>
+            <td class="py-2 px-4 max-w-[240px] truncate text-slate-200 group-hover:text-red-400 transition-colors" title="${log.promptPreview}">${log.promptPreview}</td>
             <td class="py-2 px-4">
-              <span class="font-semibold text-white font-sans">\${log.provider}</span>
-              \${failovers}
+              <span class="font-semibold text-white font-sans">${log.provider}</span>
+              ${failovers}
             </td>
-            <td class="py-2 px-4 font-semibold \${log.isCacheHit ? 'text-red-400' : 'text-slate-200'}">\${log.latencyMs}ms</td>
-            <td class="py-2 px-4 text-slate-400">\${log.tokens?.total_tokens ? log.tokens.total_tokens : (log.isCacheHit ? '0' : '—')}</td>
+            <td class="py-2 px-4 font-semibold ${log.isCacheHit ? 'text-red-400' : 'text-slate-200'}">${log.latencyMs}ms</td>
+            <td class="py-2 px-4 text-slate-400">${log.tokens?.total_tokens ? log.tokens.total_tokens : (log.isCacheHit ? '0' : '—')}</td>
           </tr>
-        \`;
+        `;
       }).join('');
     }
 
@@ -1192,46 +1193,46 @@ export const dashboardHtml = `<!doctype html>
       const body = el("log-modal-body");
 
       const failoverHtml = log.failovers && log.failovers.length > 0 
-        ? log.failovers.map(f => \`<div class="p-2 rounded bg-dark-bg border border-dark-border text-rose-400">⚠️ \${f}</div>\`).join('')
+        ? log.failovers.map(f => `<div class="p-2 rounded bg-dark-bg border border-dark-border text-rose-400">⚠️ ${f}</div>`).join('')
         : '<div class="text-emerald-400 text-xs">✨ Direct fulfillment (zero failovers needed)</div>';
 
-      body.innerHTML = \`
+      body.innerHTML = `
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
           <div class="p-2 bg-dark-bg rounded-lg border border-dark-border">
             <div class="text-[10px] text-slate-500 font-sans uppercase">Status</div>
-            <div class="font-bold text-white mt-0.5">\${log.status} \${log.status === 200 ? 'OK' : 'FAIL'}</div>
+            <div class="font-bold text-white mt-0.5">${log.status} ${log.status === 200 ? 'OK' : 'FAIL'}</div>
           </div>
           <div class="p-2 bg-dark-bg rounded-lg border border-dark-border">
             <div class="text-[10px] text-slate-500 font-sans uppercase">Provider</div>
-            <div class="font-bold text-red-400 mt-0.5">\${log.provider}</div>
+            <div class="font-bold text-red-400 mt-0.5">${log.provider}</div>
           </div>
           <div class="p-2 bg-dark-bg rounded-lg border border-dark-border">
             <div class="text-[10px] text-slate-500 font-sans uppercase">Latency</div>
-            <div class="font-bold text-white mt-0.5">\${log.latencyMs}ms</div>
+            <div class="font-bold text-white mt-0.5">${log.latencyMs}ms</div>
           </div>
           <div class="p-2 bg-dark-bg rounded-lg border border-dark-border">
             <div class="text-[10px] text-slate-500 font-sans uppercase">RAM Cache</div>
-            <div class="font-bold \${log.isCacheHit ? 'text-red-400' : 'text-slate-400'} mt-0.5">\${log.isCacheHit ? 'HIT (0ms)' : 'MISS'}</div>
+            <div class="font-bold ${log.isCacheHit ? 'text-red-400' : 'text-slate-400'} mt-0.5">${log.isCacheHit ? 'HIT (0ms)' : 'MISS'}</div>
           </div>
         </div>
 
         <div>
           <label class="text-[11px] font-semibold text-slate-400 font-sans block mb-1">User Prompt</label>
-          <div class="p-3 bg-dark-bg rounded-lg border border-dark-border text-slate-200 whitespace-pre-wrap max-h-28 overflow-y-auto">\${log.promptPreview}</div>
+          <div class="p-3 bg-dark-bg rounded-lg border border-dark-border text-slate-200 whitespace-pre-wrap max-h-28 overflow-y-auto">${log.promptPreview}</div>
         </div>
 
-        \${log.responsePreview ? \`
+        ${log.responsePreview ? `
           <div>
             <label class="text-[11px] font-semibold text-slate-400 font-sans block mb-1">Response Output Preview</label>
-            <div class="p-3 bg-dark-bg rounded-lg border border-dark-border text-red-300 whitespace-pre-wrap max-h-36 overflow-y-auto">\${log.responsePreview}</div>
+            <div class="p-3 bg-dark-bg rounded-lg border border-dark-border text-red-300 whitespace-pre-wrap max-h-36 overflow-y-auto">${log.responsePreview}</div>
           </div>
-        \` : ''}
+        ` : ''}
 
         <div>
           <label class="text-[11px] font-semibold text-slate-400 font-sans block mb-1">Failover Execution Trace</label>
-          <div class="space-y-1.5">\${failoverHtml}</div>
+          <div class="space-y-1.5">${failoverHtml}</div>
         </div>
-      \`;
+      `;
 
       modal.classList.remove("hidden");
       lucide.createIcons();
@@ -1260,29 +1261,29 @@ export const dashboardHtml = `<!doctype html>
 
       const escapedError = p.lastError.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-      el("error-modal-body").innerHTML = \`
-        \${guidance}
+      el("error-modal-body").innerHTML = `
+        ${guidance}
         
         <div>
           <label class="text-[11px] font-semibold text-slate-400 font-sans block mb-1">Full Error Log / Upstream Response</label>
-          <div class="p-3 bg-dark-bg border border-dark-border rounded-xl text-rose-300 font-mono text-xs whitespace-pre-wrap leading-relaxed max-h-48 overflow-y-auto">\${escapedError}</div>
+          <div class="p-3 bg-dark-bg border border-dark-border rounded-xl text-rose-300 font-mono text-xs whitespace-pre-wrap leading-relaxed max-h-48 overflow-y-auto">${escapedError}</div>
         </div>
 
         <div class="flex items-center justify-between pt-2 border-t border-dark-border flex-wrap gap-2">
           <div class="flex items-center gap-2">
-            <button onclick="editModelName('\${p.id}', '\${p.model}'); closeErrorModal();" class="px-3 py-1.5 text-xs font-semibold bg-dark-card hover:bg-dark-cardHover border border-dark-border rounded-lg text-slate-200 transition-all">
+            <button onclick="editModelName('${p.id}', '${p.model}'); closeErrorModal();" class="px-3 py-1.5 text-xs font-semibold bg-dark-card hover:bg-dark-cardHover border border-dark-border rounded-lg text-slate-200 transition-all">
               ✏️ Edit Model
             </button>
-            <button onclick="copyErrorText('\${p.id}')" class="px-3 py-1.5 text-xs font-semibold bg-dark-card hover:bg-dark-cardHover border border-dark-border rounded-lg text-slate-200 transition-all">
+            <button onclick="copyErrorText('${p.id}')" class="px-3 py-1.5 text-xs font-semibold bg-dark-card hover:bg-dark-cardHover border border-dark-border rounded-lg text-slate-200 transition-all">
               📋 Copy Error
             </button>
           </div>
 
-          <button onclick="testSingle('\${p.id}'); closeErrorModal();" class="px-3.5 py-1.5 text-xs font-bold bg-red-600 hover:bg-red-500 text-white rounded-lg transition-all shadow-md shadow-red-500/20">
+          <button onclick="testSingle('${p.id}'); closeErrorModal();" class="px-3.5 py-1.5 text-xs font-bold bg-red-600 hover:bg-red-500 text-white rounded-lg transition-all shadow-md shadow-red-500/20">
             ⚡ Retry Test
           </button>
         </div>
-      \`;
+      `;
 
       modal.classList.remove("hidden");
       lucide.createIcons();
@@ -1357,7 +1358,7 @@ export const dashboardHtml = `<!doctype html>
         if (data.ok) {
           showToast("✅ " + id + " responded in " + data.latencyMs + "ms (" + data.model + ")");
         } else {
-          showToast("❌ " + id + " failed. <button onclick=\\"openProviderErrorModal('" + id + "')\\" class=\\"underline font-bold text-rose-300 hover:text-white ml-1.5 cursor-pointer\\">View Error Details →</button>", 6000);
+          showToast("❌ " + id + " failed. <button onclick=\"openProviderErrorModal('" + id + "')\" class=\"underline font-bold text-rose-300 hover:text-white ml-1.5 cursor-pointer\">View Error Details →</button>", 6000, true);
         }
         load();
       } catch (err) {
@@ -1386,7 +1387,7 @@ export const dashboardHtml = `<!doctype html>
       footer.classList.add("hidden");
       progressBar.style.width = "0%";
       percentText.textContent = "0%";
-      el("benchmark-progress-text").textContent = \`Racing \${configured.length} providers concurrently…\`;
+      el("benchmark-progress-text").textContent = `Racing ${configured.length} providers concurrently…`;
       el("benchmark-status-badge").textContent = "⚡ Concurrency: Running Parallel Requests";
 
       benchmarkResults = configured.map(p => ({
@@ -1402,37 +1403,37 @@ export const dashboardHtml = `<!doctype html>
         grid.innerHTML = benchmarkResults.map(r => {
           let badgeHtml = "";
           if (r.status === "running") {
-            badgeHtml = \`<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono">
+            badgeHtml = `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono">
               <i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i> Testing...
-            </span>\`;
+            </span>`;
           } else if (r.status === "ok") {
             const speedColor = r.latencyMs < 600 ? "text-emerald-400 border-emerald-500/30 bg-emerald-500/10" : "text-amber-400 border-amber-500/30 bg-amber-500/10";
-            badgeHtml = \`<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold \${speedColor} border font-mono">
-              ⚡ \${r.latencyMs}ms OK
-            </span>\`;
+            badgeHtml = `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold ${speedColor} border font-mono">
+              ⚡ ${r.latencyMs}ms OK
+            </span>`;
           } else {
             const errMsg = r.error ? (r.error.length > 32 ? r.error.slice(0, 30) + '…' : r.error) : 'Failed';
-            badgeHtml = \`<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/30 font-mono" title="\${r.error || 'Failed'}">
-              ❌ \${errMsg}
-            </span>\`;
+            badgeHtml = `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/30 font-mono" title="${r.error || 'Failed'}">
+              ❌ ${errMsg}
+            </span>`;
           }
 
-          return \`
+          return `
             <div class="p-3 bg-dark-bg border border-dark-border rounded-xl flex items-center justify-between gap-3">
               <div class="flex items-center gap-2.5 min-w-0">
                 <div class="w-6 h-6 rounded-lg bg-dark-card border border-dark-border flex items-center justify-center">
-                  \${getProviderIcon(r.id)}
+                  ${getProviderIcon(r.id)}
                 </div>
                 <div class="min-w-0">
-                  <div class="font-bold text-xs text-white truncate">\${r.name}</div>
-                  <div class="text-[10px] text-slate-400 font-mono truncate">\${r.model}</div>
+                  <div class="font-bold text-xs text-white truncate">${r.name}</div>
+                  <div class="text-[10px] text-slate-400 font-mono truncate">${r.model}</div>
                 </div>
               </div>
               <div class="flex items-center gap-2 shrink-0">
-                \${badgeHtml}
+                ${badgeHtml}
               </div>
             </div>
-          \`;
+          `;
         }).join('');
         lucide.createIcons();
       }
@@ -1468,7 +1469,7 @@ export const dashboardHtml = `<!doctype html>
 
       // Finished benchmark
       el("benchmark-status-badge").textContent = "✅ Benchmark Completed";
-      el("benchmark-progress-text").textContent = \`All \${configured.length} providers tested successfully!\`;
+      el("benchmark-progress-text").textContent = `All ${configured.length} providers tested successfully!`;
       
       const successful = benchmarkResults.filter(r => r.status === "ok").sort((a, b) => a.latencyMs - b.latencyMs);
       const isAuthError = benchmarkResults.some(r => r.error && (r.error.includes("Unauthorized") || r.error.includes("admin key")));
@@ -1477,15 +1478,15 @@ export const dashboardHtml = `<!doctype html>
       if (successful.length > 0) {
         const winner = successful[0];
         winnerText.className = "text-xs text-emerald-400 font-semibold flex items-center gap-1.5";
-        winnerText.innerHTML = \`🏆 <span>Winner: <strong>\${winner.name}</strong> is fastest at <span class="text-white font-mono font-bold">\${winner.latencyMs}ms</span>!</span>\`;
+        winnerText.innerHTML = `🏆 <span>Winner: <strong>${winner.name}</strong> is fastest at <span class="text-white font-mono font-bold">${winner.latencyMs}ms</span>!</span>`;
         if (btnOpt) btnOpt.classList.remove("hidden");
       } else if (isAuthError) {
         winnerText.className = "text-xs text-amber-400 font-medium flex items-center gap-1.5";
-        winnerText.innerHTML = \`🔐 <span>Admin key required. Please enter your Router Key in the top right to benchmark.</span>\`;
+        winnerText.innerHTML = `🔐 <span>Admin key required. Please enter your Router Key in the top right to benchmark.</span>`;
         if (btnOpt) btnOpt.classList.add("hidden");
       } else {
         winnerText.className = "text-xs text-rose-400 font-medium flex items-center gap-1.5";
-        winnerText.innerHTML = \`⚠️ <span>All tested providers returned errors. Check your cloud API keys.</span>\`;
+        winnerText.innerHTML = `⚠️ <span>All tested providers returned errors. Check your cloud API keys.</span>`;
         if (btnOpt) btnOpt.classList.add("hidden");
       }
 
@@ -1624,7 +1625,7 @@ export const dashboardHtml = `<!doctype html>
 
         if (!res.ok) {
           const err = await res.json();
-          out.textContent = "Error " + res.status + ":\\n" + JSON.stringify(err, null, 2);
+          out.textContent = "Error " + res.status + ":\n" + JSON.stringify(err, null, 2);
           meta.textContent = "Failed";
           return;
         }
@@ -1639,7 +1640,7 @@ export const dashboardHtml = `<!doctype html>
             const { done, value } = await reader.read();
             if (done) break;
             const chunk = decoder.decode(value);
-            const lines = chunk.split("\\n");
+            const lines = chunk.split("\n");
             for (const line of lines) {
               if (line.startsWith("data: ") && line !== "data: [DONE]") {
                 try {
@@ -1698,9 +1699,9 @@ export const dashboardHtml = `<!doctype html>
     function updateSnippetView() {
       const host = window.location.origin;
       const key = getKey() || "";
-      const authAttr = key ? '\\n  data-key="' + key + '"' : '';
+      const authAttr = key ? '\n  data-key="' + key + '"' : '';
       
-      const customTitle = (el('cfg-widget-title')?.value || 'Amjad AI').trim();
+      const customTitle = (el('cfg-widget-title')?.value || 'ZeroRoute AI').trim();
       const customColor = (el('cfg-widget-color')?.value || '#ef4444').trim();
       const customPersona = (el('cfg-widget-persona')?.value || '').trim();
       const customKnowledge = (el('cfg-widget-knowledge')?.value || '').trim();
@@ -1710,27 +1711,27 @@ export const dashboardHtml = `<!doctype html>
         customizerEl.style.display = currentSnippet === 'widget' ? 'block' : 'none';
       }
 
-      let widgetTag = '<!-- 1-LINE CHATBOT WIDGET: Paste anywhere in your HTML, Webflow, WordPress, Next.js, or React app -->\\n<' + 'script\\n  src="' + host + '/widget.js"\\n  data-title="' + customTitle + '"';
+      let widgetTag = '<!-- 1-LINE CHATBOT WIDGET: Paste anywhere in your HTML, Webflow, WordPress, Next.js, or React app -->\n<' + 'script\n  src="' + host + '/widget.js"\n  data-title="' + customTitle + '"';
       
       if (customPersona.startsWith('http')) {
-        widgetTag += '\\n  data-persona-url="' + customPersona + '"';
+        widgetTag += '\n  data-persona-url="' + customPersona + '"';
       } else if (customPersona) {
-        widgetTag += '\\n  data-persona="' + customPersona.replace(/"/g, '&quot;') + '"';
+        widgetTag += '\n  data-persona="' + customPersona.replace(/"/g, '&quot;') + '"';
       }
 
       if (customKnowledge.startsWith('http')) {
-        widgetTag += '\\n  data-knowledge-url="' + customKnowledge + '"';
+        widgetTag += '\n  data-knowledge-url="' + customKnowledge + '"';
       } else if (customKnowledge) {
-        widgetTag += '\\n  data-knowledge="' + customKnowledge.replace(/"/g, '&quot;').replace(/\\n/g, '\\n    ') + '"';
+        widgetTag += '\n  data-knowledge="' + customKnowledge.replace(/"/g, '&quot;').replace(/\n/g, '\n    ') + '"';
       }
 
-      widgetTag += '\\n  data-color="' + customColor + '"' + authAttr + '\\n  defer>\\n<' + '/script>';
+      widgetTag += '\n  data-color="' + customColor + '"' + authAttr + '\n  defer>\n<' + '/script>';
 
       const snippets = {
         widget: widgetTag,
-        js: '// Web Chatbot / Node.js\\nconst response = await fetch("' + host + '/v1/chat/completions", {\\n  method: "POST",\\n  headers: {\\n    "Content-Type": "application/json",\\n    "Authorization": "Bearer ' + (key || "your-router-api-key") + '"\\n  },\\n  body: JSON.stringify({\\n    stream: true,\\n    messages: [\\n      { role: "system", content: "You are an AI assistant." },\\n      { role: "user", content: "Hello!" }\\n    ]\\n  })\\n});',
-        py: '# Python (Official openai SDK)\\nfrom openai import OpenAI\\n\\nclient = OpenAI(\\n    base_url="' + host + '/v1",\\n    api_key="' + (key || "your-router-api-key") + '"\\n)\\n\\nresponse = client.chat.completions.create(\\n    model="default",\\n    messages=[{"role": "user", "content": "Hello!"}]\\n)\\n\\nprint(response.choices[0].message.content)',
-        curl: '# cURL Streaming\\ncurl -N ' + host + '/v1/chat/completions \\\\\\n  -H "Authorization: Bearer ' + (key || "your-router-api-key") + '" \\\\\\n  -H "Content-Type: application/json" \\\\\\n  -d "{\\"stream\\":true,\\"messages\\":[{\\"role\\":\\"user\\",\\"content\\":\\"Hello!\\"}]}"'
+        js: '// Web Chatbot / Node.js\nconst response = await fetch("' + host + '/v1/chat/completions", {\n  method: "POST",\n  headers: {\n    "Content-Type": "application/json",\n    "Authorization": "Bearer ' + (key || "your-router-api-key") + '"\n  },\n  body: JSON.stringify({\n    stream: true,\n    messages: [\n      { role: "system", content: "You are an AI assistant." },\n      { role: "user", content: "Hello!" }\n    ]\n  })\n});',
+        py: '# Python (Official openai SDK)\nfrom openai import OpenAI\n\nclient = OpenAI(\n    base_url="' + host + '/v1",\n    api_key="' + (key || "your-router-api-key") + '"\n)\n\nresponse = client.chat.completions.create(\n    model="default",\n    messages=[{"role": "user", "content": "Hello!"}]\n)\n\nprint(response.choices[0].message.content)',
+        curl: '# cURL Streaming\ncurl -N ' + host + '/v1/chat/completions \\\n  -H "Authorization: Bearer ' + (key || "your-router-api-key") + '" \\\n  -H "Content-Type: application/json" \\\n  -d "{\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Hello!\"}]}"'
       };
 
       el("code-box").textContent = snippets[currentSnippet] || snippets.widget;
@@ -1741,8 +1742,26 @@ export const dashboardHtml = `<!doctype html>
       showToast("📋 Code snippet copied to clipboard!");
     }
 
+    // Visibility-aware polling — pause when tab is in background (fix D)
+    let _pollInterval = null;
+    function startPolling() {
+      if (_pollInterval) return;
+      _pollInterval = setInterval(load, 15000);
+    }
+    function stopPolling() {
+      clearInterval(_pollInterval);
+      _pollInterval = null;
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        stopPolling();
+      } else {
+        load(); // immediate refresh when tab becomes visible again
+        startPolling();
+      }
+    });
     load();
-    setInterval(load, 15000);
+    startPolling();
   </script>
 </body>
-</html>`;
+</html>
