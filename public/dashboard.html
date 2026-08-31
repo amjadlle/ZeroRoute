@@ -222,6 +222,10 @@
         <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
         Provider Routing
       </button>
+      <button onclick="switchTab('analytics')" id="tab-btn-analytics" class="tab-nav-btn px-3 py-1.5 text-xs font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 transition-all shrink-0 whitespace-nowrap">
+        <i data-lucide="bar-chart-3" class="w-3.5 h-3.5"></i>
+        Analytics & Quotas
+      </button>
       <button onclick="switchTab('playground')" id="tab-btn-playground" class="tab-nav-btn px-3 py-1.5 text-xs font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 transition-all shrink-0 whitespace-nowrap">
         <i data-lucide="terminal" class="w-3.5 h-3.5"></i>
         Playground
@@ -265,7 +269,62 @@
       </div>
     </div>
 
-    <!-- TAB 2: LIVE PLAYGROUND -->
+    <!-- TAB 2: ANALYTICS & MULTI-TENANT QUOTAS -->
+    <div id="tab-content-analytics" class="hidden space-y-4">
+      <!-- Top Overview Banner -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <!-- Connected Websites / Apps Card -->
+        <div class="glass-card rounded-2xl p-5 lg:col-span-2 space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-semibold text-white flex items-center gap-2">
+              <i data-lucide="globe" class="w-4 h-4 text-blue-400"></i>
+              Connected Websites & Traffic Origins
+            </h3>
+            <span class="text-[11px] text-slate-400 font-mono" id="analytics-total-origins">0 websites active</span>
+          </div>
+          <p class="text-xs text-slate-400">Real-time breakdown of chatbot requests, token consumption, and cache hits per website domain.</p>
+          <div id="analytics-origins-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            <div class="p-4 bg-dark-bg border border-dark-border rounded-xl text-center text-slate-500 text-xs">
+              No website traffic recorded yet. Embed the widget on your site to see live analytics!
+            </div>
+          </div>
+        </div>
+
+        <!-- Model Share Breakdown -->
+        <div class="glass-card rounded-2xl p-5 space-y-3">
+          <h3 class="text-sm font-semibold text-white flex items-center gap-2">
+            <i data-lucide="pie-chart" class="w-4 h-4 text-red-400"></i>
+            Model Traffic Distribution
+          </h3>
+          <p class="text-xs text-slate-400">Which models are fulfilling user requests.</p>
+          <div id="analytics-models-list" class="space-y-2.5 pt-1">
+            <div class="text-center text-slate-500 text-xs py-4">No model traffic recorded yet</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Provider Quota & Rate Limit Health Grid -->
+      <div class="glass-card rounded-2xl overflow-hidden">
+        <div class="p-4 sm:px-6 bg-dark-card/60 border-b border-dark-border flex items-center justify-between">
+          <div>
+            <h3 class="text-sm font-semibold text-white flex items-center gap-2">
+              <i data-lucide="shield-alert" class="w-4 h-4 text-emerald-400"></i>
+              AI Provider Quotas & Health Status
+            </h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">Live monitoring of 429 rate limit events, consecutive errors, and automated failover cooldowns.</p>
+          </div>
+          <button onclick="load(true)" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-dark-card hover:bg-dark-cardHover text-slate-200 border border-dark-border rounded-lg transition-all">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+            Refresh Quotas
+          </button>
+        </div>
+        <div id="analytics-providers-grid" class="p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: LIVE PLAYGROUND -->
     <div id="tab-content-playground" class="hidden space-y-4">
       <div class="glass-card rounded-2xl p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         <div class="space-y-4">
@@ -340,10 +399,10 @@
       </div>
     </div>
 
-    <!-- TAB 3: REQUEST LOGS -->
+    <!-- TAB 4: REQUEST LOGS -->
     <div id="tab-content-logs" class="hidden space-y-4">
       <div class="glass-card rounded-2xl overflow-hidden">
-        <div class="p-4 sm:px-6 bg-dark-card/60 border-b border-dark-border flex items-center justify-between">
+        <div class="p-4 sm:px-6 bg-dark-card/60 border-b border-dark-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div>
             <h2 class="text-sm font-semibold text-white flex items-center gap-2">
               <i data-lucide="history" class="w-4 h-4 text-red-500"></i>
@@ -351,7 +410,10 @@
             </h2>
             <p class="text-[11px] text-slate-400 mt-0.5">Click on any request row to inspect its full payload, timeline, and failover trace.</p>
           </div>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 flex-wrap">
+            <select id="log-origin-filter" onchange="renderLogs(logs)" class="bg-dark-bg border border-dark-border text-slate-300 text-xs px-2.5 py-1 rounded-lg outline-none focus:border-red-500 font-sans">
+              <option value="all">🌐 All Websites</option>
+            </select>
             <button onclick="clearCache()" class="px-2.5 py-1 text-xs font-medium bg-dark-card hover:bg-dark-cardHover border border-dark-border rounded-lg text-slate-300 transition-all">
               🧹 Flush Cache
             </button>
@@ -367,6 +429,7 @@
               <tr>
                 <th class="py-2.5 px-4">Status</th>
                 <th class="py-2.5 px-4">Time</th>
+                <th class="py-2.5 px-4">Origin / Site</th>
                 <th class="py-2.5 px-4">User Prompt</th>
                 <th class="py-2.5 px-4">Provider / Route</th>
                 <th class="py-2.5 px-4">Latency</th>
@@ -374,7 +437,7 @@
               </tr>
             </thead>
             <tbody id="logs-tbody" class="divide-y divide-dark-border font-mono text-slate-300 cursor-pointer">
-              <tr><td colspan="6" class="p-6 text-center text-slate-500 font-sans">No requests recorded yet. Send a test from the playground!</td></tr>
+              <tr><td colspan="7" class="p-6 text-center text-slate-500 font-sans">No requests recorded yet. Send a test from the playground!</td></tr>
             </tbody>
           </table>
         </div>
@@ -425,6 +488,19 @@
               </div>
             </div>
 
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Welcome Greeting Message</label>
+                <input type="text" id="cfg-widget-greeting" value="Hi! 👋 How can I help you today?" oninput="updateSnippetView()"
+                  class="w-full px-3 py-1.5 text-xs bg-dark-bg border border-dark-border rounded-lg text-slate-200 focus:outline-none focus:border-red-500">
+              </div>
+              <div>
+                <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Quick Starter Question Chips (Comma separated)</label>
+                <input type="text" id="cfg-widget-prompts" value="Is it free?,How does it work?,Pricing details" oninput="updateSnippetView()"
+                  class="w-full px-3 py-1.5 text-xs bg-dark-bg border border-dark-border rounded-lg text-slate-200 focus:outline-none focus:border-red-500">
+              </div>
+            </div>
+
             <div>
               <div class="flex items-center justify-between mb-1">
                 <label class="block text-[10px] font-semibold text-slate-400 uppercase">1. System Persona (Tone & Role)</label>
@@ -449,12 +525,39 @@
           </div>
 
           <pre id="code-box" class="p-4 bg-dark-card border border-dark-border rounded-xl text-xs font-mono text-red-300 overflow-x-auto leading-relaxed"></pre>
+
+          <!-- Multi-Cloud Persistence & Setup Guide -->
+          <div class="mt-4 p-4 bg-dark-card/60 border border-dark-border rounded-xl space-y-2.5">
+            <h3 class="text-xs font-bold text-white flex items-center gap-1.5">
+              <i data-lucide="database" class="w-4 h-4 text-emerald-400"></i>
+              Permanent Cloud Storage & Persistence Guide:
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-[11px] text-slate-400 pt-1">
+              <div class="p-3 bg-dark-bg border border-dark-border rounded-lg space-y-1">
+                <div class="font-bold text-white flex items-center gap-1">
+                  <i data-lucide="hard-drive" class="w-3.5 h-3.5 text-blue-400"></i> Docker / VPS / Local
+                </div>
+                <p>Saved automatically to local disk at <code class="text-slate-300">data/metrics.json</code> with zero setup needed.</p>
+              </div>
+              <div class="p-3 bg-dark-bg border border-dark-border rounded-lg space-y-1">
+                <div class="font-bold text-white flex items-center gap-1">
+                  <i data-lucide="cloud" class="w-3.5 h-3.5 text-orange-400"></i> Cloudflare Pages
+                </div>
+                <p>In Cloudflare Pages Settings → Functions, add a KV namespace binding named <code class="text-amber-300">METRICS_KV</code> for free global storage.</p>
+              </div>
+              <div class="p-3 bg-dark-bg border border-dark-border rounded-lg space-y-1">
+                <div class="font-bold text-white flex items-center gap-1">
+                  <i data-lucide="server" class="w-3.5 h-3.5 text-emerald-400"></i> Vercel / Multi-Region
+                </div>
+                <p>Add <code class="text-emerald-300">UPSTASH_REDIS_REST_URL</code> and Token in your environment variables for 100% free serverless storage.</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     <!-- Dashboard Footer -->
     <footer class="pt-6 pb-2 border-t border-dark-border flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-500">
-      <div class="flex items-center gap-2.5">
-        <img src="https://doting-octopus-124.convex.cloud/api/storage/730e2173-8a2f-4d38-8976-7624a53bbc88" alt="Amjad P A" class="w-6 h-6 rounded-full object-cover ring-1 ring-red-500/40">
+      <div class="flex items-center gap-2">
         <span>ZeroRoute Gateway • Engineered by <a href="https://amjad.mapki.in" target="_blank" class="text-slate-300 hover:text-white font-semibold">Amjad P A</a></span>
       </div>
       <div class="flex items-center gap-3.5 flex-wrap justify-center text-[10.5px]">
@@ -715,13 +818,16 @@
     }
 
     function switchTab(tabId) {
-      ['providers', 'playground', 'logs', 'code'].forEach(t => {
-        el('tab-content-' + t).classList.toggle('hidden', t !== tabId);
+      ['providers', 'analytics', 'playground', 'logs', 'code'].forEach(t => {
+        const contentEl = el('tab-content-' + t);
+        if (contentEl) contentEl.classList.toggle('hidden', t !== tabId);
         const btn = el('tab-btn-' + t);
-        if (t === tabId) {
-          btn.className = 'tab-nav-btn px-3 py-1.5 text-xs font-semibold text-red-500 border-b-2 border-red-500 flex items-center gap-1.5 transition-all';
-        } else {
-          btn.className = 'tab-nav-btn px-3 py-1.5 text-xs font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 transition-all';
+        if (btn) {
+          if (t === tabId) {
+            btn.className = 'tab-nav-btn px-3 py-1.5 text-xs font-semibold text-red-500 border-b-2 border-red-500 flex items-center gap-1.5 transition-all shrink-0 whitespace-nowrap';
+          } else {
+            btn.className = 'tab-nav-btn px-3 py-1.5 text-xs font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 transition-all shrink-0 whitespace-nowrap';
+          }
         }
       });
       lucide.createIcons();
@@ -818,6 +924,287 @@
       const configured = state.filter(p => p.configured);
       el("active-count").textContent = active.length + " / " + state.length;
       el("configured-sub").textContent = configured.length + " keys configured";
+
+      renderAnalytics(stats, logs);
+    }
+
+    function renderAnalytics(stats, logsList) {
+      if (!stats) return;
+      const origins = stats.origins || {};
+      const originKeys = Object.keys(origins);
+      
+      // 1. Total origins badge
+      const totalOriginsEl = el("analytics-total-origins");
+      if (totalOriginsEl) {
+        totalOriginsEl.textContent = `${originKeys.length} website${originKeys.length === 1 ? '' : 's'} active`;
+      }
+
+      // 2. Origin Filter Dropdown in Logs Tab
+      const filterSelect = el("log-origin-filter");
+      if (filterSelect) {
+        const currentFilter = filterSelect.value || "all";
+        let optionsHtml = '<option value="all">🌐 All Websites & Origins</option>';
+        originKeys.forEach(orig => {
+          optionsHtml += `<option value="${orig}" ${orig === currentFilter ? 'selected' : ''}>🌐 ${orig} (${origins[orig].requests} reqs)</option>`;
+        });
+        filterSelect.innerHTML = optionsHtml;
+      }
+
+      // 3. Render Origins List Cards
+      const originsListEl = el("analytics-origins-list");
+      if (originsListEl) {
+        if (originKeys.length === 0) {
+          originsListEl.innerHTML = `
+            <div class="col-span-full p-6 bg-dark-bg border border-dark-border rounded-xl text-center text-slate-500 text-xs">
+              <i data-lucide="globe" class="w-5 h-5 mx-auto mb-1.5 opacity-50"></i>
+              No external website traffic recorded yet. Embed your widget on TeleDrive, BusNap, or another domain to see multi-tenant breakdown!
+            </div>
+          `;
+        } else {
+          originsListEl.innerHTML = originKeys.map(orig => {
+            const data = origins[orig];
+            const cacheRate = data.requests > 0 ? Math.round((data.cacheHits / data.requests) * 100) : 0;
+            const timeAgo = data.lastActive ? Math.max(1, Math.round((Date.now() - data.lastActive) / 60000)) + "m ago" : "Just now";
+            const isLocal = orig.includes("localhost") || orig === "Direct API";
+            const badgeColor = isLocal ? "bg-slate-500/10 text-slate-400 border-slate-500/20" : "bg-blue-500/10 text-blue-400 border-blue-500/20";
+            
+            return `
+              <div class="p-3.5 bg-dark-bg border border-dark-border hover:border-slate-600 rounded-xl space-y-2.5 transition-all">
+                <div class="flex items-center justify-between gap-2">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-bold ${badgeColor} border truncate">
+                      ${orig}
+                    </span>
+                  </div>
+                  <span class="text-[10px] text-slate-500 shrink-0 font-mono">Active ${timeAgo}</span>
+                </div>
+
+                <div class="grid grid-cols-3 gap-2 text-center pt-1 border-t border-dark-border/60">
+                  <div class="p-1.5 bg-dark-card/50 rounded-lg">
+                    <div class="text-[9.5px] text-slate-500 uppercase font-sans">Requests</div>
+                    <div class="text-xs font-bold text-white font-mono mt-0.5">${data.requests}</div>
+                  </div>
+                  <div class="p-1.5 bg-dark-card/50 rounded-lg">
+                    <div class="text-[9.5px] text-slate-500 uppercase font-sans">Cache Hits</div>
+                    <div class="text-xs font-bold text-red-400 font-mono mt-0.5">${cacheRate}%</div>
+                  </div>
+                  <div class="p-1.5 bg-dark-card/50 rounded-lg">
+                    <div class="text-[9.5px] text-slate-500 uppercase font-sans">Tokens</div>
+                    <div class="text-xs font-bold text-emerald-400 font-mono mt-0.5">${data.totalTokens ? (data.totalTokens > 1000 ? (data.totalTokens/1000).toFixed(1)+'k' : data.totalTokens) : '0'}</div>
+                  </div>
+                </div>
+
+                <button onclick="filterLogsByOrigin('${orig}')" class="w-full py-1 text-[10.5px] font-semibold text-slate-400 hover:text-white bg-dark-card hover:bg-dark-cardHover rounded-lg border border-dark-border transition-all flex items-center justify-center gap-1">
+                  <span>View Logs for this site</span>
+                  <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                </button>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+
+      // 4. Render Model Share Distribution
+      const modelsListEl = el("analytics-models-list");
+      if (modelsListEl) {
+        const models = stats.models || {};
+        const modelKeys = Object.keys(models);
+        if (modelKeys.length === 0) {
+          modelsListEl.innerHTML = '<div class="text-center text-slate-500 text-xs py-4">No model traffic recorded yet</div>';
+        } else {
+          const totalModelReqs = modelKeys.reduce((acc, k) => acc + models[k], 0);
+          modelsListEl.innerHTML = modelKeys.map(model => {
+            const count = models[model];
+            const percent = totalModelReqs > 0 ? Math.round((count / totalModelReqs) * 100) : 0;
+            return `
+              <div class="space-y-1">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="font-mono text-slate-200 truncate max-w-[170px]" title="${model}">${model}</span>
+                  <span class="text-[11px] font-mono text-slate-400">${count} reqs (${percent}%)</span>
+                </div>
+                <div class="w-full h-2 bg-dark-bg border border-dark-border rounded-full overflow-hidden">
+                  <div class="h-full bg-gradient-to-r from-red-600 to-orange-500 rounded-full transition-all duration-500" style="width: ${percent}%"></div>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+
+      // 5. Render Provider Quotas & Health Grid
+      const providersGridEl = el("analytics-providers-grid");
+      if (providersGridEl) {
+        const provStats = stats.providers || {};
+        providersGridEl.innerHTML = state.map(p => {
+          const pData = provStats[p.id] || { requests: 0, errors: 0, rateLimits: 0, lastUsed: 0 };
+          const isConfigured = p.configured;
+          const isEnabled = p.enabled;
+          
+          let badgeHtml = '<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-500/10 text-slate-400 border border-slate-500/20 font-mono">○ Standby</span>';
+          
+          if (!isConfigured) {
+            badgeHtml = '<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-800 text-slate-500 border border-slate-700 font-mono">No Key</span>';
+          } else if (pData.rateLimits > 0 || (p.lastError && p.lastError.includes("429"))) {
+            badgeHtml = '<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono animate-pulse">⚠️ 429 Quota Exceeded</span>';
+          } else if (pData.errors > 2) {
+            badgeHtml = '<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20 font-mono">❌ High Errors</span>';
+          } else if (isEnabled && pData.requests > 0) {
+            badgeHtml = '<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">🟢 Healthy</span>';
+          } else if (isEnabled) {
+            badgeHtml = '<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono">⚡ Active Route</span>';
+          }
+
+          const speedBadge = p.lastLatencyMs ? getLatencySpeedBadge(p.lastLatencyMs) : '<span class="text-slate-500 font-mono text-[10px]">—</span>';
+
+          return `
+            <div class="p-3.5 bg-dark-bg border border-dark-border rounded-xl space-y-2.5">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2 min-w-0">
+                  <div class="w-6 h-6 rounded-lg bg-dark-card border border-dark-border flex items-center justify-center shrink-0">
+                    ${getProviderIcon(p.id)}
+                  </div>
+                  <div class="min-w-0">
+                    <div class="font-bold text-xs text-white truncate">${p.name}</div>
+                    <div class="text-[10px] text-slate-500 font-mono truncate">${p.model}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div>${badgeHtml}</div>
+
+              <div class="grid grid-cols-2 gap-1.5 text-[10px] font-mono pt-1 border-t border-dark-border/60 text-slate-400">
+                <div>Reqs: <strong class="text-slate-200">${pData.requests}</strong></div>
+                <div>429 Hits: <strong class="${pData.rateLimits > 0 ? 'text-amber-400' : 'text-slate-200'}">${pData.rateLimits}</strong></div>
+                <div>Speed: ${speedBadge}</div>
+                <div>Errors: <strong class="${pData.errors > 0 ? 'text-rose-400' : 'text-slate-200'}">${pData.errors}</strong></div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      lucide.createIcons();
+    }
+
+    function filterLogsByOrigin(orig) {
+      const filterSelect = el("log-origin-filter");
+      if (filterSelect) {
+        filterSelect.value = orig;
+      }
+      switchTab('logs');
+      renderLogs(logs);
+    }
+
+    function renderLogs(logsList) {
+      if (!logsList || logsList.length === 0) {
+        el("logs-tbody").innerHTML = '<tr><td colspan="7" class="p-6 text-center text-slate-500 font-sans">No requests recorded yet. Send a test from the playground!</td></tr>';
+        return;
+      }
+
+      const filterSelect = el("log-origin-filter");
+      const chosenOrigin = filterSelect ? filterSelect.value : "all";
+      let displayList = logsList;
+      if (chosenOrigin && chosenOrigin !== "all") {
+        displayList = logsList.filter(l => (l.origin || "Direct API").includes(chosenOrigin));
+      }
+
+      if (displayList.length === 0) {
+        el("logs-tbody").innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-500 font-sans">No requests found for website: <strong>${chosenOrigin}</strong></td></tr>`;
+        return;
+      }
+
+      el("logs-tbody").innerHTML = displayList.map((log, index) => {
+        const time = new Date(log.timestamp).toLocaleTimeString();
+        let badge = '<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-sans">200 OK</span>';
+        if (log.isCacheHit) {
+          badge = '<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-red-500/10 text-red-400 border border-red-500/20 font-sans">⚡ RAM Hit</span>';
+        } else if (log.status >= 500) {
+          badge = '<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/20 font-sans">502 Fail</span>';
+        }
+
+        const failovers = log.failovers && log.failovers.length > 0 
+          ? `<span class="text-[10px] text-amber-400/80 block mt-0.5">↳ failovers: ${log.failovers.length}</span>`
+          : '';
+
+        const origStr = log.origin ? log.origin.replace(/^https?:\/\//, '').split('/')[0] : 'Direct API';
+        const isLocal = origStr.includes('localhost') || origStr === 'Direct API';
+        const origBadge = isLocal 
+          ? `<span class="px-1.5 py-0.5 rounded text-[9.5px] font-mono bg-slate-500/10 text-slate-400 border border-slate-500/20 truncate max-w-[120px] inline-block" title="${origStr}">${origStr}</span>`
+          : `<span class="px-1.5 py-0.5 rounded text-[9.5px] font-mono bg-blue-500/10 text-blue-400 border border-blue-500/20 truncate max-w-[120px] inline-block font-semibold" title="${origStr}">${origStr}</span>`;
+
+        return `
+          <tr onclick="openLogModal(${index})" class="hover:bg-dark-cardHover transition-all cursor-pointer group">
+            <td class="py-2 px-4">${badge}</td>
+            <td class="py-2 px-4 text-slate-400">${time}</td>
+            <td class="py-2 px-4">${origBadge}</td>
+            <td class="py-2 px-4 max-w-[240px] truncate text-slate-200 group-hover:text-red-400 transition-colors" title="${log.promptPreview}">${log.promptPreview}</td>
+            <td class="py-2 px-4">
+              <span class="font-semibold text-white font-sans">${log.provider}</span>
+              ${failovers}
+            </td>
+            <td class="py-2 px-4 font-semibold ${log.isCacheHit ? 'text-red-400' : 'text-slate-200'}">${log.latencyMs}ms</td>
+            <td class="py-2 px-4 text-slate-400">${log.tokens?.total_tokens ? log.tokens.total_tokens : (log.isCacheHit ? '0' : '—')}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function openLogModal(index) {
+      const log = logs[index];
+      if (!log) return;
+      const modal = el("log-modal");
+      const body = el("log-modal-body");
+
+      const failoverHtml = log.failovers && log.failovers.length > 0 
+        ? log.failovers.map(f => `<div class="p-2 rounded bg-dark-bg border border-dark-border text-rose-400">⚠️ ${f}</div>`).join('')
+        : '<div class="text-emerald-400 text-xs">✨ Direct fulfillment (zero failovers needed)</div>';
+
+      const origStr = log.origin ? log.origin.replace(/^https?:\/\//, '').split('/')[0] : 'Direct API';
+
+      body.innerHTML = `
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center">
+          <div class="p-2 bg-dark-bg rounded-lg border border-dark-border">
+            <div class="text-[10px] text-slate-500 font-sans uppercase">Status</div>
+            <div class="font-bold text-white mt-0.5">${log.status} ${log.status === 200 ? 'OK' : 'FAIL'}</div>
+          </div>
+          <div class="p-2 bg-dark-bg rounded-lg border border-dark-border">
+            <div class="text-[10px] text-slate-500 font-sans uppercase">Origin / Site</div>
+            <div class="font-bold text-blue-400 mt-0.5 font-mono truncate text-xs" title="${origStr}">${origStr}</div>
+          </div>
+          <div class="p-2 bg-dark-bg rounded-lg border border-dark-border">
+            <div class="text-[10px] text-slate-500 font-sans uppercase">Provider</div>
+            <div class="font-bold text-red-400 mt-0.5">${log.provider}</div>
+          </div>
+          <div class="p-2 bg-dark-bg rounded-lg border border-dark-border">
+            <div class="text-[10px] text-slate-500 font-sans uppercase">Latency</div>
+            <div class="font-bold text-white mt-0.5">${log.latencyMs}ms</div>
+          </div>
+          <div class="p-2 bg-dark-bg rounded-lg border border-dark-border">
+            <div class="text-[10px] text-slate-500 font-sans uppercase">RAM Cache</div>
+            <div class="font-bold ${log.isCacheHit ? 'text-red-400' : 'text-slate-400'} mt-0.5">${log.isCacheHit ? 'HIT (0ms)' : 'MISS'}</div>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-[11px] font-semibold text-slate-400 font-sans block mb-1">User Prompt</label>
+          <div class="p-3 bg-dark-bg rounded-lg border border-dark-border text-slate-200 whitespace-pre-wrap max-h-28 overflow-y-auto">${log.promptPreview}</div>
+        </div>
+
+        ${log.responsePreview ? `
+          <div>
+            <label class="text-[11px] font-semibold text-slate-400 font-sans block mb-1">Response Output Preview</label>
+            <div class="p-3 bg-dark-bg rounded-lg border border-dark-border text-red-300 whitespace-pre-wrap max-h-36 overflow-y-auto">${log.responsePreview}</div>
+          </div>
+        ` : ''}
+
+        <div>
+          <label class="text-[11px] font-semibold text-slate-400 font-sans block mb-1">Failover Execution Trace</label>
+          <div class="space-y-1.5">${failoverHtml}</div>
+        </div>
+      `;
+
+      modal.classList.remove("hidden");
+      lucide.createIcons();
     }
 
     function getProviderIcon(id) {
@@ -1741,6 +2128,8 @@
       
       const customTitle = (el('cfg-widget-title')?.value || 'ZeroRoute AI').trim();
       const customColor = (el('cfg-widget-color')?.value || '#ef4444').trim();
+      const customGreeting = (el('cfg-widget-greeting')?.value || '').trim();
+      const customPrompts = (el('cfg-widget-prompts')?.value || '').trim();
       const customPersona = (el('cfg-widget-persona')?.value || '').trim();
       const customKnowledge = (el('cfg-widget-knowledge')?.value || '').trim();
 
@@ -1751,6 +2140,14 @@
 
       let widgetTag = '<!-- 1-LINE CHATBOT WIDGET: Paste anywhere in your HTML, Webflow, WordPress, Next.js, or React app -->\n<' + 'script\n  src="' + host + '/widget.js"\n  data-title="' + customTitle + '"';
       
+      if (customGreeting) {
+        widgetTag += '\n  data-greeting="' + customGreeting.replace(/"/g, '&quot;') + '"';
+      }
+
+      if (customPrompts) {
+        widgetTag += '\n  data-prompts="' + customPrompts.replace(/"/g, '&quot;') + '"';
+      }
+
       if (customPersona.startsWith('http')) {
         widgetTag += '\n  data-persona-url="' + customPersona + '"';
       } else if (customPersona) {

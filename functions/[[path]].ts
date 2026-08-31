@@ -108,6 +108,14 @@ export const onRequest = async (context: { request: Request; env: Env; next: () 
   const ROUTER_API_KEY = env?.ROUTER_API_KEY || process.env.ROUTER_API_KEY;
   const ADMIN_KEY = env?.ADMIN_KEY || process.env.ADMIN_KEY || ROUTER_API_KEY;
   const CORS_ORIGIN = env?.CORS_ORIGIN || process.env.CORS_ORIGIN;
+  const kv = (env as any)?.METRICS_KV || (env as any)?.KV;
+
+  if (kv && metricsLogger.getStats().totalRequests === 0) {
+    try {
+      const saved = await kv.get("zeroroute_metrics_state", "json");
+      if (saved) metricsLogger.importState(saved);
+    } catch {}
+  }
 
   // 1. CORS Preflight
   if (request.method === "OPTIONS") {
@@ -171,10 +179,32 @@ export const onRequest = async (context: { request: Request; env: Env; next: () 
     }
 
     const startReqTime = Date.now();
+    const reqOrigin = origin || request.headers.get("Referer") || "Direct API";
     const lastUser = [...body.messages].reverse().find(m => m.role === "user");
     const promptPreview = lastUser?.content?.slice(0, 100) ?? body.messages[0]?.content?.slice(0, 100) ?? "No message";
     const cacheKey = responseCache.generateKey(body);
-    const cached = responseCache.get(cacheKey);
+    const cfCache = typeof caches !== "undefined" ? (caches as any).default : null;
+    const cacheKeyUrl = `https://cache.zeroroute.internal/v1/chat/completions/${cacheKey}`;
+
+    let cached = responseCache.get(cacheKey);
+    if (!cached && cfCache) {
+      try {
+        const cfMatch = await cfCache.match(cacheKeyUrl);
+        if (cfMatch) {
+          cached = await cfMatch.json() as ChatResponse;
+          responseCache.set(cacheKey, cached);
+        }
+      } catch {}
+    }
+
+    const syncKv = () => {
+      if (kv) {
+        try {
+          const payload = JSON.stringify(metricsLogger.exportState());
+          (context as any).waitUntil ? (context as any).waitUntil(kv.put("zeroroute_metrics_state", payload)) : kv.put("zeroroute_metrics_state", payload);
+        } catch {}
+      }
+    };
 
     // Cache hit
     if (cached) {
@@ -182,6 +212,7 @@ export const onRequest = async (context: { request: Request; env: Env; next: () 
       metricsLogger.log({
         id: cached.id,
         timestamp: Date.now(),
+        origin: reqOrigin,
         promptPreview,
         responsePreview: cached.choices[0].message.content.slice(0, 100),
         provider: `cache (${cached.provider})`,
@@ -193,6 +224,7 @@ export const onRequest = async (context: { request: Request; env: Env; next: () 
         failovers: [],
         tokens: cached.usage
       });
+      syncKv();
 
       if (body.stream) {
         const encoder = new TextEncoder();
@@ -218,6 +250,21 @@ export const onRequest = async (context: { request: Request; env: Env; next: () 
 
       return jsonResponse(cached, 200, origin, { "X-Cache": "HIT" });
     }
+
+    const saveToEdgeCache = (respData: ChatResponse) => {
+      responseCache.set(cacheKey, respData);
+      if (cfCache) {
+        try {
+          const cfResp = new Response(JSON.stringify(respData), {
+            headers: {
+              "Content-Type": "application/json",
+              "Cache-Control": "public, max-age=3600, s-maxage=3600"
+            }
+          });
+          cfCache.put(cacheKeyUrl, cfResp);
+        } catch {}
+      }
+    };
 
     const candidates = getEligibleProviders(body.model);
     if (candidates.length === 0) {
@@ -256,7 +303,7 @@ export const onRequest = async (context: { request: Request; env: Env; next: () 
               } finally {
                 controller.close();
 
-                // Save reconstructed response in cache
+                // Save reconstructed response in cache & Cloudflare Edge CDN
                 const reconstructed: ChatResponse = {
                   id: first.value.id,
                   object: "chat.completion",
@@ -265,11 +312,12 @@ export const onRequest = async (context: { request: Request; env: Env; next: () 
                   model: provider.model,
                   choices: [{ index: 0, message: { role: "assistant", content: fullContent }, finish_reason: "stop" }]
                 };
-                responseCache.set(cacheKey, reconstructed);
+                saveToEdgeCache(reconstructed);
 
                 metricsLogger.log({
                   id: first.value.id,
                   timestamp: Date.now(),
+                  origin: reqOrigin,
                   promptPreview,
                   responsePreview: fullContent.slice(0, 100),
                   provider: provider.id,
@@ -280,6 +328,7 @@ export const onRequest = async (context: { request: Request; env: Env; next: () 
                   isCacheHit: false,
                   failovers: [...failures]
                 });
+                syncKv();
               }
             }
           });
@@ -316,11 +365,12 @@ export const onRequest = async (context: { request: Request; env: Env; next: () 
         state.cooldownUntil = 0;
         state.lastLatencyMs = latencyMs;
 
-        responseCache.set(cacheKey, result);
+        saveToEdgeCache(result);
 
         metricsLogger.log({
           id: result.id,
           timestamp: Date.now(),
+          origin: reqOrigin,
           promptPreview,
           responsePreview: result.choices[0]?.message?.content?.slice(0, 100),
           provider: provider.id,
@@ -332,6 +382,7 @@ export const onRequest = async (context: { request: Request; env: Env; next: () 
           failovers: [...failures],
           tokens: result.usage
         });
+        syncKv();
 
         return jsonResponse(result, 200, origin, { "X-Cache": "MISS" });
       } catch (error) {

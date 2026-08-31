@@ -167,15 +167,44 @@ Drop one `<script>` tag into any website (HTML, Next.js, React, Vue, WordPress, 
 | Attribute | Description | Example |
 |---|---|---|
 | `data-title` | Chatbot window title | `Acme Support` |
+| `data-greeting` | First message sent to visitors | `Hi! How can I help?` |
+| `data-prompts` | 1-Tap quick starter question chips | `Is it free?,How does it work?,Pricing?` |
+| `data-logo` | Custom avatar icon / logo image URL | `https://yoursite.com/logo.png` |
 | `data-persona` | Inline system prompt | `You are a helpful assistant.` |
 | `data-persona-url` | URL to a `.txt` / `.md` system prompt | `https://site.com/prompt.md` |
 | `data-knowledge` | Inline FAQs or business facts | `Hours: 9am–6pm. Email: help@acme.com` |
 | `data-knowledge-url` | URL to a live `.md` / `.txt` / `.json` file | `https://site.com/knowledge.md` |
-| `data-greeting` | First message sent to visitors | `Hi! How can I help?` |
-| `data-color` | Primary accent color | `#6366f1` |
+| `data-color` | Primary brand color (applies to bubbles, button, focus) | `#3b82f6` |
 | `data-key` | Your `ROUTER_API_KEY` (if auth enabled) | `your-secret-key` |
 
-> **Note on `data-key`:** If `ROUTER_API_KEY` is not set in your `.env`, the widget works without a key (public mode). If it is set, pass it via `data-key`. Be aware the key is visible in your page's HTML source — see [Security](#️-security) below.
+> **Note on `data-key`:** If `ROUTER_API_KEY` is not set in your `.env`, the widget works without a key (public mode). If it is set, pass it via `data-key`.
+
+---
+
+## 🗄️ Multi-Cloud Storage & Persistence
+
+ZeroRoute features a pluggable, multi-engine persistence layer that automatically adapts to your hosting environment:
+
+| Platform | Storage Engine | Setup Required | Cost |
+|---|---|---|---|
+| **Docker / VPS / Local Node** | **Local Disk (`data/metrics.json`)** | **Zero Config (Automatic)** | **$0/mo** |
+| **Cloudflare Pages / Workers** | **Cloudflare KV (`METRICS_KV`)** | **1-Click KV Binding** | **$0/mo (100k reads/day)** |
+| **Vercel / Multi-Region** | **Upstash Redis REST** | `UPSTASH_REDIS_REST_URL` in env | **$0/mo (10k req/day)** |
+
+### Setting up Cloudflare KV (for permanent Cloudflare analytics):
+1. In Cloudflare Dashboard → **Workers & Pages** → **KV** → Click **Create Namespace** (name: `zeroroute-kv`).
+2. In your Pages project → **Settings** → **Functions** → **KV namespace bindings**:
+   - Variable name: `METRICS_KV`
+   - KV namespace: `zeroroute-kv`
+
+### Setting up Upstash Redis (for Vercel / Multi-Cloud):
+Add these environment variables in Vercel or your `.env`:
+```env
+UPSTASH_REDIS_REST_URL=https://your-upstash-instance.upstash.io
+UPSTASH_REDIS_REST_TOKEN=your-upstash-token
+```
+
+---
 
 ### 2. JavaScript / Fetch
 
@@ -268,7 +297,7 @@ CORS_ORIGIN=https://app.yourdomain.com,https://yourdomain.com
 - Provider API keys encrypted at rest with **AES-256-GCM + PBKDF2** (`secrets.json` + `.master.key`).
 - Keys masked as `first4••••last4` in all API responses — full secrets never sent to clients.
 - Rate limiting: **60 req/min** per IP on chat, **10 req/min** per IP on provider test.
-- `.env`, `secrets.json`, `.master.key` are in `.gitignore` by default.
+- `.env`, `secrets.json`, `.master.key`, `data/` are in `.gitignore` by default.
 
 ---
 
@@ -293,10 +322,6 @@ public/
 ---
 
 ## 👨‍💻 Author
-
-<p align="left">
-  <img src="https://doting-octopus-124.convex.cloud/api/storage/730e2173-8a2f-4d38-8976-7624a53bbc88" alt="Amjad P A" width="90" height="90" style="border-radius: 50%; object-fit: cover;" />
-</p>
 
 **Amjad P A** — Full-Stack AI Engineer & Solo Builder
 

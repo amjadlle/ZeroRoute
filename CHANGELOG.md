@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.1] - 2026-08-31
+
+### Multi-Tenant Analytics, Cloud Persistence & Widget Upgrades 📊
+
+#### Added
+- **Multi-Tenant Website Traffic Analytics**: Dedicated dashboard tab with real-time breakdown of requests, token volume, cache savings %, and last ping timestamp per website origin domain (`teledrive.mapki.in`, `busnap.mapki.in`, etc.).
+- **Live Provider Quota & Health Monitor**: Real-time quota tracking alerting on HTTP 429 rate limit events, consecutive failures, and failover cooldown states across all 8 cloud providers.
+- **Universal Multi-Engine Persistence Layer**:
+  - **Local Disk (`data/metrics.json`)**: Automatic zero-config auto-save/auto-load on Docker, VPS, and Node.js servers.
+  - **Cloudflare KV (`env.METRICS_KV`)**: Native persistent cloud state across global serverless isolates on Cloudflare Pages.
+  - **Upstash Redis REST (`UPSTASH_REDIS_REST_URL`)**: 1-click cloud state sync for Vercel and multi-region serverless clusters.
+- **Website Origin Log Filter**: Interactive dropdown in the *Logs & Failovers* table allowing admins to isolate and inspect traffic for specific client websites.
+- **Embeddable Chatbot Upgrades (`public/widget.js`)**:
+  - `data-prompts`: Clickable 1-tap quick starter question chips below initial greeting.
+  - `data-logo`: Custom bot avatar image URL with clean SVG robot fallback.
+  - **Animated Typing Waves**: Smooth bouncing dot indicator while AI tokens stream.
+  - **Neutral Universal Drop Shadows**: Natural dark shadows replacing hardcoded glows for seamless integration on third-party site themes.
+
+---
+
 ## [0.1.0] - 2026-08-31
 
 ### Initial Open-Source Release 🚀

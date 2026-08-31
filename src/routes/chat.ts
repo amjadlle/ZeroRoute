@@ -72,6 +72,7 @@ export const handleChatRoutes = async (
     }
 
     const startReqTime = Date.now();
+    const reqOrigin = (req.headers.origin as string) || (req.headers.referer as string) || "Direct API";
     const promptPreview = getPromptPreview(body);
     const cacheKey  = responseCache.generateKey(body);
     const cached    = responseCache.get(cacheKey);
@@ -82,6 +83,7 @@ export const handleChatRoutes = async (
       metricsLogger.log({
         id:              cached.id,
         timestamp:       Date.now(),
+        origin:          reqOrigin,
         promptPreview,
         responsePreview: cached.choices[0].message.content.slice(0, 100),
         provider:        "cache (" + cached.provider + ")",
@@ -165,6 +167,7 @@ export const handleChatRoutes = async (
           metricsLogger.log({
             id:              first.value.id,
             timestamp:       Date.now(),
+            origin:          reqOrigin,
             promptPreview,
             responsePreview: fullContent.slice(0, 100),
             provider:        provider.id,
@@ -190,7 +193,7 @@ export const handleChatRoutes = async (
       const totalLatency = Date.now() - startReqTime;
       console.error("[ZeroRoute] All streaming providers failed:", failures);
       metricsLogger.log({
-        id: randomUUID(), timestamp: Date.now(), promptPreview,
+        id: randomUUID(), timestamp: Date.now(), origin: reqOrigin, promptPreview,
         provider: "none", model: "none", latencyMs: totalLatency,
         status: 502, isStream: true, isCacheHit: false, failovers: [...failures]
       });
@@ -214,6 +217,7 @@ export const handleChatRoutes = async (
         metricsLogger.log({
           id:              result.id,
           timestamp:       Date.now(),
+          origin:          reqOrigin,
           promptPreview,
           responsePreview: result.choices[0]?.message?.content?.slice(0, 100),
           provider:        provider.id,
