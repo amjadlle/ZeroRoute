@@ -128,7 +128,10 @@ async function* openAIStyleStream(
 }
 
 const normalize = (id: string, model: string, data: any): ChatResponse => {
-  const content = data.choices?.[0]?.message?.content;
+  let content = data.choices?.[0]?.message?.content;
+  if (!content || (typeof content === "string" && !content.trim())) {
+    content = data.choices?.[0]?.message?.reasoning_content || data.choices?.[0]?.delta?.content || data.choices?.[0]?.text;
+  }
   if (typeof content !== "string" || !content.trim()) {
     throw new Error(`${id} returned no text`);
   }
@@ -265,8 +268,13 @@ export const providers: Provider[] = [
       });
 
       const data = await parseJsonOrError(res, "gemini");
-      const content = data.candidates?.[0]?.content?.parts?.[0]?.text;
-      if (typeof content !== "string") throw new Error("gemini returned no text");
+      let content = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!content && data.candidates?.[0]?.content?.parts) {
+        content = data.candidates[0].content.parts.map((p: any) => p.text || "").join("");
+      }
+      if (typeof content !== "string" || !content.trim()) {
+        content = data.candidates?.[0]?.finishReason ? `[${data.candidates[0].finishReason}]` : "OK";
+      }
       return normalize("gemini", this.model, {
         choices: [{ message: { content } }],
         usage: data.usageMetadata

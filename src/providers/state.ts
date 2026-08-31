@@ -10,7 +10,7 @@ import { loadConfig } from "../services/config.js";
 import { isProviderConfigured } from "../services/secrets.js";
 import type { ProviderRuntimeState } from "./types.js";
 
-export const TIMEOUT_MS  = Number(process.env.TIMEOUT_MS  ?? 8000);
+export const TIMEOUT_MS  = Number(process.env.TIMEOUT_MS  ?? 12000);
 export const COOLDOWN_MS = Number(process.env.COOLDOWN_MS ?? 60000);
 
 const configuredOrder = (process.env.PROVIDER_ORDER ?? "sambanova,groq,mistral,openrouter,gemini,nvidia,cloudflare,cohere")
