@@ -31,7 +31,7 @@
   "type": "module",
   "scripts": {
     "dev": "node --watch --env-file=.env --import tsx/esm src/server.ts",
-    "build": "tsc",
+    "build": "node scripts/sync-static.js && tsc",
     "start": "node --env-file=.env dist/server.js",
     "discover": "node --env-file=.env scripts/discover-models.js",
     "test:providers": "node --env-file=.env scripts/test-providers.js"

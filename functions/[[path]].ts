@@ -75,15 +75,6 @@ export const onRequest = async (context: { request: Request; env: Env; next: () 
     });
   }
 
-  // 1b. Dashboard & Console routes rewrite to dashboard.html
-  if (request.method === "GET" && (pathname === "/app" || pathname === "/dashboard" || pathname === "/console" || pathname === "/admin")) {
-    if ((env as any)?.ASSETS) {
-      const assetUrl = new URL("/dashboard.html", request.url);
-      return (env as any).ASSETS.fetch(new Request(assetUrl.toString(), request));
-    }
-    return Response.redirect(new URL("/dashboard.html", request.url).toString(), 302);
-  }
-
   // 2. Health check — GET /health
   if (request.method === "GET" && pathname === "/health") {
     const stats = metricsLogger.getStats();
