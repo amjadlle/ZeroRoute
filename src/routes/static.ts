@@ -7,7 +7,10 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
 import fs   from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { sendJson, getCorsHeaders } from "../utils/http.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * Reads a file from the public/ directory and writes it to the response.
@@ -21,16 +24,24 @@ export const servePublicFile = (
   requestOrigin?: string
 ): boolean => {
   try {
-    const filePath = path.join(process.cwd(), "public", filename);
-    if (fs.existsSync(filePath)) {
-      const content = fs.readFileSync(filePath);
-      res.writeHead(200, {
-        "Content-Type": contentType,
-        ...(cacheSeconds > 0 ? { "Cache-Control": `public, max-age=${cacheSeconds}` } : {}),
-        ...getCorsHeaders(requestOrigin)
-      });
-      res.end(content);
-      return true;
+    const candidatePaths = [
+      path.join(process.cwd(), "public", filename),
+      path.resolve(__dirname, "../../public", filename),
+      path.resolve(__dirname, "../public", filename),
+      path.resolve(__dirname, "../../../public", filename)
+    ];
+
+    for (const filePath of candidatePaths) {
+      if (fs.existsSync(filePath)) {
+        const content = fs.readFileSync(filePath);
+        res.writeHead(200, {
+          "Content-Type": contentType,
+          ...(cacheSeconds > 0 ? { "Cache-Control": `public, max-age=${cacheSeconds}` } : {}),
+          ...getCorsHeaders(requestOrigin)
+        });
+        res.end(content);
+        return true;
+      }
     }
   } catch (err) {
     console.error(`[ZeroRoute] Failed to serve public/${filename}:`, err);

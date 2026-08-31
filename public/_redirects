@@ -1,0 +1,4 @@
+/app /dashboard.html 200
+/console /dashboard.html 200
+/dashboard /dashboard.html 200
+/admin /dashboard.html 200
