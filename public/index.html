@@ -83,22 +83,22 @@
   <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
 
     <!-- ═══════════════════════════ FLOATING DARK OBSIDIAN GLASS NAVIGATION ═══════════════════════════ -->
-    <div class="sticky top-4 z-50 w-full">
-      <header class="w-full bg-[#080a0f]/85 backdrop-blur-xl border border-white/[0.08] shadow-2xl shadow-black/80 rounded-xl px-5 sm:px-8 py-3.5 flex items-center justify-between transition-all ring-1 ring-white/5">
+    <div class="sticky top-3 sm:top-4 z-50 w-full">
+      <header class="w-full bg-[#080a0f]/90 backdrop-blur-xl border border-white/[0.08] shadow-2xl shadow-black/80 rounded-xl px-4 sm:px-8 py-3 flex items-center justify-between transition-all ring-1 ring-white/5">
         <!-- Brand Logo & Tagline -->
-        <div class="flex items-center gap-3">
-          <img src="/logo.png" alt="ZeroRoute Logo" class="w-8 h-8 object-contain shrink-0">
+        <a href="/" class="flex items-center gap-2.5 sm:gap-3">
+          <img src="/logo.png" alt="ZeroRoute Logo" class="w-7 h-7 sm:w-8 sm:h-8 object-contain shrink-0">
           <div>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1.5 sm:gap-2">
               <span class="font-extrabold text-sm sm:text-base tracking-tight text-white">ZeroRoute</span>
               <span class="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-red-500/10 text-red-400 border border-red-500/20 font-mono">$0/mo</span>
             </div>
-            <div class="text-[9px] font-mono tracking-widest text-slate-500 uppercase">ZERO COST. MAX ROUTE.</div>
+            <div class="text-[8px] sm:text-[9px] font-mono tracking-widest text-slate-500 uppercase">ZERO COST. MAX ROUTE.</div>
           </div>
-        </div>
+        </a>
 
-        <!-- Navigation Links -->
-        <nav class="hidden md:flex items-center gap-8 text-xs font-semibold text-slate-300">
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden md:flex items-center gap-6 lg:gap-8 text-xs font-semibold text-slate-300">
           <a href="#features" class="hover:text-white transition-colors">Features</a>
           <a href="#widget" class="hover:text-white transition-colors">1-Line Chatbot</a>
           <a href="#providers" class="hover:text-white transition-colors">Providers</a>
@@ -107,19 +107,33 @@
         </nav>
 
         <!-- Action CTAs -->
-        <div class="flex items-center gap-3">
-          <a href="https://github.com/amjadlle/ZeroRoute" target="_blank" class="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 hover:text-white border border-white/10 rounded-lg transition-all active:scale-95 shadow-sm">
+        <div class="flex items-center gap-2 sm:gap-3">
+          <a href="https://github.com/amjadlle/ZeroRoute" target="_blank" class="hidden xs:inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-xs font-semibold bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 hover:text-white border border-white/10 rounded-lg transition-all active:scale-95 shadow-sm">
             <svg class="w-3.5 h-3.5 fill-current text-slate-300" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-            <span>Star</span>
+            <span class="hidden sm:inline">Star</span>
             <span class="text-amber-400 font-mono text-[11px]">★</span>
           </a>
 
-          <a href="/app" class="inline-flex items-center gap-2 px-4 py-2 text-xs font-bold bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white rounded-lg shadow-lg shadow-red-600/30 ring-1 ring-red-400/30 transition-all active:scale-95">
+          <a href="/app" class="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-bold bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white rounded-lg shadow-lg shadow-red-600/30 ring-1 ring-red-400/30 transition-all active:scale-95 whitespace-nowrap">
             <i data-lucide="layout-dashboard" class="w-3.5 h-3.5"></i>
-            <span>Launch Console</span>
+            <span>Console</span>
           </a>
+
+          <!-- Mobile Hamburger Button -->
+          <button type="button" onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] text-slate-300 hover:text-white border border-white/10 transition-all" aria-label="Toggle Navigation Menu">
+            <i data-lucide="menu" id="mobile-menu-icon" class="w-4 h-4"></i>
+          </button>
         </div>
       </header>
+
+      <!-- Mobile Dropdown Menu -->
+      <div id="mobile-nav-panel" class="hidden md:hidden mt-2 bg-[#080a0f]/95 backdrop-blur-2xl border border-white/10 rounded-2xl p-4 shadow-2xl space-y-3 font-semibold text-sm text-slate-200">
+        <a href="#features" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-lg hover:bg-white/5 transition-colors">Features</a>
+        <a href="#widget" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-lg hover:bg-white/5 transition-colors">1-Line Chatbot</a>
+        <a href="#providers" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-lg hover:bg-white/5 transition-colors">Supported Providers</a>
+        <a href="#quickstart" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-lg hover:bg-white/5 transition-colors">Integration Code</a>
+        <a href="https://github.com/amjadlle/ZeroRoute" target="_blank" class="block px-3 py-2 rounded-lg text-red-400 hover:bg-white/5 transition-colors">GitHub & Docs ↗</a>
+      </div>
     </div>
 
     <!-- Main Content Wrapper -->
@@ -602,6 +616,13 @@ print(response.choices[0].message.content)</code></pre>
       const btn = document.getElementById('copy-btn-text');
       btn.textContent = 'Copied! ✓';
       setTimeout(() => { btn.textContent = 'Copy Script'; }, 2000);
+    }
+
+    function toggleMobileMenu() {
+      const panel = document.getElementById('mobile-nav-panel');
+      if (panel) {
+        panel.classList.toggle('hidden');
+      }
     }
 
     function openChatWidget() {
