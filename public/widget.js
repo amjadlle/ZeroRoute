@@ -17,10 +17,10 @@
   // Inject Styles
   var style = document.createElement('style');
   style.textContent = [
-    '.zr-bubble { position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; border-radius: 50%; background: ' + brandColor + '; box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.4), 0 8px 10px -6px rgba(239, 68, 68, 0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 999999; transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); border: 2px solid rgba(255,255,255,0.15); box-sizing: border-box; }',
-    '.zr-bubble:hover { transform: scale(1.08); box-shadow: 0 14px 28px -4px rgba(239, 68, 68, 0.5); }',
+    '.zr-bubble { position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; border-radius: 50%; background: ' + brandColor + '; box-shadow: 0 10px 25px -4px rgba(0,0,0,0.5), 0 4px 10px -2px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 999999; transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); border: 2px solid rgba(255,255,255,0.15); box-sizing: border-box; }',
+    '.zr-bubble:hover { transform: scale(1.08); box-shadow: 0 14px 28px -2px rgba(0,0,0,0.65); }',
     '.zr-bubble svg { width: 24px; height: 24px; fill: white; pointer-events: none; }',
-    '.zr-window { position: fixed; bottom: 84px; right: 20px; width: 350px; max-width: calc(100vw - 32px); height: 470px; max-height: min(500px, 78vh); background: #090a0f; border: 1px solid rgba(255,255,255,0.12); border-radius: 18px; box-shadow: 0 20px 40px rgba(0,0,0,0.8), 0 0 0 1px rgba(239,68,68,0.2); z-index: 999999; display: flex; flex-direction: column; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; opacity: 0; pointer-events: none; transform: translateY(16px) scale(0.96); transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); box-sizing: border-box; }',
+    '.zr-window { position: fixed; bottom: 84px; right: 20px; width: 350px; max-width: calc(100vw - 32px); height: 470px; max-height: min(500px, 78vh); background: #090a0f; border: 1px solid rgba(255,255,255,0.12); border-radius: 18px; box-shadow: 0 20px 45px rgba(0,0,0,0.85); z-index: 999999; display: flex; flex-direction: column; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; opacity: 0; pointer-events: none; transform: translateY(16px) scale(0.96); transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); box-sizing: border-box; }',
     '.zr-window.zr-open { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); }',
     '.zr-header { padding: 12px 16px; background: #0f111a; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: space-between; box-sizing: border-box; }',
     '.zr-title-box { display: flex; align-items: center; gap: 9px; }',
@@ -37,7 +37,7 @@
     '.zr-msg-bot { align-self: flex-start; background: #151824; color: #e2e8f0; border: 1px solid rgba(255,255,255,0.06); line-height: 1.55; }',
     '.zr-msg-user { align-self: flex-end; background: ' + brandColor + '; color: #ffffff; font-weight: 500; }',
     '.zr-msg pre.zr-code-block { background: #0b0d14; border: 1px solid rgba(255,255,255,0.1); border-radius: 7px; padding: 6px 8px; font-family: "JetBrains Mono", Menlo, monospace; font-size: 10.5px; overflow-x: auto; margin: 4px 0; color: #cbd5e1; white-space: pre; }',
-    '.zr-msg code.zr-inline-code { background: rgba(255,255,255,0.08); padding: 1px 4px; border-radius: 4px; font-family: "JetBrains Mono", Menlo, monospace; font-size: 11px; color: #f87171; }',
+    '.zr-msg code.zr-inline-code { background: rgba(255,255,255,0.08); padding: 1px 4px; border-radius: 4px; font-family: "JetBrains Mono", Menlo, monospace; font-size: 11px; color: ' + brandColor + '; }',
     '.zr-msg a.zr-link { color: #60a5fa; text-decoration: underline; word-break: break-all; }',
     '.zr-msg a.zr-link:hover { color: #93c5fd; }',
     '.zr-msg .zr-md-header { display: block; font-size: 12.5px; font-weight: 700; color: #ffffff; margin-top: 6px; margin-bottom: 2px; }',
