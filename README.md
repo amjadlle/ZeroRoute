@@ -26,6 +26,7 @@
 
 <p align="center">
   <a href="https://github.com/amjadlle/ZeroRoute"><img src="https://img.shields.io/github/stars/amjadlle/ZeroRoute?style=social" alt="GitHub Stars" /></a>
+  <a href="https://buymeacoffee.com/amjadlle"><img src="https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Support-yellow.svg?style=flat&logo=buy-me-a-coffee" alt="Buy Me A Coffee" /></a>
   <img src="https://img.shields.io/badge/License-MIT-red.svg" alt="License: MIT" />
   <img src="https://img.shields.io/badge/Cost-100%25_Free_Tier-green.svg" alt="Free Tier" />
   <img src="https://img.shields.io/badge/OpenAI_API-Drop--in_Compatible-blue.svg" alt="OpenAI Compatible" />
@@ -326,6 +327,7 @@ public/
 **Amjad P A** — Full-Stack AI Engineer & Solo Builder
 
 - 🌐 **Portfolio**: [amjad.mapki.in](https://amjad.mapki.in)
+- ☕ **Buy Me a Coffee**: [buymeacoffee.com/amjadlle](https://buymeacoffee.com/amjadlle)
 - 🐙 **GitHub**: [@amjadlle](https://github.com/amjadlle)
 - 💼 **LinkedIn**: [linkedin.com/in/amjadlle](https://linkedin.com/in/amjadlle)
 - 𝕏 **X (Twitter)**: [@amjadlle](https://x.com/amjadlle)
@@ -334,6 +336,18 @@ public/
 - 🧵 **Threads**: [@amjadlle](https://www.threads.net/@amjadlle)
 - 🤖 **Reddit**: [u/reputed_culprit](https://www.reddit.com/user/reputed_culprit/)
 - ✉️ **Email**: [hire.amjad@gmail.com](mailto:hire.amjad@gmail.com)
+
+---
+
+## ☕ Support ZeroRoute
+
+If ZeroRoute saved you API costs, reduced your latency, or helped you ship your AI project faster, consider buying me a coffee! Your support helps maintain the project and keep it 100% free and open source.
+
+<p align="center">
+  <a href="https://buymeacoffee.com/amjadlle" target="_blank">
+    <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="48" width="174" />
+  </a>
+</p>
 
 ---
 

@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.2] - 2026-09-01
+
+### Buy Me a Coffee Integration & Sponsor Support ☕
+
+#### Added
+- **Buy Me a Coffee Integration**: Embedded supporter CTAs across the top navigation header and footer.
+- **GitHub Sponsor Configuration**: Added `.github/FUNDING.yml` linking to `@amjadlle` for 1-click open-source repository sponsorship.
+- **README Badges & Support Section**: Added Buy Me a Coffee badge and dedicated project support section.
+
+---
+
 ## [0.1.1] - 2026-08-31
 
 ### Multi-Tenant Analytics, Cloud Persistence & Widget Upgrades 📊

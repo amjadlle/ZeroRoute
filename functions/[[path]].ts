@@ -130,7 +130,7 @@ export const onRequest = async (context: { request: Request; env: Env; next: () 
     const stats = metricsLogger.getStats();
     return jsonResponse({
       status: "ok",
-      version: "0.1.0",
+      version: "0.1.2",
       platform: "cloudflare-pages",
       uptime: Math.floor((globalThis.performance ? performance.now() : 0) / 1000),
       requests: {
