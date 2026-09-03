@@ -22,6 +22,16 @@ export const handleKeysRoutes = async (
   url: string
 ): Promise<boolean> => {
 
+  // GET /api/customer/me or /api/auth/verify (Used by dashboard to check auth status)
+  if (req.method === "GET" && (url === "/api/customer/me" || url === "/api/auth/verify")) {
+    const auth = req.headers.authorization || "";
+    const token = auth.startsWith("Bearer ") ? auth.slice(7).trim() : auth.trim();
+    if (!ADMIN_KEY || token === ADMIN_KEY) {
+      return sendJson(res, 200, { role: "admin", authenticated: true, company: "ZeroRoute Admin" }), true;
+    }
+    return sendJson(res, 401, { error: "Invalid admin key" }), true;
+  }
+
   // GET /api/keys
   if (req.method === "GET" && url === "/api/keys") {
     if (!isAuthorized(req, ADMIN_KEY)) {
