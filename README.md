@@ -15,7 +15,7 @@
     <img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare" />
   </a>
   &nbsp;
-  <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Famjadlle%2FZeroRoute&env=GROQ_API_KEY,MISTRAL_API_KEY,GEMINI_API_KEY,SAMBANOVA_API_KEY,OPENROUTER_API_KEY,NVIDIA_API_KEY,HUGGINGFACE_API_KEY,BAZAARLINK_API_KEY,ROUTER_API_KEY,ADMIN_KEY&envDescription=Enter%20your%20free-tier%20AI%20provider%20API%20keys%20(add%20at%20least%20one)&envLink=https%3A%2F%2Fgithub.com%2Famjadlle%2FZeroRoute%23-how-to-get-free-api-keys">
+  <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Famjadlle%2Fzeroroute&env=GROQ_API_KEY,MISTRAL_API_KEY,GEMINI_API_KEY,SAMBANOVA_API_KEY,OPENROUTER_API_KEY,NVIDIA_API_KEY,HUGGINGFACE_API_KEY,BAZAARLINK_API_KEY,ROUTER_API_KEY,ADMIN_KEY&envDescription=Enter%20your%20free-tier%20AI%20provider%20API%20keys%20(add%20at%20least%20one)&envLink=https%3A%2F%2Fgithub.com%2Famjadlle%2Fzeroroute%23-how-to-get-free-api-keys">
     <img src="https://vercel.com/button" alt="Deploy with Vercel" />
   </a>
   &nbsp;
@@ -25,7 +25,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/amjadlle/zeroroute"><img src="https://img.shields.io/github/stars/amjadlle/ZeroRoute?style=social" alt="GitHub Stars" /></a>
+  <a href="https://github.com/amjadlle/zeroroute"><img src="https://img.shields.io/github/stars/amjadlle/zeroroute?style=social" alt="GitHub Stars" /></a>
   <a href="https://buymeacoffee.com/amjadlle"><img src="https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Support-yellow.svg?style=flat&logo=buy-me-a-coffee" alt="Buy Me A Coffee" /></a>
   <img src="https://img.shields.io/badge/License-MIT-red.svg" alt="License: MIT" />
   <img src="https://img.shields.io/badge/Cost-100%25_Free_Tier-green.svg" alt="Free Tier" />
