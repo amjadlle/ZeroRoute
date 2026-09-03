@@ -4,6 +4,7 @@ import { resolve, dirname } from "node:path";
 export type RequestLogEntry = {
   id: string;
   timestamp: number;
+  customerKey?: string;
   origin?: string;
   promptPreview: string;
   responsePreview?: string;

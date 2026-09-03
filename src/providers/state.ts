@@ -13,7 +13,7 @@ import type { ProviderRuntimeState } from "./types.js";
 export const TIMEOUT_MS  = Number(process.env.TIMEOUT_MS  ?? 12000);
 export const COOLDOWN_MS = Number(process.env.COOLDOWN_MS ?? 60000);
 
-const configuredOrder = (process.env.PROVIDER_ORDER ?? "mistral,groq,cohere,cloudflare,sambanova,gemini,openrouter,nvidia")
+const configuredOrder = (process.env.PROVIDER_ORDER ?? "mistral,groq,cohere,cloudflare,sambanova,gemini,openrouter,nvidia,huggingface,bazaarlink")
   .split(",")
   .map(x => x.trim())
   .filter(Boolean);
@@ -53,7 +53,7 @@ export const getRuntimeProviders = (): ProviderRuntimeState[] =>
  * provider or model by name. Ready providers come before cooling ones.
  */
 export const getEligibleProviders = (requestedTarget?: string) => {
-  const all   = getRuntimeProviders().filter(p => p.enabled);
+  const all   = getRuntimeProviders().filter(p => p.enabled && p.configured);
   const now   = Date.now();
   const ready   = all.filter(p => !p.cooldownUntil || p.cooldownUntil <= now);
   const cooling = all.filter(p =>  p.cooldownUntil && p.cooldownUntil >  now);

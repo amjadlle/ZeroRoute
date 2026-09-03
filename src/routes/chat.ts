@@ -13,6 +13,8 @@ import { isAuthorized, isRateLimited, getClientIp } from "../middleware/auth.js"
 import { getEligibleProviders, getRuntimeProviders, TIMEOUT_MS, COOLDOWN_MS } from "../providers/state.js";
 import { metricsLogger }  from "../services/metrics.js";
 import { responseCache }  from "../services/cache.js";
+import { KnowledgeStore }  from "../services/knowledge.js";
+import { buildDynamicSystemPrompt } from "../services/prompt.js";
 import { sendJson, parseBody, getCorsHeaders } from "../utils/http.js";
 import type { ChatRequest, ChatResponse } from "../providers/types.js";
 
@@ -74,6 +76,40 @@ export const handleChatRoutes = async (
     const startReqTime = Date.now();
     const reqOrigin = (req.headers.origin as string) || (req.headers.referer as string) || "Direct API";
     const promptPreview = getPromptPreview(body);
+
+    const authHeader = req.headers.authorization || "";
+    const bearerToken = authHeader.startsWith("Bearer ") ? authHeader.slice(7).trim() : authHeader.trim();
+    const callerCustomerKey = bearerToken.startsWith("zr_live_") ? bearerToken : undefined;
+
+    // ── Dynamic System Prompt & Knowledge Base Context Injection ─────────
+    const lastUserQuery = [...body.messages].reverse().find(m => m.role === "user")?.content || "";
+    const knowledgeContext = KnowledgeStore.retrieveContext(lastUserQuery, 6000, callerCustomerKey);
+
+    const existingSystemMsg = body.messages.find(m => m.role === "system");
+    const customUserPersona = existingSystemMsg ? existingSystemMsg.content : undefined;
+
+    // Only apply widget persona wrap if using knowledge or when caller is a widget/customer
+    let dynamicSystemContent = customUserPersona || "";
+    if (knowledgeContext || callerCustomerKey) {
+      dynamicSystemContent = buildDynamicSystemPrompt({
+        knowledgeContext,
+        customPersona: customUserPersona
+      });
+    }
+
+    if (dynamicSystemContent) {
+      if (existingSystemMsg) {
+        body.messages = body.messages.map(m =>
+          m.role === "system" ? { ...m, content: dynamicSystemContent } : m
+        );
+      } else {
+        body.messages = [
+          { role: "system", content: dynamicSystemContent },
+          ...body.messages
+        ];
+      }
+    }
+
     const cacheKey  = responseCache.generateKey(body);
     const cached    = responseCache.get(cacheKey);
 
@@ -83,6 +119,7 @@ export const handleChatRoutes = async (
       metricsLogger.log({
         id:              cached.id,
         timestamp:       Date.now(),
+        customerKey:     callerCustomerKey,
         origin:          reqOrigin,
         promptPreview,
         responsePreview: cached.choices[0].message.content.slice(0, 100),
@@ -167,6 +204,7 @@ export const handleChatRoutes = async (
           metricsLogger.log({
             id:              first.value.id,
             timestamp:       Date.now(),
+            customerKey:     callerCustomerKey,
             origin:          reqOrigin,
             promptPreview,
             responsePreview: fullContent.slice(0, 100),
@@ -193,7 +231,7 @@ export const handleChatRoutes = async (
       const totalLatency = Date.now() - startReqTime;
       console.error("[ZeroRoute] All streaming providers failed:", failures);
       metricsLogger.log({
-        id: randomUUID(), timestamp: Date.now(), origin: reqOrigin, promptPreview,
+        id: randomUUID(), timestamp: Date.now(), customerKey: callerCustomerKey, origin: reqOrigin, promptPreview,
         provider: "none", model: "none", latencyMs: totalLatency,
         status: 502, isStream: true, isCacheHit: false, failovers: [...failures]
       });
@@ -217,6 +255,7 @@ export const handleChatRoutes = async (
         metricsLogger.log({
           id:              result.id,
           timestamp:       Date.now(),
+          customerKey:     callerCustomerKey,
           origin:          reqOrigin,
           promptPreview,
           responsePreview: result.choices[0]?.message?.content?.slice(0, 100),

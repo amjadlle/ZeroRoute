@@ -69,24 +69,33 @@
     body {
       background-color: #050608;
       background-image: 
-        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(239, 68, 68, 0.15), transparent),
-        radial-gradient(ellipse 50% 50% at 80% 80%, rgba(244, 63, 94, 0.05), transparent);
+        radial-gradient(ellipse 80% 40% at 50% -20%, rgba(239, 68, 68, 0.06), transparent),
+        radial-gradient(ellipse 50% 50% at 80% 80%, rgba(255, 255, 255, 0.02), transparent);
     }
     .grid-pattern {
       background-size: 40px 40px;
       background-image: 
-        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
     }
     .glow-effect {
-      box-shadow: 0 0 50px -10px rgba(239, 68, 68, 0.3);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
     }
     .terminal-cursor::after {
       content: '▋';
       animation: blink 1s step-start infinite;
     }
-    @keyframes blink {
-      50% { opacity: 0; }
+    @keyframes marquee {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .animate-marquee {
+      display: flex;
+      width: max-content;
+      animation: marquee 28s linear infinite;
+    }
+    .animate-marquee:hover {
+      animation-play-state: paused;
     }
     /* Prevent unwanted iOS Safari zoom on input focus */
     @media screen and (max-width: 768px) {
@@ -121,12 +130,12 @@
         </a>
 
         <!-- Desktop Navigation Links -->
-        <nav class="hidden md:flex items-center gap-6 lg:gap-8 text-xs font-semibold text-slate-300">
+        <nav class="hidden md:flex items-center gap-6 lg:gap-7 text-xs font-semibold text-slate-300">
           <a href="#features" class="hover:text-white transition-colors">Features</a>
-          <a href="#widget" class="hover:text-white transition-colors">1-Line Chatbot</a>
+          <a href="#widget" class="hover:text-white transition-colors">Chatbot</a>
           <a href="#providers" class="hover:text-white transition-colors">Providers</a>
-          <a href="#quickstart" class="hover:text-white transition-colors">Integration</a>
-          <a href="https://github.com/amjadlle/ZeroRoute" target="_blank" class="hover:text-white transition-colors">Docs</a>
+          <a href="#pricing" class="px-2.5 py-1 rounded-full bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 border border-red-500/25 transition-all font-bold">Pricing</a>
+          <a href="#quickstart" class="hover:text-white transition-colors">Docs</a>
         </nav>
 
         <!-- Action CTAs -->
@@ -159,6 +168,7 @@
         <a href="#features" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-lg hover:bg-white/5 transition-colors">Features</a>
         <a href="#widget" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-lg hover:bg-white/5 transition-colors">1-Line Chatbot</a>
         <a href="#providers" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-lg hover:bg-white/5 transition-colors">Supported Providers</a>
+        <a href="#pricing" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-lg hover:bg-white/5 transition-colors text-amber-400">Pricing & Hosted Cloud</a>
         <a href="#quickstart" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-lg hover:bg-white/5 transition-colors">Integration Code</a>
         <a href="https://github.com/amjadlle/ZeroRoute" target="_blank" class="block px-3 py-2 rounded-lg text-red-400 hover:bg-white/5 transition-colors">GitHub & Docs ↗</a>
         <div class="pt-2 border-t border-white/10">
@@ -171,83 +181,78 @@
     </div>
 
     <!-- Main Content Wrapper -->
-    <div class="space-y-24 sm:space-y-32 mt-10 sm:mt-16">
+    <div class="space-y-24 sm:space-y-32 mt-12 sm:mt-20">
 
       <!-- ═══════════════════════════ HERO SECTION ═══════════════════════════ -->
-      <section class="text-center pt-4 sm:pt-8 pb-4 space-y-6 max-w-4xl mx-auto">
+      <section class="text-center pt-6 sm:pt-10 pb-6 space-y-8 max-w-4xl mx-auto">
         
         <!-- Top Announcement Badge -->
-        <a href="https://github.com/amjadlle/ZeroRoute/releases" target="_blank" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-500/10 hover:bg-red-500/20 border border-red-500/25 text-red-400 text-xs font-semibold shadow-sm transition-all hover:scale-105">
-          <span class="w-2 h-2 rounded-full bg-red-400 animate-ping"></span>
-          <span class="px-1.5 py-0.5 rounded bg-red-500/20 text-[10px] font-mono text-red-300">v0.1.2</span>
-          <span>⚡ 100% Free & Open-Source Multi-Cloud AI Gateway</span>
-          <svg class="w-3 h-3 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-        </a>
-
-      <!-- Main Headline -->
-      <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-[1.1]">
-        Never Pay for LLMs Again. <br/>
-        <span class="bg-gradient-to-r from-red-500 via-rose-400 to-amber-400 bg-clip-text text-transparent">
-          One Endpoint. 8 Free Clouds.
-        </span>
-      </h1>
-
-      <!-- Subtitle -->
-      <p class="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
-        Stop hitting free-tier rate limits. ZeroRoute auto-routes between <strong>Groq</strong>, <strong>SambaNova</strong>, <strong>Mistral</strong>, <strong>Gemini</strong>, and <strong>NVIDIA NIM</strong> with zero downtime, instant failover, and a <strong>1-line website AI chatbot</strong>.
-      </p>
-
-      <!-- Action Buttons -->
-      <div class="flex flex-wrap items-center justify-center gap-3 pt-4">
-        <!-- Cloudflare Pages 1-Click -->
-        <a href="https://dash.cloudflare.com/?to=/:account/workers-and-pages/create/pages" target="_blank" 
-          class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-[#f38020]/15 hover:bg-[#f38020]/25 text-[#f38020] border border-[#f38020]/40 rounded-xl transition-all shadow-lg active:scale-95">
-          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M18.34 16.5c.34-.45.54-1 .54-1.6 0-1.57-1.27-2.85-2.84-2.85-.14 0-.28.01-.41.04C15.15 9.77 13.2 8 10.84 8c-2.3 0-4.22 1.68-4.73 3.91-.32-.09-.66-.14-1.01-.14-2.26 0-4.1 1.84-4.1 4.1 0 .22.02.43.05.63H18.34z"/></svg>
-          <span>Deploy to Cloudflare</span>
-        </a>
-
-        <!-- Vercel 1-Click -->
-        <a href="https://vercel.com/new/clone?repository-url=https://github.com/amjadlle/ZeroRoute" target="_blank" 
-          class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-white text-black hover:bg-slate-200 rounded-xl transition-all shadow-xl active:scale-95">
-          <svg class="w-3.5 h-3.5 fill-black" viewBox="0 0 24 24"><path d="M24 22.525H0l12-21.05 12 21.05z"/></svg>
-          <span>Deploy to Vercel</span>
-        </a>
-
-        <!-- Render 1-Click -->
-        <a href="https://render.com/deploy?repo=https://github.com/amjadlle/ZeroRoute" target="_blank" 
-          class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/40 rounded-xl transition-all shadow-lg active:scale-95">
-          <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M17.857 0a6.143 6.143 0 0 0-6.143 6.143c0 .285.02.564.057.838l-7.39 7.39A6.113 6.113 0 0 0 .857 14.857H0v9.143h9.143v-.857a6.113 6.113 0 0 0 .486-3.527l7.39-7.39c.274.037.553.057.838.057A6.143 6.143 0 0 0 24 6.143 6.143 6.143 0 0 0 17.857 0z"/></svg>
-          <span>Deploy to Render</span>
-        </a>
-
-        <!-- Console -->
-        <a href="/app" 
-          class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/30 rounded-xl transition-all active:scale-95">
-          <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
-          <span>Open Router Console</span>
-        </a>
-      </div>
-
-      <!-- Quick Metrics Bar -->
-      <div class="pt-8 grid grid-cols-2 sm:grid-cols-4 gap-3.5 max-w-3xl mx-auto border-t border-dark-border/60">
-        <div class="p-3.5 rounded-xl bg-dark-card/60 border border-dark-border text-center shadow-sm">
-          <div class="text-2xl sm:text-3xl font-extrabold text-white font-mono">$0</div>
-          <div class="text-xs text-slate-400 mt-1 font-medium">Monthly Cost</div>
+        <div>
+          <a href="https://github.com/amjadlle/ZeroRoute/releases" target="_blank" class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-500/10 hover:bg-red-500/20 border border-red-500/25 text-red-400 text-xs font-semibold shadow-sm transition-all hover:scale-105">
+            <span class="w-2 h-2 rounded-full bg-red-400 animate-ping"></span>
+            <span class="px-1.5 py-0.5 rounded bg-red-500/20 text-[10px] font-mono text-red-300">v0.1.2</span>
+            <span>⚡ Multi-Cloud AI Gateway with Instant Failover</span>
+            <svg class="w-3 h-3 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+          </a>
         </div>
-        <div class="p-3.5 rounded-xl bg-dark-card/60 border border-dark-border text-center shadow-sm">
-          <div class="text-2xl sm:text-3xl font-extrabold text-emerald-400 font-mono">&lt;8ms</div>
-          <div class="text-xs text-slate-400 mt-1 font-medium">Failover Speed</div>
+
+        <!-- Clean, Snappy Main Headline -->
+        <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-[1.12]">
+          Never Pay for LLMs Again. <br/>
+          <span class="bg-gradient-to-r from-red-500 via-rose-400 to-amber-400 bg-clip-text text-transparent">
+            One Endpoint. 10 Fast Models.
+          </span>
+        </h1>
+
+        <!-- Spacious, Punchy Subtitle -->
+        <p class="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+          Zero downtime AI routing. Auto-switches between <strong>Llama 3.3 70B</strong>, <strong>Qwen 3.5</strong>, <strong>Mistral</strong>, and <strong>Gemini Flash</strong> in &lt;8ms with custom RAG knowledge and a <strong>1-line website AI chatbot</strong>.
+        </p>
+
+        <!-- Clean Action Buttons -->
+        <div class="flex flex-wrap items-center justify-center gap-4 pt-2">
+          <!-- Primary CTA -->
+          <button type="button" onclick="openCheckoutModal()" 
+            class="inline-flex items-center justify-center gap-2 px-6 py-3.5 text-sm font-bold bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white rounded-xl transition-all shadow-xl shadow-red-500/20 active:scale-95 cursor-pointer">
+            <i data-lucide="zap" class="w-4 h-4 fill-white"></i>
+            <span>Get Started ($3.99/mo)</span>
+          </button>
+
+          <!-- Console Link -->
+          <a href="/app" 
+            class="inline-flex items-center justify-center gap-2 px-5 py-3.5 text-sm font-semibold bg-white/[0.05] hover:bg-white/[0.1] text-slate-200 hover:text-white border border-white/10 rounded-xl transition-all active:scale-95">
+            <i data-lucide="sliders-horizontal" class="w-4 h-4 text-slate-400"></i>
+            <span>Open Console</span>
+          </a>
+
+          <!-- Live Chatbot Demo Trigger -->
+          <button type="button" onclick="openChatWidget()" 
+            class="inline-flex items-center justify-center gap-2 px-5 py-3.5 text-sm font-semibold bg-red-500/10 hover:bg-red-500/20 text-red-300 border border-red-500/30 rounded-xl transition-all active:scale-95 cursor-pointer">
+            <i data-lucide="message-square" class="w-4 h-4 text-red-400"></i>
+            <span>Test Chatbot Demo</span>
+          </button>
         </div>
-        <div class="p-3.5 rounded-xl bg-dark-card/60 border border-dark-border text-center shadow-sm">
-          <div class="text-2xl sm:text-3xl font-extrabold text-red-400 font-mono">8</div>
-          <div class="text-xs text-slate-400 mt-1 font-medium">Free Providers</div>
+
+        <!-- Quick Metrics Bar -->
+        <div class="pt-8 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto border-t border-dark-border/60">
+          <div class="p-4 rounded-2xl bg-dark-card/60 border border-dark-border text-center shadow-sm">
+            <div class="text-2xl sm:text-3xl font-extrabold text-white font-mono">$0</div>
+            <div class="text-xs text-slate-400 mt-1 font-medium">Monthly Cost</div>
+          </div>
+          <div class="p-4 rounded-2xl bg-dark-card/60 border border-dark-border text-center shadow-sm">
+            <div class="text-2xl sm:text-3xl font-extrabold text-emerald-400 font-mono">&lt;8ms</div>
+            <div class="text-xs text-slate-400 mt-1 font-medium">Failover Speed</div>
+          </div>
+          <div class="p-4 rounded-2xl bg-dark-card/60 border border-dark-border text-center shadow-sm">
+            <div class="text-2xl sm:text-3xl font-extrabold text-red-400 font-mono">10</div>
+            <div class="text-xs text-slate-400 mt-1 font-medium">Active Models</div>
+          </div>
+          <div class="p-4 rounded-2xl bg-dark-card/60 border border-dark-border text-center shadow-sm">
+            <div class="text-2xl sm:text-3xl font-extrabold text-amber-400 font-mono">0</div>
+            <div class="text-xs text-slate-400 mt-1 font-medium">Dependencies</div>
+          </div>
         </div>
-        <div class="p-3.5 rounded-xl bg-dark-card/60 border border-dark-border text-center shadow-sm">
-          <div class="text-2xl sm:text-3xl font-extrabold text-amber-400 font-mono">0</div>
-          <div class="text-xs text-slate-400 mt-1 font-medium">Dependencies</div>
-        </div>
-      </div>
-    </section>
+      </section>
 
     <!-- ═══════════════════════════ LIVE TERMINAL FAILOVER DEMO ═══════════════════════════ -->
     <section class="max-w-4xl mx-auto">
@@ -327,7 +332,7 @@
             </div>
             
             <pre class="font-mono text-xs text-slate-300 leading-relaxed overflow-x-auto p-2 bg-[#080a0f] rounded-lg border border-dark-border" id="widget-code-snippet"><code>&lt;script 
-  src="https://zeroroute.vercel.app/widget.js" 
+  src="https://zeroroute.mapki.in/widget.js" 
   data-title="ZeroRoute AI" 
   data-greeting="Hi! 👋 How can I help you today?" 
   data-prompts="Is it free?,How does it work?,Supported models?" 
@@ -456,53 +461,242 @@
       </div>
     </section>
 
-    <!-- ═══════════════════════════ FREE PROVIDERS MATRIX ═══════════════════════════ -->
-    <section id="providers" class="space-y-8 scroll-mt-20 max-w-5xl mx-auto">
-      <div class="text-center space-y-3">
-        <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Supported Free Cloud Providers</h2>
-        <p class="text-sm text-slate-400">Tested and benchmarked out-of-the-box on ZeroRoute</p>
+    <!-- ═══════════════════════════ FREE PROVIDERS MARQUEE & BENCHMARKS ═══════════════════════════ -->
+    <section id="providers" class="space-y-6 scroll-mt-20 max-w-5xl mx-auto">
+      <div class="text-center space-y-2">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
+          <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+          <span>Multi-Cloud Failover Pool</span>
+        </div>
+        <h2 class="text-2xl sm:text-4xl font-extrabold text-white">Backed by 10 Ultra-Fast AI Clouds</h2>
+        <p class="text-xs sm:text-sm text-slate-400">Zero single points of failure. If one provider throttles, ZeroRoute fails over in 0ms.</p>
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 font-mono text-xs">
-        <div class="p-4 bg-dark-card border border-dark-border rounded-xl space-y-2">
-          <div class="font-bold text-sm text-white">Mistral AI</div>
-          <div class="text-emerald-400 font-bold">~390 ms</div>
-          <div class="text-[11px] text-slate-500 truncate">mistral-small-latest</div>
+      <!-- Infinite Sliding Logo Marquee Container -->
+      <div class="relative overflow-hidden py-4 border-y border-white/[0.06] bg-white/[0.01]">
+        <!-- Gradient Edge Masks -->
+        <div class="absolute left-0 top-0 bottom-0 w-16 sm:w-28 bg-gradient-to-r from-[#050608] to-transparent z-10 pointer-events-none"></div>
+        <div class="absolute right-0 top-0 bottom-0 w-16 sm:w-28 bg-gradient-to-l from-[#050608] to-transparent z-10 pointer-events-none"></div>
+
+        <div class="animate-marquee gap-3 items-center">
+          <!-- Marquee Item 1 -->
+          <div onclick="openProvidersModal()" class="cursor-pointer flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-dark-card/80 border border-dark-border hover:border-red-500/40 hover:bg-dark-cardHover transition-all shrink-0">
+            <span class="text-sm">⚡</span>
+            <span class="text-xs font-bold text-white">Groq LPU</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-mono font-bold">~100ms</span>
+          </div>
+          <!-- Marquee Item 2 -->
+          <div onclick="openProvidersModal()" class="cursor-pointer flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-dark-card/80 border border-dark-border hover:border-red-500/40 hover:bg-dark-cardHover transition-all shrink-0">
+            <span class="text-sm">🌪️</span>
+            <span class="text-xs font-bold text-white">Mistral AI</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-mono font-bold">~390ms</span>
+          </div>
+          <!-- Marquee Item 3 -->
+          <div onclick="openProvidersModal()" class="cursor-pointer flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-dark-card/80 border border-dark-border hover:border-red-500/40 hover:bg-dark-cardHover transition-all shrink-0">
+            <span class="text-sm">🌐</span>
+            <span class="text-xs font-bold text-white">Cloudflare AI</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-mono font-bold">~700ms</span>
+          </div>
+          <!-- Marquee Item 4 -->
+          <div onclick="openProvidersModal()" class="cursor-pointer flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-dark-card/80 border border-dark-border hover:border-red-500/40 hover:bg-dark-cardHover transition-all shrink-0">
+            <span class="text-sm">✨</span>
+            <span class="text-xs font-bold text-white">Google Gemini</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 font-mono font-bold">~850ms</span>
+          </div>
+          <!-- Marquee Item 5 -->
+          <div onclick="openProvidersModal()" class="cursor-pointer flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-dark-card/80 border border-dark-border hover:border-red-500/40 hover:bg-dark-cardHover transition-all shrink-0">
+            <span class="text-sm">🧠</span>
+            <span class="text-xs font-bold text-white">Cohere Command</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-mono font-bold">~650ms</span>
+          </div>
+          <!-- Marquee Item 6 -->
+          <div onclick="openProvidersModal()" class="cursor-pointer flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-dark-card/80 border border-dark-border hover:border-red-500/40 hover:bg-dark-cardHover transition-all shrink-0">
+            <span class="text-sm">🚀</span>
+            <span class="text-xs font-bold text-white">SambaNova</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-mono font-bold">~800ms</span>
+          </div>
+          <!-- Marquee Item 7 -->
+          <div onclick="openProvidersModal()" class="cursor-pointer flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-dark-card/80 border border-dark-border hover:border-red-500/40 hover:bg-dark-cardHover transition-all shrink-0">
+            <span class="text-sm">🏢</span>
+            <span class="text-xs font-bold text-white">NVIDIA NIM</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-400 font-mono font-bold">Enterprise</span>
+          </div>
+          <!-- Marquee Item 8 -->
+          <div onclick="openProvidersModal()" class="cursor-pointer flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-dark-card/80 border border-dark-border hover:border-red-500/40 hover:bg-dark-cardHover transition-all shrink-0">
+            <span class="text-sm">🤗</span>
+            <span class="text-xs font-bold text-white">Hugging Face</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-mono font-bold">~450ms</span>
+          </div>
+          <!-- Marquee Item 9 -->
+          <div onclick="openProvidersModal()" class="cursor-pointer flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-dark-card/80 border border-dark-border hover:border-red-500/40 hover:bg-dark-cardHover transition-all shrink-0">
+            <span class="text-sm">🔀</span>
+            <span class="text-xs font-bold text-white">OpenRouter</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-500/20 text-slate-300 font-mono font-bold">Free Pool</span>
+          </div>
+          <!-- Marquee Item 10 -->
+          <div onclick="openProvidersModal()" class="cursor-pointer flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-dark-card/80 border border-dark-border hover:border-red-500/40 hover:bg-dark-cardHover transition-all shrink-0">
+            <span class="text-sm">⚡</span>
+            <span class="text-xs font-bold text-white">BazaarLink AI</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-400 font-mono font-bold">~1.2s</span>
+          </div>
+
+          <!-- Duplicate Set for Seamless Loop -->
+          <div onclick="openProvidersModal()" class="cursor-pointer flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-dark-card/80 border border-dark-border hover:border-red-500/40 hover:bg-dark-cardHover transition-all shrink-0">
+            <span class="text-sm">⚡</span>
+            <span class="text-xs font-bold text-white">Groq LPU</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-mono font-bold">~100ms</span>
+          </div>
+          <div onclick="openProvidersModal()" class="cursor-pointer flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-dark-card/80 border border-dark-border hover:border-red-500/40 hover:bg-dark-cardHover transition-all shrink-0">
+            <span class="text-sm">🌪️</span>
+            <span class="text-xs font-bold text-white">Mistral AI</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-mono font-bold">~390ms</span>
+          </div>
+          <div onclick="openProvidersModal()" class="cursor-pointer flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-dark-card/80 border border-dark-border hover:border-red-500/40 hover:bg-dark-cardHover transition-all shrink-0">
+            <span class="text-sm">🌐</span>
+            <span class="text-xs font-bold text-white">Cloudflare AI</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-mono font-bold">~700ms</span>
+          </div>
+          <div onclick="openProvidersModal()" class="cursor-pointer flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-dark-card/80 border border-dark-border hover:border-red-500/40 hover:bg-dark-cardHover transition-all shrink-0">
+            <span class="text-sm">✨</span>
+            <span class="text-xs font-bold text-white">Google Gemini</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 font-mono font-bold">~850ms</span>
+          </div>
+          <div onclick="openProvidersModal()" class="cursor-pointer flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-dark-card/80 border border-dark-border hover:border-red-500/40 hover:bg-dark-cardHover transition-all shrink-0">
+            <span class="text-sm">🧠</span>
+            <span class="text-xs font-bold text-white">Cohere Command</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-mono font-bold">~650ms</span>
+          </div>
         </div>
-        <div class="p-4 bg-dark-card border border-dark-border rounded-xl space-y-2">
-          <div class="font-bold text-sm text-white">Groq</div>
-          <div class="text-emerald-400 font-bold">~100 ms</div>
-          <div class="text-[11px] text-slate-500 truncate">openai/gpt-oss-20b</div>
+      </div>
+
+      <div class="text-center pt-1">
+        <button onclick="openProvidersModal()" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 hover:text-white border border-white/10 transition-all active:scale-95 shadow-sm">
+          <i data-lucide="bar-chart-2" class="w-3.5 h-3.5 text-red-400"></i>
+          <span>Inspect All 10 Cloud Latency Benchmarks & Models</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════ PRICING & HOSTED CLOUD SECTION ═══════════════════════════ -->
+    <section id="pricing" class="space-y-10 scroll-mt-20 max-w-5xl mx-auto">
+      <div class="text-center space-y-3">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-400 text-xs font-semibold">
+          <span>⚡ Simple, Transparent Options</span>
         </div>
-        <div class="p-4 bg-dark-card border border-dark-border rounded-xl space-y-2">
-          <div class="font-bold text-sm text-white">Cohere</div>
-          <div class="text-emerald-400 font-bold">~650 ms</div>
-          <div class="text-[11px] text-slate-500 truncate">command-r-plus</div>
+        <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">Self-Host Free or Go Hosted</h2>
+        <p class="text-sm sm:text-base text-slate-400 max-w-2xl mx-auto">
+          Choose 100% free DIY self-hosting or let us manage the 10-cloud key pools, failover, and uptime for less than a cup of coffee.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6 lg:gap-8 items-stretch">
+        <!-- Self-Hosted DIY Plan -->
+        <div class="relative flex flex-col justify-between p-6 sm:p-8 bg-dark-card/90 border border-dark-border rounded-3xl backdrop-blur-xl shadow-xl space-y-6">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Open-Source</span>
+                <h3 class="text-2xl font-bold text-white mt-1">DIY Self-Hosted</h3>
+              </div>
+              <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">100% FREE</span>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-400">
+              For tinkerers and engineers who want full control and don't mind managing 10 provider API accounts.
+            </p>
+            <div class="text-3xl sm:text-4xl font-extrabold text-white font-mono pt-2">
+              $0 <span class="text-sm font-normal text-slate-400 font-sans">/ forever</span>
+            </div>
+
+            <ul class="space-y-3 text-xs sm:text-sm text-slate-300 pt-4 border-t border-dark-border">
+              <li class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>Full TypeScript source code (MIT License)</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>Deploy to your own Cloudflare / Vercel / VPS</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>Bring your own 10 API keys (BYOK)</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>In-memory caching & rate limiting</span>
+              </li>
+              <li class="flex items-center gap-2.5 text-slate-500">
+                <svg class="w-4 h-4 text-slate-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                <span>Requires manual setup of 10 cloud accounts</span>
+              </li>
+            </ul>
+          </div>
+
+          <a href="https://github.com/amjadlle/ZeroRoute" target="_blank" 
+            class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold bg-white/[0.06] hover:bg-white/[0.12] text-white border border-white/10 transition-all active:scale-95 shadow-md">
+            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            <span>Clone Repository & Deploy Free</span>
+          </a>
         </div>
-        <div class="p-4 bg-dark-card border border-dark-border rounded-xl space-y-2">
-          <div class="font-bold text-sm text-white">Cloudflare AI</div>
-          <div class="text-emerald-400 font-bold">~700 ms</div>
-          <div class="text-[11px] text-slate-500 truncate">llama-3.1-8b</div>
-        </div>
-        <div class="p-4 bg-dark-card border border-dark-border rounded-xl space-y-2">
-          <div class="font-bold text-sm text-white">SambaNova</div>
-          <div class="text-emerald-400 font-bold">~800 ms</div>
-          <div class="text-[11px] text-slate-500 truncate">gemma-4-31B-it</div>
-        </div>
-        <div class="p-4 bg-dark-card border border-dark-border rounded-xl space-y-2">
-          <div class="font-bold text-sm text-white">Google Gemini</div>
-          <div class="text-amber-400 font-bold">~850 ms</div>
-          <div class="text-[11px] text-slate-500 truncate">gemini-3.6-flash</div>
-        </div>
-        <div class="p-4 bg-dark-card border border-dark-border rounded-xl space-y-2">
-          <div class="font-bold text-sm text-white">OpenRouter</div>
-          <div class="text-slate-300 font-bold">Free Pool</div>
-          <div class="text-[11px] text-slate-500 truncate">nemotron-free</div>
-        </div>
-        <div class="p-4 bg-dark-card border border-dark-border rounded-xl space-y-2">
-          <div class="font-bold text-sm text-white">NVIDIA NIM</div>
-          <div class="text-slate-300 font-bold">Enterprise</div>
-          <div class="text-[11px] text-slate-500 truncate">nemotron-3.5-30b</div>
+
+        <!-- Managed ZeroRoute Cloud Plan -->
+        <div class="relative flex flex-col justify-between p-6 sm:p-8 bg-gradient-to-b from-[#17111b] via-[#100d16] to-[#0a080f] border-2 border-red-500/50 rounded-3xl shadow-2xl shadow-red-500/10 space-y-6 glow-effect">
+          <!-- Popular Ribbon -->
+          <div class="absolute -top-3.5 right-6 px-3.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-gradient-to-r from-red-500 to-rose-500 text-white shadow-lg shadow-red-500/30">
+            ★ Most Popular • Zero Hassle
+          </div>
+
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-xs font-bold uppercase tracking-wider text-red-400">Managed Cloud</span>
+                <h3 class="text-2xl font-bold text-white mt-1">ZeroRoute Cloud</h3>
+              </div>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-400">
+              Instant 1-key setup. We manage the 10-cloud key pools, failover rotation, and 99.9% uptime for your apps.
+            </p>
+            <div class="text-3xl sm:text-4xl font-extrabold text-white font-mono pt-2">
+              $3.99 <span class="text-sm font-normal text-slate-400 font-sans">/ month <span class="text-xs text-emerald-400 font-mono">(3-Day Free Trial)</span></span>
+            </div>
+            <div class="text-[11px] text-slate-400 font-mono -mt-1">
+              ≈ ₹330/mo • Apple Pay, Google Pay, Cards & UPI
+            </div>
+
+            <ul class="space-y-3 text-xs sm:text-sm text-slate-200 pt-4 border-t border-white/10">
+              <li class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 text-red-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+                <span><strong>Instant 1-Key Access</strong> (Zero setup or API keys needed)</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 text-red-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+                <span><strong>10 Clouds Pooled & Managed</strong> for 99.9% uptime</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 text-red-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+                <span><strong>Knowledge Base & Semantic RAG</strong> (Upload docs & FAQs)</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 text-red-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+                <span><strong>Custom AI Brand Persona</strong> & Tone customizer</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 text-red-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+                <span><strong>Hosted 1-Line Chatbot Widget</strong> (Embed anywhere in 30s)</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 text-red-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+                <span><strong>Private Visitor Chat Logs</strong> & Question History</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="space-y-2 pt-2">
+            <button type="button" onclick="openCheckoutModal()" 
+              class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white shadow-xl shadow-red-500/25 transition-all active:scale-95 cursor-pointer">
+              <span>🚀 Start 3-Day Free Trial ($3.99/mo)</span>
+            </button>
+            <p class="text-[11px] text-center text-slate-500">Cancel anytime. Instant automated activation.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -517,14 +711,14 @@
       <div class="bg-dark-card border border-dark-border rounded-2xl p-6 space-y-4">
         <div class="flex items-center justify-between text-xs text-slate-400 pb-3 border-b border-dark-border">
           <span class="font-mono text-slate-300">python / nodejs / curl</span>
-          <span class="text-red-400 font-mono text-[11px]">base_url: https://zeroroute.vercel.app/v1</span>
+          <span class="text-red-400 font-mono text-[11px]">base_url: https://zeroroute.mapki.in/v1</span>
         </div>
 
         <pre class="font-mono text-xs text-slate-300 leading-relaxed overflow-x-auto p-4 bg-[#080a0f] rounded-xl border border-dark-border"><code># Python Example (Use official openai library with ZeroRoute)
 from openai import OpenAI
 
 client = OpenAI(
-    base_url="https://zeroroute.vercel.app/v1",
+    base_url="https://zeroroute.mapki.in/v1",
     api_key="your-router-key"
 )
 
@@ -537,7 +731,8 @@ print(response.choices[0].message.content)</code></pre>
       </div>
     </section>
 
-    <!-- ═══════════════════════════ FINAL CTA ═══════════════════════════ -->
+    <!-- ═══════════════════════════ FINAL CTA (HIDDEN / COMMENTED OUT) ═══════════════════════════ -->
+    <!--
     <section class="text-center py-16 px-6 bg-gradient-to-b from-dark-card to-dark-bg border border-dark-border rounded-3xl max-w-4xl mx-auto space-y-6">
       <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
         Ready to Build with Infinite Free Tokens?
@@ -567,6 +762,7 @@ print(response.choices[0].message.content)</code></pre>
         </a>
       </div>
     </section>
+    -->
 
     <!-- ═══════════════════════════ CREATOR & ENGINEER SHOWCASE SECTION ═══════════════════════════ -->
     <section class="max-w-4xl mx-auto pt-4">
@@ -689,16 +885,249 @@ print(response.choices[0].message.content)</code></pre>
   <script 
     src="/widget.js" 
     data-title="ZeroRoute AI" 
+    data-logo="/logo.png"
     data-persona-url="/persona.md" 
     data-knowledge-url="/knowledge.md" 
     data-greeting="Hi there! 👋 I'm ZeroRoute AI. Ask me anything about multi-cloud routing, free providers, or test my real-time streaming speed!" 
     data-color="#ef4444" 
-     
     defer>
   </script>
 
+  <!-- ═══════════════════════════ PROVIDERS BENCHMARK MODAL ═══════════════════════════ -->
+  <div id="providers-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md transition-opacity duration-200 hidden opacity-0">
+    <div class="relative w-full max-w-2xl max-h-[85vh] flex flex-col bg-[#0b0e14] border border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      
+      <!-- Modal Header -->
+      <div class="px-5 py-4 border-b border-dark-border flex items-center justify-between bg-dark-card/60">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400">
+            <i data-lucide="cpu" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-white">10 Multi-Cloud AI Benchmarks</h3>
+            <p class="text-[11px] text-slate-400">Zero single point of failure • Dynamic multi-cloud failover pool</p>
+          </div>
+        </div>
+        <button onclick="closeProvidersModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-all">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body (Grid of Benchmarks) -->
+      <div class="p-5 overflow-y-auto space-y-3 font-mono text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          
+          <div class="p-3.5 bg-dark-card border border-dark-border rounded-xl space-y-1.5 hover:border-red-500/30 transition-all">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-white font-sans">⚡ Groq LPU</span>
+              <span class="text-emerald-400 font-bold px-2 py-0.5 rounded bg-emerald-500/10">~100 ms</span>
+            </div>
+            <div class="text-[11px] text-slate-400 font-sans">Custom LPU silicon inference</div>
+            <div class="text-[10px] text-slate-500 truncate font-mono">openai/gpt-oss-20b</div>
+          </div>
+
+          <div class="p-3.5 bg-dark-card border border-dark-border rounded-xl space-y-1.5 hover:border-red-500/30 transition-all">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-white font-sans">🌪️ Mistral AI</span>
+              <span class="text-emerald-400 font-bold px-2 py-0.5 rounded bg-emerald-500/10">~390 ms</span>
+            </div>
+            <div class="text-[11px] text-slate-400 font-sans">Ultra-fast European model cluster</div>
+            <div class="text-[10px] text-slate-500 truncate font-mono">mistral-small-latest</div>
+          </div>
+
+          <div class="p-3.5 bg-dark-card border border-dark-border rounded-xl space-y-1.5 hover:border-red-500/30 transition-all">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-white font-sans">🤗 Hugging Face</span>
+              <span class="text-emerald-400 font-bold px-2 py-0.5 rounded bg-emerald-500/10">~450 ms</span>
+            </div>
+            <div class="text-[11px] text-slate-400 font-sans">Serverless open-source router</div>
+            <div class="text-[10px] text-slate-500 truncate font-mono">meta-llama/Llama-3.1-8B</div>
+          </div>
+
+          <div class="p-3.5 bg-dark-card border border-dark-border rounded-xl space-y-1.5 hover:border-red-500/30 transition-all">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-white font-sans">🧠 Cohere</span>
+              <span class="text-emerald-400 font-bold px-2 py-0.5 rounded bg-emerald-500/10">~650 ms</span>
+            </div>
+            <div class="text-[11px] text-slate-400 font-sans">Enterprise reasoning & search</div>
+            <div class="text-[10px] text-slate-500 truncate font-mono">command-r-plus</div>
+          </div>
+
+          <div class="p-3.5 bg-dark-card border border-dark-border rounded-xl space-y-1.5 hover:border-red-500/30 transition-all">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-white font-sans">🌐 Cloudflare AI</span>
+              <span class="text-emerald-400 font-bold px-2 py-0.5 rounded bg-emerald-500/10">~700 ms</span>
+            </div>
+            <div class="text-[11px] text-slate-400 font-sans">Global edge GPU network</div>
+            <div class="text-[10px] text-slate-500 truncate font-mono">@cf/meta/llama-3.1-8b</div>
+          </div>
+
+          <div class="p-3.5 bg-dark-card border border-dark-border rounded-xl space-y-1.5 hover:border-red-500/30 transition-all">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-white font-sans">🚀 SambaNova</span>
+              <span class="text-emerald-400 font-bold px-2 py-0.5 rounded bg-emerald-500/10">~800 ms</span>
+            </div>
+            <div class="text-[11px] text-slate-400 font-sans">Dataflow architecture speed</div>
+            <div class="text-[10px] text-slate-500 truncate font-mono">gemma-4-31B-it</div>
+          </div>
+
+          <div class="p-3.5 bg-dark-card border border-dark-border rounded-xl space-y-1.5 hover:border-red-500/30 transition-all">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-white font-sans">✨ Google Gemini</span>
+              <span class="text-amber-400 font-bold px-2 py-0.5 rounded bg-amber-500/10">~850 ms</span>
+            </div>
+            <div class="text-[11px] text-slate-400 font-sans">1M Token massive context window</div>
+            <div class="text-[10px] text-slate-500 truncate font-mono">gemini-flash-lite-latest</div>
+          </div>
+
+          <div class="p-3.5 bg-dark-card border border-dark-border rounded-xl space-y-1.5 hover:border-red-500/30 transition-all">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-white font-sans">🏢 NVIDIA NIM</span>
+              <span class="text-purple-400 font-bold px-2 py-0.5 rounded bg-purple-500/10">Enterprise</span>
+            </div>
+            <div class="text-[11px] text-slate-400 font-sans">DGX Supercomputer microservices</div>
+            <div class="text-[10px] text-slate-500 truncate font-mono">nemotron-3.5-30b</div>
+          </div>
+
+          <div class="p-3.5 bg-dark-card border border-dark-border rounded-xl space-y-1.5 hover:border-red-500/30 transition-all">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-white font-sans">🔀 OpenRouter</span>
+              <span class="text-slate-300 font-bold px-2 py-0.5 rounded bg-slate-500/20">Free Pool</span>
+            </div>
+            <div class="text-[11px] text-slate-400 font-sans">Community load-balanced endpoint</div>
+            <div class="text-[10px] text-slate-500 truncate font-mono">nemotron-3.5-lightning:free</div>
+          </div>
+
+          <div class="p-3.5 bg-dark-card border border-dark-border rounded-xl space-y-1.5 hover:border-red-500/30 transition-all">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-white font-sans">⚡ BazaarLink AI</span>
+              <span class="text-cyan-400 font-bold px-2 py-0.5 rounded bg-cyan-500/10">~1.2s</span>
+            </div>
+            <div class="text-[11px] text-slate-400 font-sans">Distributed backup inference</div>
+            <div class="text-[10px] text-slate-500 truncate font-mono">auto:free-pool</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-4 border-t border-dark-border bg-dark-card/40 flex items-center justify-between text-xs">
+        <span class="text-slate-400">Automatic rotation on rate limit (429)</span>
+        <button onclick="closeProvidersModal()" class="px-4 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold transition-all">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════ CUSTOMER CHECKOUT & VIP ACCESS MODAL ═══════════════════════════ -->
+  <div id="checkout-modal" class="fixed inset-0 z-[999999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden opacity-0 transition-opacity duration-200">
+    <div class="relative w-full max-w-lg bg-dark-bg border border-red-500/30 rounded-2xl shadow-2xl shadow-red-500/10 overflow-hidden flex flex-col max-h-[90vh]">
+      
+      <!-- Modal Header -->
+      <div class="p-6 border-b border-dark-border bg-gradient-to-r from-red-950/40 via-dark-card to-dark-bg flex items-center justify-between">
+        <div>
+          <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-red-500/20 text-red-400 border border-red-500/30 mb-1.5">
+            ⚡ Managed ZeroRoute Cloud
+          </div>
+          <h3 class="text-xl font-bold text-white">Start Your 3-Day Free Trial</h3>
+        </div>
+        <button onclick="closeCheckoutModal()" class="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 space-y-5 overflow-y-auto">
+        <!-- Live Pricing Summary -->
+        <div class="p-4 rounded-xl bg-dark-card border border-dark-border flex items-center justify-between">
+          <div>
+            <div class="text-sm font-bold text-white">ZeroRoute Cloud Pro</div>
+            <div class="text-xs text-slate-400">Knowledge RAG • Brand Persona • 10 Clouds</div>
+          </div>
+          <div class="text-right">
+            <div class="text-lg font-bold text-emerald-400 font-mono">$3.99/mo</div>
+            <div class="text-[10px] text-slate-500 font-mono">3 days free • ₹330/mo</div>
+          </div>
+        </div>
+
+        <!-- Option 1: Live Card / UPI / Apple Pay Checkout -->
+        <div class="space-y-2">
+          <a href="https://test.checkout.dodopayments.com/buy/pdt_0Nml3W2yZao32si4mSs6b" target="_blank"
+            class="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl text-sm font-bold bg-gradient-to-r from-red-600 via-rose-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white shadow-xl shadow-red-500/25 transition-all active:scale-95">
+            <i data-lucide="credit-card" class="w-4 h-4"></i>
+            <span>Pay via Dodo (Cards / Apple Pay / UPI)</span>
+          </a>
+          <p class="text-[11px] text-center text-slate-500">Opens secure checkout in new tab</p>
+        </div>
+
+        <div class="relative flex py-1 items-center">
+          <div class="flex-grow border-t border-dark-border"></div>
+          <span class="flex-shrink mx-4 text-[10px] font-bold uppercase tracking-wider text-slate-500">or test with instant passkey</span>
+          <div class="flex-grow border-t border-dark-border"></div>
+        </div>
+
+        <!-- Option 2: Instant Sandbox & Passkey Tester -->
+        <div class="p-4 rounded-xl bg-white/[0.03] border border-white/10 space-y-3">
+          <div class="flex items-center gap-2 text-xs font-semibold text-slate-200">
+            <i data-lucide="key" class="w-4 h-4 text-amber-400"></i>
+            <span>Founder & Beta Tester Passkey</span>
+          </div>
+          
+          <div class="space-y-2">
+            <input type="text" id="passkey-input" placeholder="Enter VIP Passkey (e.g. founder or mapki)" 
+              class="w-full px-3.5 py-2.5 rounded-xl bg-dark-bg border border-dark-border text-white text-xs font-mono focus:border-red-500 focus:outline-none transition-all placeholder:text-slate-600">
+            
+            <input type="email" id="customer-email-input" placeholder="Your business email (e.g. amjad@mapki.in)" 
+              class="w-full px-3.5 py-2.5 rounded-xl bg-dark-bg border border-dark-border text-white text-xs focus:border-red-500 focus:outline-none transition-all placeholder:text-slate-600">
+          </div>
+
+          <button type="button" onclick="submitPasskeyCheckout()" 
+            class="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-bold bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 transition-all active:scale-95 cursor-pointer">
+            <i data-lucide="unlock" class="w-3.5 h-3.5"></i>
+            <span>Unlock Instant Customer Setup</span>
+          </button>
+          <div id="passkey-error" class="text-[11px] text-red-400 hidden font-medium"></div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-4 border-t border-dark-border bg-dark-card/40 flex items-center justify-between text-xs">
+        <span class="text-slate-500 text-[11px]">Instant automated redirection to onboarding</span>
+        <button onclick="closeCheckoutModal()" class="px-4 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold transition-all">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
     lucide.createIcons();
+
+    function openProvidersModal() {
+      const modal = document.getElementById('providers-modal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        setTimeout(() => { modal.classList.remove('opacity-0'); }, 10);
+      }
+    }
+
+    function closeProvidersModal() {
+      const modal = document.getElementById('providers-modal');
+      if (modal) {
+        modal.classList.add('opacity-0');
+        setTimeout(() => { modal.classList.add('hidden'); }, 200);
+      }
+    }
+
+    // Close on backdrop click or Escape key
+    document.getElementById('providers-modal')?.addEventListener('click', (e) => {
+      if (e.target.id === 'providers-modal') closeProvidersModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeProvidersModal();
+    });
 
     function copyWidgetCode() {
       const code = document.getElementById('widget-code-snippet').textContent;
@@ -713,6 +1142,45 @@ print(response.choices[0].message.content)</code></pre>
       if (panel) {
         panel.classList.toggle('hidden');
       }
+    }
+
+    function openCheckoutModal() {
+      const modal = document.getElementById('checkout-modal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        setTimeout(() => { modal.classList.remove('opacity-0'); }, 10);
+      }
+    }
+
+    function closeCheckoutModal() {
+      const modal = document.getElementById('checkout-modal');
+      if (modal) {
+        modal.classList.add('opacity-0');
+        setTimeout(() => { modal.classList.add('hidden'); }, 200);
+      }
+    }
+
+    // Close checkout modal on backdrop click
+    document.getElementById('checkout-modal')?.addEventListener('click', (e) => {
+      if (e.target.id === 'checkout-modal') closeCheckoutModal();
+    });
+
+    function submitPasskeyCheckout() {
+      const passkey = document.getElementById('passkey-input')?.value?.trim().toLowerCase();
+      const email = document.getElementById('customer-email-input')?.value?.trim().toLowerCase() || 'founder@mapki.in';
+      const errEl = document.getElementById('passkey-error');
+
+      if (!passkey || (passkey !== 'founder' && passkey !== 'mapki' && passkey !== 'zeroroute' && passkey !== 'pro')) {
+        if (errEl) {
+          errEl.textContent = 'Invalid passkey. Use "founder" or "mapki" for sandbox testing.';
+          errEl.classList.remove('hidden');
+        }
+        return;
+      }
+
+      if (errEl) errEl.classList.add('hidden');
+      const fakeSubId = 'sub_vip_' + Math.random().toString(36).substring(2, 10);
+      window.location.href = `/welcome?subscription_id=${fakeSubId}&status=active&email=${encodeURIComponent(email)}&company=${encodeURIComponent('Mapki Labs')}`;
     }
 
     function openChatWidget() {

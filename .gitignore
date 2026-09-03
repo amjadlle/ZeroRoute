@@ -1,4 +1,4 @@
-﻿# Dependencies
+# Dependencies
 node_modules/
 package-lock.json.bak
 
@@ -35,6 +35,7 @@ scratch/
 
 # IDE & Editor Settings
 .vscode/
+.cursor/
 .idea/
 *.swp
 *.swo

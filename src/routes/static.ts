@@ -10,7 +10,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { sendJson, getCorsHeaders } from "../utils/http.js";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __dirname = typeof import.meta.url === "string" ? path.dirname(fileURLToPath(import.meta.url)) : process.cwd();
 
 /**
  * Reads a file from the public/ directory and writes it to the response.
@@ -88,6 +88,22 @@ export const handleStaticRoutes = (
   if (url === "/app" || url === "/dashboard" || url === "/console" || url === "/admin") {
     if (!servePublicFile(res, "dashboard.html", "text/html; charset=utf-8", 0, origin)) {
       sendJson(res, 503, { error: { message: "Dashboard not available" } });
+    }
+    return true;
+  }
+
+  // Dedicated Admin Customer CRM & Subscriptions page
+  if (url === "/customers" || url === "/subscribers" || url === "/admin/customers") {
+    if (!servePublicFile(res, "customers.html", "text/html; charset=utf-8", 0, origin)) {
+      sendJson(res, 503, { error: { message: "CRM page not available" } });
+    }
+    return true;
+  }
+
+  // Customer Onboarding Setup Wizard
+  if (url === "/welcome" || url === "/onboarding" || url === "/setup") {
+    if (!servePublicFile(res, "welcome.html", "text/html; charset=utf-8", 0, origin)) {
+      sendJson(res, 503, { error: { message: "Onboarding page not available" } });
     }
     return true;
   }

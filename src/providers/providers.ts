@@ -257,7 +257,7 @@ export const providers: Provider[] = [
     name: "Cloudflare Workers AI",
     model: process.env.CLOUDFLARE_MODEL ?? "@cf/meta/llama-3.1-8b-instruct",
     generate: async function (r, s) {
-      const key = getProviderApiKey("cloudflare") || process.env.CLOUDFLARE_API_TOKEN;
+      const key = getProviderApiKey("cloudflare") || process.env.CF_AI_API_TOKEN || process.env.CLOUDFLARE_API_TOKEN;
       const account = process.env.CLOUDFLARE_ACCOUNT_ID;
       if (!key || !account) throw new Error("cloudflare credentials are not configured");
       const res = await fetch(`https://api.cloudflare.com/client/v4/accounts/${account}/ai/run/${this.model}`, {
@@ -419,6 +419,34 @@ export const providers: Provider[] = [
     generateStream: function (r, s) {
       const key = getProviderApiKey("nvidia");
       return openAIStyleStream("nvidia", "https://integrate.api.nvidia.com/v1/chat/completions", key, this.model, r, s);
+    }
+  },
+  {
+    id: "huggingface",
+    name: "Hugging Face",
+    model: process.env.HUGGINGFACE_MODEL ?? "meta-llama/Llama-3.1-8B-Instruct",
+    generate: async function (r, s) {
+      const key = getProviderApiKey("huggingface");
+      const res = await openAIStyle("huggingface", "https://router.huggingface.co/v1/chat/completions", key, this.model, r, s);
+      return normalize("huggingface", this.model, await parseJsonOrError(res, "huggingface"));
+    },
+    generateStream: function (r, s) {
+      const key = getProviderApiKey("huggingface");
+      return openAIStyleStream("huggingface", "https://router.huggingface.co/v1/chat/completions", key, this.model, r, s);
+    }
+  },
+  {
+    id: "bazaarlink",
+    name: "BazaarLink AI",
+    model: process.env.BAZAARLINK_MODEL ?? "auto:free",
+    generate: async function (r, s) {
+      const key = getProviderApiKey("bazaarlink");
+      const res = await openAIStyle("bazaarlink", "https://bazaarlink.ai/api/v1/chat/completions", key, this.model, r, s);
+      return normalize("bazaarlink", this.model, await parseJsonOrError(res, "bazaarlink"));
+    },
+    generateStream: function (r, s) {
+      const key = getProviderApiKey("bazaarlink");
+      return openAIStyleStream("bazaarlink", "https://bazaarlink.ai/api/v1/chat/completions", key, this.model, r, s);
     }
   }
 ];

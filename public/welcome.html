@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Setup Your AI Assistant — ZeroRoute Cloud</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ef4444'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>" />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    if (window.pdfjsLib) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+  </script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            dark: {
+              bg: '#050608',
+              card: '#0a0c10',
+              border: '#161922',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #050608;
+      background-image: 
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(239, 68, 68, 0.12), transparent),
+        radial-gradient(ellipse 50% 50% at 80% 80%, rgba(244, 63, 94, 0.04), transparent);
+    }
+    .grid-pattern {
+      background-size: 40px 40px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    }
+    .glow-effect { box-shadow: 0 0 50px -10px rgba(239, 68, 68, 0.18); }
+  </style>
+</head>
+<body class="text-slate-100 font-sans antialiased min-h-screen flex flex-col selection:bg-red-500/30 selection:text-white">
+
+  <!-- Grid Background Overlay -->
+  <div class="fixed inset-0 grid-pattern pointer-events-none z-0"></div>
+
+  <!-- Header -->
+  <div class="relative z-50 max-w-4xl mx-auto px-4 sm:px-6 w-full pt-4 sm:pt-6">
+    <header class="w-full bg-[#080a0f]/90 backdrop-blur-xl border border-white/[0.08] shadow-2xl shadow-black/80 rounded-2xl px-5 sm:px-8 py-3.5 flex items-center justify-between transition-all ring-1 ring-white/5">
+      <a href="/" class="flex items-center gap-2.5 sm:gap-3 group">
+        <img src="/logo.png" alt="ZeroRoute Logo" class="w-7 h-7 sm:w-8 sm:h-8 object-contain shrink-0 group-hover:scale-105 transition-transform">
+        <div>
+          <div class="flex items-center gap-1.5 sm:gap-2">
+            <span class="font-extrabold text-sm sm:text-base tracking-tight text-white">ZeroRoute</span>
+            <span class="px-1.5 py-0.5 rounded text-[9px] font-semibold bg-red-500/10 text-red-400 border border-red-500/20 font-mono">Cloud Pro</span>
+          </div>
+          <div class="text-[8px] sm:text-[9px] font-mono tracking-widest text-slate-500 uppercase">ZERO COST. MAX ROUTE.</div>
+        </div>
+      </a>
+
+      <div class="flex items-center gap-3">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>Pro Active</span>
+        </span>
+        <a href="/app" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-white/[0.05] hover:bg-white/[0.1] text-slate-200 border border-white/10 rounded-lg transition-all active:scale-95">
+          <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5 text-slate-400"></i>
+          <span>Console</span>
+        </a>
+      </div>
+    </header>
+  </div>
+
+  <!-- Main Wizard Container -->
+  <main class="relative z-10 flex-1 max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12 w-full space-y-8">
+    
+    <!-- Step Progress Tracker -->
+    <div class="flex items-center justify-between relative max-w-xl mx-auto px-4">
+      <div class="absolute left-8 right-8 top-1/2 -translate-y-1/2 h-0.5 bg-dark-border -z-10"></div>
+      
+      <!-- Step 1 Indicator -->
+      <div id="step-ind-1" class="flex flex-col items-center gap-1.5 bg-[#050608] px-3">
+        <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-red-600 to-rose-600 text-white font-bold text-xs flex items-center justify-center shadow-lg shadow-red-500/25 ring-4 ring-[#050608]">1</div>
+        <span class="text-[11px] font-bold text-white">Company</span>
+      </div>
+
+      <!-- Step 2 Indicator -->
+      <div id="step-ind-2" class="flex flex-col items-center gap-1.5 bg-[#050608] px-3">
+        <div class="w-9 h-9 rounded-full bg-dark-card border border-dark-border text-slate-400 font-bold text-xs flex items-center justify-center ring-4 ring-[#050608]">2</div>
+        <span class="text-[11px] font-medium text-slate-500">AI Persona</span>
+      </div>
+
+      <!-- Step 3 Indicator -->
+      <div id="step-ind-3" class="flex flex-col items-center gap-1.5 bg-[#050608] px-3">
+        <div class="w-9 h-9 rounded-full bg-dark-card border border-dark-border text-slate-400 font-bold text-xs flex items-center justify-center ring-4 ring-[#050608]">3</div>
+        <span class="text-[11px] font-medium text-slate-500">Knowledge</span>
+      </div>
+
+      <!-- Step 4 Indicator -->
+      <div id="step-ind-4" class="flex flex-col items-center gap-1.5 bg-[#050608] px-3">
+        <div class="w-9 h-9 rounded-full bg-dark-card border border-dark-border text-slate-400 font-bold text-xs flex items-center justify-center ring-4 ring-[#050608]">4</div>
+        <span class="text-[11px] font-medium text-slate-500">Launch!</span>
+      </div>
+    </div>
+
+    <!-- Wizard Card -->
+    <div class="p-6 sm:p-9 bg-gradient-to-b from-[#0d0f17] to-[#07080d] border border-white/10 rounded-3xl glow-effect space-y-6 shadow-2xl">
+      
+      <!-- ═══════════════ STEP 1: COMPANY & BRAND ═══════════════ -->
+      <div id="step-1" class="space-y-6">
+        <div>
+          <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-semibold mb-2">
+            <span>✨ 30-Second Setup</span>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight">Step 1: Tell us about your brand</h2>
+          <p class="text-xs sm:text-sm text-slate-400 mt-1">Your AI uses this info to introduce itself and answer visitors on behalf of your business.</p>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Your Name or Email</label>
+            <input type="text" id="cust-name" placeholder="e.g. Sarah Jenkins (sarah@company.com)"
+              class="w-full px-4 py-3 text-sm bg-dark-bg/80 border border-white/10 rounded-xl text-white focus:outline-none focus:border-red-500 font-sans transition-all placeholder:text-slate-600">
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1.5">Company / Business Name *</label>
+              <input type="text" id="cust-company" placeholder="e.g. Mapki Studio"
+                class="w-full px-4 py-3 text-sm bg-dark-bg/80 border border-white/10 rounded-xl text-white focus:outline-none focus:border-red-500 font-sans transition-all placeholder:text-slate-600">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1.5">Website URL (Optional)</label>
+              <input type="text" id="cust-website" placeholder="e.g. mapki.in or https://mapki.in"
+                class="w-full px-4 py-3 text-sm bg-dark-bg/80 border border-white/10 rounded-xl text-white focus:outline-none focus:border-red-500 font-sans transition-all placeholder:text-slate-600">
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-white/10 flex justify-end">
+          <button onclick="goToStep(2)" class="px-6 py-3 text-sm font-bold bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white rounded-xl shadow-lg shadow-red-500/25 transition-all active:scale-95 flex items-center gap-2">
+            <span>Next: Configure AI Persona</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- ═══════════════ STEP 2: AI PERSONA & TONE ═══════════════ -->
+      <div id="step-2" class="space-y-5 hidden">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-white">Step 2: Define your AI's Personality</h2>
+          <p class="text-xs text-slate-400 mt-1">Configure how your assistant introduces itself and speaks to visitors.</p>
+        </div>
+
+        <div class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1.5">Bot Role / Title</label>
+              <input type="text" id="cust-role" value="Support & Sales Specialist"
+                class="w-full px-3.5 py-2.5 text-sm bg-dark-bg border border-dark-border rounded-xl text-white focus:outline-none focus:border-red-500 font-sans">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1.5">Tone of Voice</label>
+              <select id="cust-tone" class="w-full px-3.5 py-2.5 text-sm bg-dark-bg border border-dark-border rounded-xl text-white focus:outline-none focus:border-red-500 font-sans">
+                <option value="Friendly & Professional">Friendly & Professional</option>
+                <option value="Direct, Concise & Technical">Direct, Concise & Technical</option>
+                <option value="Warm, Enthusiastic & Sales-Focused">Warm, Enthusiastic & Sales-Focused</option>
+                <option value="Strictly Formal & Corporate">Strictly Formal & Corporate</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Welcome Greeting Message</label>
+            <input type="text" id="cust-greeting" value="Hi! 👋 How can I help you today?"
+              class="w-full px-3.5 py-2.5 text-sm bg-dark-bg border border-dark-border rounded-xl text-white focus:outline-none focus:border-red-500 font-sans">
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-dark-border flex items-center justify-between">
+          <button onclick="goToStep(1)" class="text-xs font-semibold text-slate-400 hover:text-white transition-colors">
+            ← Back
+          </button>
+          <button onclick="goToStep(3)" class="px-6 py-2.5 text-sm font-bold bg-red-600 hover:bg-red-500 text-white rounded-xl shadow-lg transition-all active:scale-95 flex items-center gap-1.5">
+            <span>Next: Upload Knowledge</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- ═══════════════ STEP 3: KNOWLEDGE BASE ═══════════════ -->
+      <div id="step-3" class="space-y-5 hidden">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-white">Step 3: Add your Company Knowledge</h2>
+          <p class="text-xs text-slate-400 mt-1">Upload FAQs, services, or pricing so your AI answers with 0 hallucinations.</p>
+        </div>
+
+        <div class="space-y-4">
+          <!-- Dropzone -->
+          <div id="dropzone" onclick="document.getElementById('kb-upload-file').click()"
+            class="border-2 border-dashed border-dark-border hover:border-red-500/50 bg-dark-bg/60 rounded-2xl p-6 text-center cursor-pointer space-y-2 transition-all">
+            <input type="file" id="kb-upload-file" accept=".md,.txt,.pdf,.json" class="hidden" onchange="handleWizardFileUpload(event)">
+            <div class="w-10 h-10 mx-auto rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400">
+              <i data-lucide="upload-cloud" class="w-5 h-5"></i>
+            </div>
+            <p class="text-xs font-bold text-white">Upload PDF, Markdown (.md), or Plain Text (.txt)</p>
+            <p class="text-[11px] text-slate-400" id="upload-doc-status">Supports company policies, pricing sheets, product catalogs</p>
+          </div>
+
+          <!-- Or Paste Text -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Or Paste Services, Pricing &amp; FAQs directly:</label>
+            <textarea id="cust-knowledge-text" rows="4" placeholder="e.g. Services: Web App Development ($2,500), Refund Policy: 30 days money-back guarantee, Contact: support@company.com"
+              class="w-full p-3 text-xs bg-dark-bg border border-dark-border rounded-xl text-white font-mono focus:outline-none focus:border-red-500 resize-y"></textarea>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-dark-border flex items-center justify-between">
+          <button onclick="goToStep(2)" class="text-xs font-semibold text-slate-400 hover:text-white transition-colors">
+            ← Back
+          </button>
+          <button onclick="submitOnboarding()" id="btn-finish-setup" class="px-7 py-3 text-sm font-extrabold bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white rounded-xl shadow-xl shadow-red-500/25 transition-all active:scale-95 flex items-center gap-1.5">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+            <span>Complete Setup &amp; Get Key 🚀</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ═══════════════ STEP 4: SUCCESS & LAUNCH ═══════════════ -->
+      <div id="step-4" class="space-y-6 hidden">
+        <div class="text-center space-y-2">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/10">
+            <i data-lucide="check" class="w-6 h-6"></i>
+          </div>
+          <h2 class="text-2xl font-extrabold text-white">Your AI Assistant is Ready! 🎉</h2>
+          <p class="text-xs text-slate-400">Here is your dedicated API key and 1-line website widget snippet.</p>
+        </div>
+
+        <!-- Master API Key -->
+        <div class="p-4 bg-dark-bg border border-red-500/40 rounded-2xl space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold text-red-400 uppercase tracking-wider">Your Live Pro API Key</span>
+            <span class="text-[10px] font-mono text-emerald-400">Active</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <input type="text" id="final-api-key" readonly
+              class="flex-1 px-3 py-2 text-xs font-mono bg-dark-card border border-dark-border rounded-xl text-slate-200">
+            <button onclick="copyFinalKey()" class="px-4 py-2 text-xs font-bold bg-red-600 hover:bg-red-500 text-white rounded-xl transition-all active:scale-95">
+              Copy Key
+            </button>
+          </div>
+        </div>
+
+        <!-- 1-Line Embed Widget Snippet -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-bold text-white flex items-center gap-1.5">
+              <i data-lucide="code" class="w-3.5 h-3.5 text-blue-400"></i>
+              <span>1-Line Website Chatbot Widget (Paste before &lt;/body&gt;)</span>
+            </label>
+            <button onclick="copyWidgetSnippet()" class="text-[11px] font-bold text-red-400 hover:text-red-300">
+              Copy Tag
+            </button>
+          </div>
+          <pre id="final-widget-tag" class="p-3.5 bg-dark-bg border border-dark-border rounded-xl text-[11px] font-mono text-slate-300 overflow-x-auto"></pre>
+        </div>
+
+        <div class="pt-4 border-t border-dark-border flex flex-col sm:flex-row items-center justify-between gap-3">
+          <a href="/app" id="final-portal-btn" class="w-full sm:w-auto px-6 py-3 text-xs font-bold bg-white text-zinc-950 hover:bg-slate-200 rounded-xl transition-all text-center shadow-lg active:scale-95 flex items-center justify-center gap-2">
+            <i data-lucide="sliders" class="w-4 h-4"></i>
+            <span>Open Your Customer Portal →</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-6 right-6 px-4 py-3 rounded-xl bg-dark-card border border-red-500/50 shadow-2xl text-xs font-medium text-slate-100 flex items-center gap-2.5 z-50 transition-all translate-y-20 opacity-0 pointer-events-none"></div>
+
+  <script>
+    let currentStep = 1;
+    let customerKey = "";
+    let uploadedKnowledgeContent = "";
+    let uploadedKnowledgeFilename = "";
+
+    function el(id) { return document.getElementById(id); }
+
+    function showToast(msg) {
+      const toast = el("toast");
+      toast.textContent = msg;
+      toast.classList.remove("translate-y-20", "opacity-0", "pointer-events-none");
+      setTimeout(() => toast.classList.add("translate-y-20", "opacity-0", "pointer-events-none"), 3500);
+    }
+
+    function initUrlParams() {
+      const params = new URLSearchParams(window.location.search);
+      customerKey = params.get("key") || "";
+      const email = params.get("email");
+      const company = params.get("company") || params.get("name");
+
+      if (email && el("cust-name") && !el("cust-name").value) {
+        el("cust-name").value = email;
+      }
+      if (company && el("cust-company") && !el("cust-company").value) {
+        el("cust-company").value = company;
+      }
+    }
+
+    function goToStep(step) {
+      if (step === 2) {
+        const company = el("cust-company").value.trim();
+        if (!company) {
+          showToast("⚠️ Please enter your Company or Project name");
+          el("cust-company").focus();
+          return;
+        }
+      }
+
+      currentStep = step;
+      [1, 2, 3, 4].forEach(s => {
+        const stepEl = el("step-" + s);
+        if (stepEl) stepEl.classList.toggle("hidden", s !== step);
+        
+        const indEl = el("step-ind-" + s);
+        if (indEl) {
+          const circle = indEl.querySelector("div");
+          const text = indEl.querySelector("span");
+          if (s <= step) {
+            circle.className = "w-8 h-8 rounded-full bg-red-600 text-white font-bold text-xs flex items-center justify-center shadow-lg shadow-red-500/20 ring-4 ring-dark-bg";
+            text.className = "text-[11px] font-bold text-white";
+          } else {
+            circle.className = "w-8 h-8 rounded-full bg-dark-card border border-dark-border text-slate-400 font-bold text-xs flex items-center justify-center ring-4 ring-dark-bg";
+            text.className = "text-[11px] font-medium text-slate-500";
+          }
+        }
+      });
+      lucide.createIcons();
+    }
+
+    async function handleWizardFileUpload(e) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      const statusEl = el("upload-doc-status");
+      statusEl.textContent = `Processing ${file.name}...`;
+
+      try {
+        if (file.name.toLowerCase().endsWith(".pdf")) {
+          if (!window.pdfjsLib) throw new Error("PDF engine loading, please retry in a second");
+          const arrayBuffer = await file.arrayBuffer();
+          const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+          let fullText = "";
+          for (let p = 1; p <= pdf.numPages; p++) {
+            const page = await pdf.getPage(p);
+            const content = await page.getTextContent();
+            fullText += "\n" + content.items.map(i => i.str).join(" ");
+          }
+          uploadedKnowledgeContent = fullText;
+        } else {
+          uploadedKnowledgeContent = await file.text();
+        }
+
+        uploadedKnowledgeFilename = file.name;
+        statusEl.textContent = `✅ Loaded ${file.name} (${(uploadedKnowledgeContent.length / 1024).toFixed(1)} KB)`;
+        showToast(`✅ File ready: ${file.name}`);
+      } catch (err) {
+        statusEl.textContent = `❌ Upload failed: ${err.message}`;
+        showToast("❌ Error parsing file");
+      }
+    }
+
+    async function submitOnboarding() {
+      const btn = el("btn-finish-setup");
+      btn.disabled = true;
+      btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Saving Profile...';
+      lucide.createIcons();
+
+      let rawWebsite = el("cust-website").value.trim();
+      if (rawWebsite && !rawWebsite.startsWith("http://") && !rawWebsite.startsWith("https://")) {
+        rawWebsite = "https://" + rawWebsite;
+      }
+
+      const nameOrEmail = el("cust-name").value.trim();
+      let email = nameOrEmail.includes("@") ? nameOrEmail : undefined;
+
+      const payload = {
+        key: customerKey || undefined,
+        name: nameOrEmail,
+        email: email,
+        company: el("cust-company").value.trim(),
+        website: rawWebsite,
+        botRole: el("cust-role").value.trim(),
+        tone: el("cust-tone").value,
+        greeting: el("cust-greeting").value.trim(),
+        knowledgeText: uploadedKnowledgeContent || el("cust-knowledge-text").value.trim(),
+        knowledgeTitle: uploadedKnowledgeFilename || undefined
+      };
+
+      try {
+        const res = await fetch("/api/onboarding/setup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Setup failed");
+
+        customerKey = data.customer.key;
+        localStorage.setItem("ai_router_key", customerKey);
+
+        // Populate step 4
+        el("final-api-key").value = customerKey;
+        const host = window.location.origin;
+        const widgetTag = `<script\n  src="${host}/widget.js"\n  data-title="${data.customer.company} AI"\n  data-greeting="${data.customer.greeting}"\n  data-key="${customerKey}"\n  defer>\n<\/script>`;
+        el("final-widget-tag").textContent = widgetTag;
+        el("final-portal-btn").href = `/app?key=${customerKey}`;
+
+        goToStep(4);
+      } catch (err) {
+        showToast("❌ " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i data-lucide="sparkles" class="w-4 h-4"></i><span>Complete Setup & Get Key 🚀</span>';
+        lucide.createIcons();
+      }
+    }
+
+    function copyFinalKey() {
+      navigator.clipboard.writeText(el("final-api-key").value);
+      showToast("📋 API Key copied to clipboard!");
+    }
+
+    function copyWidgetSnippet() {
+      navigator.clipboard.writeText(el("final-widget-tag").textContent);
+      showToast("📋 1-Line Widget tag copied!");
+    }
+
+    initUrlParams();
+    lucide.createIcons();
+  </script>
+</body>
+</html>

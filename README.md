@@ -7,7 +7,7 @@
 
 <p align="center">
   <strong>The $0/mo Multi-Cloud AI Gateway for Solo Founders &amp; Startups.</strong><br />
-  <em>Pool 100% free cloud LLM quotas across Groq, SambaNova, Mistral, Google Gemini, NVIDIA NIM, Cloudflare, OpenRouter, and Cohere into one unstoppable, zero-downtime OpenAI-compatible API.</em>
+  <em>Pool 100% free cloud LLM quotas across Groq, SambaNova, Mistral, Google Gemini, NVIDIA NIM, Cloudflare, OpenRouter, Cohere, Hugging Face, and BazaarLink AI into one unstoppable, zero-downtime OpenAI-compatible API.</em>
 </p>
 
 <p align="center">
@@ -15,7 +15,7 @@
     <img src="https://deploy.workers.cloudflare.com/button" alt="Deploy to Cloudflare" />
   </a>
   &nbsp;
-  <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Famjadlle%2FZeroRoute&env=GROQ_API_KEY,MISTRAL_API_KEY,GEMINI_API_KEY,SAMBANOVA_API_KEY,OPENROUTER_API_KEY,NVIDIA_API_KEY,ROUTER_API_KEY,ADMIN_KEY&envDescription=Enter%20your%20free-tier%20AI%20provider%20API%20keys%20(add%20at%20least%20one)&envLink=https%3A%2F%2Fgithub.com%2Famjadlle%2FZeroRoute%23-how-to-get-free-api-keys">
+  <a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Famjadlle%2FZeroRoute&env=GROQ_API_KEY,MISTRAL_API_KEY,GEMINI_API_KEY,SAMBANOVA_API_KEY,OPENROUTER_API_KEY,NVIDIA_API_KEY,HUGGINGFACE_API_KEY,BAZAARLINK_API_KEY,ROUTER_API_KEY,ADMIN_KEY&envDescription=Enter%20your%20free-tier%20AI%20provider%20API%20keys%20(add%20at%20least%20one)&envLink=https%3A%2F%2Fgithub.com%2Famjadlle%2FZeroRoute%23-how-to-get-free-api-keys">
     <img src="https://vercel.com/button" alt="Deploy with Vercel" />
   </a>
   &nbsp;
@@ -39,18 +39,18 @@
 
 As solo founders, indie hackers, and small teams, we want intelligent AI chatbots and APIs in our products — but paying **$20–$200+/month** for commercial LLM APIs before finding product-market fit is prohibitive.
 
-Top cloud AI companies (Mistral, Groq, Cohere, Cloudflare, SambaNova, Google Gemini, OpenRouter, NVIDIA NIM) all offer **generous 100% FREE developer tiers**. The catch? Any single free tier has rate limits (RPM/RPD) or occasional congestion.
+Top cloud AI companies (Mistral, Groq, Cohere, Cloudflare, SambaNova, Google Gemini, OpenRouter, NVIDIA NIM, Hugging Face, BazaarLink AI) all offer **generous 100% FREE developer tiers**. The catch? Any single free tier has rate limits (RPM/RPD) or occasional congestion.
 
-**ZeroRoute aggregates all 8 free tiers into one resilient, OpenAI-compatible gateway.**
+**ZeroRoute aggregates all 10 free tiers into one resilient, OpenAI-compatible gateway.**
 
 - If Mistral hits a rate limit → fails over to Groq or Cohere in milliseconds.
-- If Groq is congested → falls back to Cloudflare, SambaNova, Gemini, OpenRouter, or NVIDIA NIM.
+- If Groq is congested → falls back to Cloudflare, SambaNova, Gemini, OpenRouter, NVIDIA NIM, Hugging Face, or BazaarLink AI.
 - Identical queries → served from **in-memory SHA-256 cache at 0ms latency**.
 - **Result:** Millions of monthly tokens and near 100% uptime for **$0.00/month**.
 
 ---
 
-## ⚡ 8 Free-Tier Providers, Out-of-the-Box (Optimal Failover Order)
+## ⚡ 10 Free-Tier Providers, Out-of-the-Box (Optimal Failover Order)
 
 | Priority | Provider | Default Model | Typical Speed | Strengths |
 |:---:|---|---|---|---|
@@ -62,6 +62,8 @@ Top cloud AI companies (Mistral, Groq, Cohere, Cloudflare, SambaNova, Google Gem
 | 6 | 💎 **Google Gemini** | gemini-3.6-flash | ~850ms | 1M+ context, multimodal |
 | 7 | 🌐 **OpenRouter** | nvidia/nemotron-3.5-lightning:free | ~1000ms | 100% free open-source models |
 | 8 | 🚀 **NVIDIA NIM** | nvidia/nemotron-3.5-lightning-30b-a3b | ~1100ms | DGX enterprise infrastructure |
+| 9 | 🤗 **Hugging Face** | meta-llama/Llama-3.1-8B-Instruct | ~450ms | 100+ open models, free monthly pool |
+| 10 | 🔗 **BazaarLink AI** | auto:free | ~1200ms | 150 req/day auto free-tier routing |
 
 ---
 
@@ -266,6 +268,8 @@ curl -N https://your-zeroroute.vercel.app/v1/chat/completions \
 | Google Gemini | [aistudio.google.com](https://aistudio.google.com) |
 | OpenRouter | [openrouter.ai/keys](https://openrouter.ai/keys) |
 | NVIDIA NIM | [build.nvidia.com](https://build.nvidia.com) |
+| Hugging Face | [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens) |
+| BazaarLink AI | [bazaarlink.ai](https://bazaarlink.ai) |
 
 ---
 

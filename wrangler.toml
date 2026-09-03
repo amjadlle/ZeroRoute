@@ -1,0 +1,23 @@
+name = "zeroroute"
+main = "dist/worker.js"
+compatibility_date = "2024-09-01"
+compatibility_flags = ["nodejs_compat_v2"]
+
+[assets]
+directory = "./public"
+
+# Environment Variables for Edge Routing
+[vars]
+PORT = "8787"
+TIMEOUT_MS = "12000"
+COOLDOWN_MS = "60000"
+PROVIDER_ORDER = "mistral,groq,cohere,cloudflare,sambanova,gemini,openrouter,nvidia,huggingface,bazaarlink"
+RESEND_FROM_EMAIL = "ZeroRoute <auth@mapki.in>"
+DODO_ENVIRONMENT = "test_mode"
+DODO_PRODUCT_ID = "pdt_0Nml3W2yZao32si4mSs6b"
+DODO_CHECKOUT_URL = "https://test.checkout.dodopayments.com/buy/pdt_0Nml3W2yZao32si4mSs6b"
+
+# Custom Domain Route Configuration
+# [[routes]]
+# pattern = "zeroroute.mapki.in/*"
+# zone_name = "mapki.in"

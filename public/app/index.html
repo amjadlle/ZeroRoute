@@ -18,6 +18,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@0.461.0"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    if (window.pdfjsLib) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+  </script>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -51,9 +57,8 @@
     body {
       background-color: #050608;
       background-image: 
-        radial-gradient(at 0% 0%, rgba(239, 68, 68, 0.1) 0px, transparent 50%),
-        radial-gradient(at 100% 0%, rgba(185, 28, 28, 0.08) 0px, transparent 50%),
-        radial-gradient(at 50% 100%, rgba(220, 38, 38, 0.05) 0px, transparent 50%);
+        radial-gradient(at 0% 0%, rgba(255, 255, 255, 0.02) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(239, 68, 68, 0.03) 0px, transparent 50%);
       background-attachment: fixed;
     }
     .glass-card {
@@ -99,13 +104,13 @@
     }
   </style>
 </head>
-<body class="text-slate-100 min-h-screen p-3 sm:p-6 lg:p-8 selection:bg-red-500 selection:text-white font-sans text-xs antialiased">
-  <div class="w-full max-w-7xl 2xl:max-w-[1600px] mx-auto space-y-4 sm:space-y-5">
+<body class="text-slate-100 min-h-screen p-2.5 sm:p-5 lg:p-8 selection:bg-red-500 selection:text-white font-sans text-xs antialiased overflow-x-hidden">
+  <div class="w-full max-w-7xl 2xl:max-w-[1600px] mx-auto space-y-3.5 sm:space-y-5">
     
     <!-- Top Navigation / Header -->
-    <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3.5 border-b border-dark-border">
+    <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-dark-border">
       <div class="flex items-center gap-3">
-        <img src="/logo.png" alt="ZeroRoute Logo" class="w-9 h-9 object-contain shrink-0">
+        <img src="/logo.png" alt="ZeroRoute Logo" class="w-8 h-8 sm:w-9 sm:h-9 object-contain shrink-0">
         <div>
           <div class="flex items-center gap-2 flex-wrap">
             <h1 class="text-sm sm:text-base font-extrabold tracking-tight text-white">ZeroRoute</h1>
@@ -135,15 +140,18 @@
           <span class="hidden sm:inline">Star</span>
           <span class="text-amber-400 font-mono text-[10px]">★</span>
         </a>
+        <a href="/customers" id="header-crm-link" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-lg transition-all active:scale-95 shrink-0">
+          <i data-lucide="users" class="w-3.5 h-3.5"></i>
+          <span>CRM</span>
+        </a>
         <button onclick="openKeyModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-red-600 hover:bg-red-500 text-white rounded-lg shadow-sm shadow-red-500/25 transition-all active:scale-95 shrink-0">
           <i data-lucide="key-round" class="w-3.5 h-3.5"></i>
           API Keys
         </button>
-        <div class="relative w-full sm:w-56 mt-1 sm:mt-0">
-          <i data-lucide="lock" class="w-3 h-3 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-500"></i>
-          <input type="password" id="auth-key" placeholder="Admin Key" onkeydown="if(event.key==='Enter') saveKey()" onchange="saveKey()"
-            class="w-full pl-8 pr-2.5 py-1.5 text-[11px] font-mono bg-dark-card border border-dark-border rounded-lg text-slate-200 placeholder-slate-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all">
-        </div>
+        <button onclick="openAdminKeyModal()" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-dark-card hover:bg-dark-cardHover border border-dark-border text-slate-300 hover:text-white rounded-lg transition-all active:scale-95 shadow-sm">
+          <i data-lucide="key" class="w-3.5 h-3.5 text-red-400"></i>
+          <span id="header-auth-label">Enter Key</span>
+        </button>
       </div>
     </header>
 
@@ -154,13 +162,18 @@
           <i data-lucide="lock" class="w-5 h-5 text-amber-400"></i>
         </div>
         <div>
-          <h2 class="text-sm font-bold text-white">Gateway Protected — Admin Authentication Required</h2>
-          <p class="text-xs text-slate-400 mt-0.5">Please enter your <code class="text-amber-400 bg-amber-950/60 px-1.5 py-0.5 rounded font-mono text-[11px]">ADMIN_KEY</code> in the top-right box to unlock gateway controls and live benchmarks.</p>
+          <h2 class="text-sm font-bold text-white">Gateway Protected — Authentication Required</h2>
+          <p class="text-xs text-slate-400 mt-0.5">Enter your <code class="text-amber-400 bg-amber-950/60 px-1.5 py-0.5 rounded font-mono text-[11px]">ADMIN_KEY</code> or customer <code class="text-amber-400 bg-amber-950/60 px-1.5 py-0.5 rounded font-mono text-[11px]">zr_live_...</code> key in the top-right box.</p>
         </div>
       </div>
-      <button onclick="unlockFromBanner()" class="px-4 py-2 text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white rounded-xl shadow-lg shadow-amber-500/25 transition-all active:scale-95 shrink-0 whitespace-nowrap">
-        Unlock Gateway
-      </button>
+      <div class="flex items-center gap-2 flex-wrap">
+        <button onclick="openRecoverModal()" class="px-3 py-2 text-xs font-semibold bg-dark-bg hover:bg-dark-card text-slate-300 hover:text-white border border-dark-border rounded-xl transition-all">
+          ✉️ Lost Key? Recover by Email
+        </button>
+        <button onclick="unlockFromBanner()" class="px-4 py-2 text-xs font-bold bg-amber-600 hover:bg-amber-500 text-white rounded-xl shadow-lg shadow-amber-500/25 transition-all active:scale-95 shrink-0 whitespace-nowrap">
+          Unlock Gateway
+        </button>
+      </div>
     </div>
 
     <!-- Onboarding First-Run Wizard Banner (Shows if 0 keys configured) -->
@@ -183,68 +196,72 @@
     <!-- Key Metrics Ribbon -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
       <!-- Total Requests -->
-      <div class="glass-card rounded-xl p-3.5 sm:p-4 transition-all hover:border-slate-700">
-        <div class="flex items-center justify-between text-slate-400 text-[11px] font-medium">
+      <div class="glass-card rounded-xl p-3 sm:p-4 transition-all hover:border-slate-700">
+        <div class="flex items-center justify-between text-slate-400 text-[10.5px] sm:text-[11px] font-medium">
           <span>Total Requests</span>
           <i data-lucide="activity" class="w-3.5 h-3.5 text-red-400"></i>
         </div>
-        <div class="text-lg sm:text-xl font-bold font-mono text-white mt-1.5" id="total-requests">0</div>
-        <div class="text-[10px] text-emerald-400 font-medium mt-0.5 flex items-center gap-1">
+        <div class="text-base sm:text-xl font-bold font-mono text-white mt-1" id="total-requests">0</div>
+        <div class="text-[9.5px] sm:text-[10px] text-emerald-400 font-medium mt-0.5 flex items-center gap-1">
           <i data-lucide="check-circle" class="w-2.5 h-2.5"></i>
           <span id="success-rate-sub">100% success</span>
         </div>
       </div>
 
       <!-- Cache Hit Ratio & Savings -->
-      <div class="glass-card rounded-xl p-3.5 sm:p-4 transition-all hover:border-red-500/40">
-        <div class="flex items-center justify-between text-slate-400 text-[11px] font-medium">
+      <div class="glass-card rounded-xl p-3 sm:p-4 transition-all hover:border-red-500/40">
+        <div class="flex items-center justify-between text-slate-400 text-[10.5px] sm:text-[11px] font-medium">
           <span>RAM Cache Savings</span>
           <i data-lucide="sparkles" class="w-3.5 h-3.5 text-red-400"></i>
         </div>
-        <div class="text-lg sm:text-xl font-bold font-mono text-emerald-400 mt-1.5" id="cache-savings-val">$0.0000</div>
-        <div class="text-[10px] text-slate-400 mt-0.5" id="cache-hits-sub">0 hits • 0% ratio</div>
+        <div class="text-base sm:text-xl font-bold font-mono text-emerald-400 mt-1" id="cache-savings-val">$0.0000</div>
+        <div class="text-[9.5px] sm:text-[10px] text-slate-400 mt-0.5 truncate" id="cache-hits-sub">0 hits • 0% ratio</div>
       </div>
 
       <!-- Avg Latency -->
-      <div class="glass-card rounded-xl p-3.5 sm:p-4 transition-all hover:border-slate-700">
-        <div class="flex items-center justify-between text-slate-400 text-[11px] font-medium">
+      <div class="glass-card rounded-xl p-3 sm:p-4 transition-all hover:border-slate-700">
+        <div class="flex items-center justify-between text-slate-400 text-[10.5px] sm:text-[11px] font-medium">
           <span>Average Latency</span>
           <i data-lucide="timer" class="w-3.5 h-3.5 text-amber-400"></i>
         </div>
-        <div class="text-lg sm:text-xl font-bold font-mono text-white mt-1.5" id="avg-latency">—</div>
-        <div class="text-[10px] text-slate-400 mt-0.5" id="token-count-sub">0 tokens delivered</div>
+        <div class="text-base sm:text-xl font-bold font-mono text-white mt-1" id="avg-latency">—</div>
+        <div class="text-[9.5px] sm:text-[10px] text-slate-400 mt-0.5 truncate" id="token-count-sub">0 tokens delivered</div>
       </div>
 
       <!-- Active Providers -->
-      <div class="glass-card rounded-xl p-3.5 sm:p-4 transition-all hover:border-slate-700">
-        <div class="flex items-center justify-between text-slate-400 text-[11px] font-medium">
+      <div class="glass-card rounded-xl p-3 sm:p-4 transition-all hover:border-slate-700">
+        <div class="flex items-center justify-between text-slate-400 text-[10.5px] sm:text-[11px] font-medium">
           <span>Active Providers</span>
           <i data-lucide="layers" class="w-3.5 h-3.5 text-emerald-400"></i>
         </div>
-        <div class="text-lg sm:text-xl font-bold font-mono text-white mt-1.5" id="active-count">0 / 0</div>
-        <div class="text-[10px] text-slate-400 mt-0.5" id="configured-sub">0 keys configured</div>
+        <div class="text-base sm:text-xl font-bold font-mono text-white mt-1" id="active-count">0 / 0</div>
+        <div class="text-[9.5px] sm:text-[10px] text-slate-400 mt-0.5 truncate" id="configured-sub">0 keys configured</div>
       </div>
     </div>
 
     <!-- Main Navigation Tabs -->
-    <div class="flex overflow-x-auto scrollbar-none border-b border-dark-border gap-1 pb-1 sm:pb-0">
-      <button onclick="switchTab('providers')" id="tab-btn-providers" class="tab-nav-btn px-3 py-1.5 text-xs font-semibold text-red-500 border-b-2 border-red-500 flex items-center gap-1.5 transition-all shrink-0 whitespace-nowrap">
+    <div class="flex overflow-x-auto scrollbar-none border-b border-dark-border gap-1.5 pb-1 -mx-2.5 px-2.5 sm:mx-0 sm:px-0">
+      <button onclick="switchTab('providers')" id="tab-btn-providers" class="tab-nav-btn px-3 py-2 text-xs font-semibold text-red-500 border-b-2 border-red-500 flex items-center gap-1.5 transition-all shrink-0 whitespace-nowrap">
         <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
         Provider Routing
       </button>
-      <button onclick="switchTab('analytics')" id="tab-btn-analytics" class="tab-nav-btn px-3 py-1.5 text-xs font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 transition-all shrink-0 whitespace-nowrap">
+      <button onclick="switchTab('analytics')" id="tab-btn-analytics" class="tab-nav-btn px-3 py-2 text-xs font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 transition-all shrink-0 whitespace-nowrap">
         <i data-lucide="bar-chart-3" class="w-3.5 h-3.5"></i>
         Analytics & Quotas
       </button>
-      <button onclick="switchTab('playground')" id="tab-btn-playground" class="tab-nav-btn px-3 py-1.5 text-xs font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 transition-all shrink-0 whitespace-nowrap">
+      <button onclick="switchTab('playground')" id="tab-btn-playground" class="tab-nav-btn px-3 py-2 text-xs font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 transition-all shrink-0 whitespace-nowrap">
         <i data-lucide="terminal" class="w-3.5 h-3.5"></i>
         Playground
       </button>
-      <button onclick="switchTab('logs')" id="tab-btn-logs" class="tab-nav-btn px-3 py-1.5 text-xs font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 transition-all shrink-0 whitespace-nowrap">
+      <button onclick="switchTab('logs')" id="tab-btn-logs" class="tab-nav-btn px-3 py-2 text-xs font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 transition-all shrink-0 whitespace-nowrap">
         <i data-lucide="list-filter" class="w-3.5 h-3.5"></i>
         Logs & Failovers
       </button>
-      <button onclick="switchTab('code')" id="tab-btn-code" class="tab-nav-btn px-3 py-1.5 text-xs font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 transition-all shrink-0 whitespace-nowrap">
+      <button onclick="switchTab('knowledge')" id="tab-btn-knowledge" class="tab-nav-btn px-3 py-2 text-xs font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 transition-all shrink-0 whitespace-nowrap">
+        <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
+        Knowledge Base
+      </button>
+      <button onclick="switchTab('code')" id="tab-btn-code" class="tab-nav-btn px-3 py-2 text-xs font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 transition-all shrink-0 whitespace-nowrap">
         <i data-lucide="code-2" class="w-3.5 h-3.5"></i>
         Integration Code
       </button>
@@ -337,18 +354,48 @@
     <!-- TAB 3: LIVE PLAYGROUND -->
     <div id="tab-content-playground" class="hidden space-y-4">
       <div class="glass-card rounded-2xl p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+        
+        <!-- Left Column: Test Input & Persona -->
         <div class="space-y-4">
-          <!-- Optional System Persona -->
+          <!-- 1-Click AI Persona & Brand Generator -->
           <div class="space-y-1.5">
             <button type="button" onclick="toggleSystemPersona()" class="text-[11px] font-semibold text-slate-400 hover:text-slate-200 flex items-center gap-1 transition-all">
-              <i data-lucide="bot" class="w-3.5 h-3.5 text-red-400"></i>
-              <span>System Prompt / Persona (Optional)</span>
+              <i data-lucide="sparkles" class="w-3.5 h-3.5 text-red-400"></i>
+              <span>Customize AI Persona &amp; Brand (Optional)</span>
               <i data-lucide="chevron-down" id="persona-chevron" class="w-3 h-3 transition-transform"></i>
             </button>
-            <div id="persona-container" class="hidden">
+            <div id="persona-container" class="hidden p-3.5 bg-dark-bg/80 border border-dark-border rounded-xl space-y-3">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                <div>
+                  <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Company / Brand Name</label>
+                  <input type="text" id="gen-company" placeholder="e.g. Mapki Solutions" 
+                    class="w-full px-2.5 py-1.5 text-xs bg-dark-card border border-dark-border rounded-lg text-white font-mono focus:border-red-500 focus:outline-none">
+                </div>
+                <div>
+                  <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Bot Role / Title</label>
+                  <input type="text" id="gen-role" placeholder="e.g. Sales &amp; Support Assistant" 
+                    class="w-full px-2.5 py-1.5 text-xs bg-dark-card border border-dark-border rounded-lg text-white font-mono focus:border-red-500 focus:outline-none">
+                </div>
+                <div>
+                  <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Tone of Voice</label>
+                  <select id="gen-tone" class="w-full px-2.5 py-1.5 text-xs bg-dark-card border border-dark-border rounded-lg text-white font-mono focus:border-red-500 focus:outline-none">
+                    <option value="Friendly & Professional">Friendly &amp; Professional</option>
+                    <option value="Direct, Concise & Technical">Direct &amp; Technical</option>
+                    <option value="Warm, Enthusiastic & Sales-Focused">Warm &amp; Sales-Focused</option>
+                    <option value="Strictly Formal & Enterprise">Strictly Formal</option>
+                  </select>
+                </div>
+              </div>
+              <div class="flex items-center justify-between gap-2 pt-1">
+                <button type="button" onclick="generatePersonaSnippet()" class="px-3 py-1 text-xs font-bold bg-red-600 hover:bg-red-500 text-white rounded-lg shadow transition-all active:scale-95 flex items-center gap-1.5">
+                  <i data-lucide="wand-2" class="w-3.5 h-3.5"></i>
+                  <span>Auto-Generate Persona</span>
+                </button>
+                <span class="text-[10px] text-slate-500 font-mono">Generates prompt automatically</span>
+              </div>
               <textarea id="system-persona" rows="2"
-                class="w-full p-2.5 text-xs bg-dark-card border border-dark-border rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:border-red-500 font-sans transition-all resize-none shadow-inner"
-                placeholder="e.g. You are a senior software architect. Answer in concise bullet points."></textarea>
+                class="w-full p-2.5 text-xs bg-dark-card border border-dark-border rounded-lg text-slate-200 placeholder-slate-500 focus:outline-none focus:border-red-500 font-sans transition-all resize-none shadow-inner"
+                placeholder="Persona prompt will generate here, or type your own..."></textarea>
             </div>
           </div>
 
@@ -456,115 +503,205 @@
 
     <!-- TAB 4: CODE INTEGRATION -->
     <div id="tab-content-code" class="hidden space-y-4">
-      <div class="glass-card rounded-2xl overflow-hidden">
-        <div class="p-4 sm:px-6 bg-dark-card/60 border-b border-dark-border flex items-center justify-between">
-          <div>
-            <h2 class="text-sm font-semibold text-white flex items-center gap-2">
-              <i data-lucide="plug" class="w-4 h-4 text-red-500"></i>
-              Connect Your Website, Chatbot, or App
+      <div class="glass-card rounded-2xl overflow-hidden p-5 sm:p-7 space-y-6">
+        
+        <!-- Header Banner -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-dark-border">
+          <div class="space-y-1">
+            <h2 class="text-sm sm:text-base font-extrabold text-white flex items-center gap-2">
+              <i data-lucide="code-2" class="w-4 h-4 text-slate-400"></i>
+              <span>Connect Your Website or App</span>
             </h2>
-            <p class="text-[11px] text-slate-400 mt-0.5">Drop-in replacement for OpenAI API clients.</p>
+            <p class="text-xs text-slate-400">
+              Embed the floating chatbot widget or use ZeroRoute as a drop-in multi-cloud OpenAI API gateway.
+            </p>
           </div>
-          <button onclick="copySnippet()" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-dark-card hover:bg-dark-cardHover border border-dark-border rounded-lg text-slate-200 transition-all shadow-sm">
-            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-            Copy Code
+          <div class="flex items-center gap-2 flex-wrap">
+            <button onclick="openIntegrationGuideModal()" class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold bg-white/[0.05] hover:bg-white/[0.1] text-slate-200 hover:text-white border border-white/10 rounded-xl transition-all active:scale-95 shrink-0 cursor-pointer">
+              <i data-lucide="book-open" class="w-3.5 h-3.5 text-slate-400"></i>
+              <span>Step-by-Step Guide</span>
+            </button>
+            <button onclick="copySnippet()" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white rounded-xl shadow-md transition-all active:scale-95 shrink-0">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Copy Code</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Language / Format Selector Chips -->
+        <div class="flex flex-wrap gap-2">
+          <button onclick="showSnippet('widget')" id="snip-btn-widget" class="px-3.5 py-1.5 text-xs rounded-xl bg-red-600 text-white font-bold transition-all shadow-md">✨ 1-Line Website Widget</button>
+          <button onclick="showSnippet('ai')" id="snip-btn-ai" class="px-3.5 py-1.5 text-xs rounded-xl bg-dark-bg border border-dark-border text-slate-300 hover:text-white font-semibold transition-all">🤖 AI Agent Prompt (Claude Code / Cursor / Codex)</button>
+          <button onclick="showSnippet('js')" id="snip-btn-js" class="px-3.5 py-1.5 text-xs rounded-xl bg-dark-bg border border-dark-border text-slate-300 hover:text-white font-semibold transition-all">JavaScript / React</button>
+          <button onclick="showSnippet('py')" id="snip-btn-py" class="px-3.5 py-1.5 text-xs rounded-xl bg-dark-bg border border-dark-border text-slate-300 hover:text-white font-semibold transition-all">Python (OpenAI SDK)</button>
+          <button onclick="showSnippet('curl')" id="snip-btn-curl" class="px-3.5 py-1.5 text-xs rounded-xl bg-dark-bg border border-dark-border text-slate-300 hover:text-white font-semibold transition-all">cURL Terminal</button>
+        </div>
+
+        <!-- Widget Customizer Controls -->
+        <div id="widget-customizer" class="p-5 bg-[#080a10] border border-dark-border rounded-2xl space-y-4 shadow-inner">
+          <div class="text-xs font-bold text-white flex items-center justify-between">
+            <span class="flex items-center gap-2"><i data-lucide="sliders" class="w-3.5 h-3.5 text-red-400"></i> Customize Live Widget Appearance:</span>
+            <span class="text-[10px] text-slate-500 font-mono">Updates code below automatically</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Bot Title</label>
+              <input type="text" id="cfg-widget-title" value="ZeroRoute AI" oninput="updateSnippetView()"
+                class="w-full px-3.5 py-2 text-xs bg-dark-bg border border-dark-border rounded-xl text-white focus:outline-none focus:border-red-500 font-sans">
+            </div>
+            <div>
+              <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Brand Accent Color</label>
+              <div class="flex items-center gap-2">
+                <input type="color" id="cfg-widget-color-picker" value="#ef4444" 
+                  oninput="el('cfg-widget-color').value = this.value; updateSnippetView();"
+                  class="w-9 h-8 p-0.5 bg-dark-bg border border-dark-border rounded-xl cursor-pointer shrink-0">
+                <input type="text" id="cfg-widget-color" value="#ef4444" 
+                  oninput="if(/^#[0-9A-F]{6}$/i.test(this.value)) el('cfg-widget-color-picker').value = this.value; updateSnippetView();"
+                  class="flex-1 px-3.5 py-2 text-xs bg-dark-bg border border-dark-border rounded-xl text-white focus:outline-none focus:border-red-500 font-mono">
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Welcome Greeting Message</label>
+              <input type="text" id="cfg-widget-greeting" value="Hi! 👋 How can I help you today?" oninput="updateSnippetView()"
+                class="w-full px-3.5 py-2 text-xs bg-dark-bg border border-dark-border rounded-xl text-white focus:outline-none focus:border-red-500 font-sans">
+            </div>
+            <div>
+              <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Quick Starter Question Chips (Comma separated)</label>
+              <input type="text" id="cfg-widget-prompts" value="What are your services?,Pricing details,How to get started?" oninput="updateSnippetView()"
+                class="w-full px-3.5 py-2 text-xs bg-dark-bg border border-dark-border rounded-xl text-white focus:outline-none focus:border-red-500 font-sans">
+            </div>
+          </div>
+        </div>
+
+        <!-- Code Block -->
+        <div class="relative">
+          <pre id="code-box" class="p-5 bg-[#080a10] border border-dark-border rounded-2xl text-xs font-mono text-slate-200 overflow-x-auto leading-relaxed shadow-inner"></pre>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB: KNOWLEDGE BASE & DOCUMENT TRAINING -->
+    <div id="tab-content-knowledge" class="space-y-5 hidden">
+      <div class="glass-card rounded-2xl p-5 sm:p-7 space-y-6">
+        
+        <!-- Header Banner -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-dark-border">
+          <div class="space-y-1">
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-semibold">
+              <i data-lucide="sparkles" class="w-3 h-3"></i>
+              <span>Smart BM25 Semantic RAG</span>
+            </div>
+            <h2 class="text-sm sm:text-base font-extrabold text-white flex items-center gap-2">
+              <i data-lucide="book-open" class="w-4 h-4 text-red-500"></i>
+              Knowledge Base &amp; Document Training
+            </h2>
+            <p class="text-xs text-slate-400">
+              Upload company documents or crawl website URLs. ZeroRoute automatically chunks and indexes content to deliver 0-hallucination answers.
+            </p>
+          </div>
+          <button onclick="fetchKnowledgeDocs()" class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold bg-dark-bg hover:bg-dark-card text-slate-200 hover:text-white border border-dark-border rounded-xl transition-all active:scale-95 shrink-0 shadow-sm">
+            <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i>
+            <span>Refresh Docs</span>
           </button>
         </div>
 
-          <div class="flex flex-wrap gap-2 mb-3">
-            <button onclick="showSnippet('widget')" id="snip-btn-widget" class="px-3 py-1 text-xs rounded-md bg-red-600 text-white font-semibold transition-all">✨ 1-Line Website Widget (Embed)</button>
-            <button onclick="showSnippet('js')" id="snip-btn-js" class="px-3 py-1 text-xs rounded-md bg-dark-card text-slate-400 hover:text-white font-semibold transition-all">JavaScript / Web Chatbot</button>
-            <button onclick="showSnippet('py')" id="snip-btn-py" class="px-3 py-1 text-xs rounded-md bg-dark-card text-slate-400 hover:text-white font-semibold transition-all">Python (OpenAI SDK)</button>
-            <button onclick="showSnippet('curl')" id="snip-btn-curl" class="px-3 py-1 text-xs rounded-md bg-dark-card text-slate-400 hover:text-white font-semibold transition-all">cURL</button>
-          </div>
-
-          <!-- Widget Knowledge & Persona Customizer -->
-          <div id="widget-customizer" class="mb-4 p-4 bg-dark-card border border-dark-border rounded-xl space-y-3">
-            <div class="text-xs font-bold text-white flex items-center justify-between">
-              <span class="flex items-center gap-1.5"><i data-lucide="sparkles" class="w-3.5 h-3.5 text-red-400"></i> Customize Chatbot Persona & Knowledge Base:</span>
-              <span class="text-[10px] font-normal text-slate-400">Generates custom 1-line embed snippet</span>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+          
+          <!-- Left Column: File Upload Dropzone & Direct Snippet -->
+          <div class="space-y-5">
+            <div class="space-y-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+                <i data-lucide="file-up" class="w-3.5 h-3.5 text-emerald-400"></i>
+                Upload Documents (.md, .txt, .pdf, .json)
+              </h3>
+              <p class="text-[11px] text-slate-400">Drag and drop business documents, pricing lists, catalogs, or resumes.</p>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Bot Title</label>
-                <input type="text" id="cfg-widget-title" value="ZeroRoute AI" oninput="updateSnippetView()"
-                  class="w-full px-3 py-1.5 text-xs bg-dark-bg border border-dark-border rounded-lg text-slate-200 focus:outline-none focus:border-red-500 font-mono">
+            <!-- Dropzone -->
+            <div id="dropzone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleFileDrop(event)"
+              class="border-2 border-dashed border-dark-border hover:border-red-500/50 bg-[#080a10]/80 hover:bg-red-500/[0.03] rounded-2xl p-7 text-center transition-all cursor-pointer space-y-3 shadow-inner"
+              onclick="document.getElementById('kb-file-input').click()">
+              <input type="file" id="kb-file-input" accept=".md,.txt,.pdf,.json,.markdown" class="hidden" onchange="handleFileInputChange(event)" multiple>
+              <div class="w-12 h-12 mx-auto rounded-2xl bg-gradient-to-tr from-red-600/20 to-rose-600/10 border border-red-500/30 flex items-center justify-center text-red-400 shadow-lg shadow-red-500/10">
+                <i data-lucide="upload-cloud" class="w-6 h-6"></i>
               </div>
               <div>
-                <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Brand Color</label>
-                <input type="text" id="cfg-widget-color" value="#ef4444" oninput="updateSnippetView()"
-                  class="w-full px-3 py-1.5 text-xs bg-dark-bg border border-dark-border rounded-lg text-slate-200 focus:outline-none focus:border-red-500 font-mono">
+                <p class="text-xs font-bold text-white">Click to browse or drag &amp; drop files</p>
+                <p class="text-[11px] text-slate-400 mt-1">Supports Markdown (.md), Plain Text (.txt), JSON, and PDF (.pdf)</p>
               </div>
+              <span id="upload-status" class="inline-block text-[11px] font-mono text-emerald-400 font-semibold"></span>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Welcome Greeting Message</label>
-                <input type="text" id="cfg-widget-greeting" value="Hi! 👋 How can I help you today?" oninput="updateSnippetView()"
-                  class="w-full px-3 py-1.5 text-xs bg-dark-bg border border-dark-border rounded-lg text-slate-200 focus:outline-none focus:border-red-500">
-              </div>
-              <div>
-                <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Quick Starter Question Chips (Comma separated)</label>
-                <input type="text" id="cfg-widget-prompts" value="Is it free?,How does it work?,Pricing details" oninput="updateSnippetView()"
-                  class="w-full px-3 py-1.5 text-xs bg-dark-bg border border-dark-border rounded-lg text-slate-200 focus:outline-none focus:border-red-500">
-              </div>
-            </div>
-
-            <div>
-              <div class="flex items-center justify-between mb-1">
-                <label class="block text-[10px] font-semibold text-slate-400 uppercase">1. System Persona (Tone & Role)</label>
-                <span class="text-[10px] text-slate-500 font-mono">or data-persona-url</span>
-              </div>
-              <input type="text" id="cfg-widget-persona" value="You are a helpful, professional portfolio assistant. Answer questions concisely." oninput="updateSnippetView()"
-                class="w-full px-3 py-1.5 text-xs bg-dark-bg border border-dark-border rounded-lg text-slate-200 focus:outline-none focus:border-red-500">
-            </div>
-
-            <div>
-              <div class="flex items-center justify-between mb-1">
-                <label class="block text-[10px] font-semibold text-slate-400 uppercase">2. Knowledge Base (FAQs, Services, Pricing)</label>
-                <label class="text-[10px] text-red-400 hover:text-red-300 font-semibold cursor-pointer flex items-center gap-1">
-                  <i data-lucide="file-up" class="w-3 h-3"></i>
-                  <span>Upload .md / .txt / .json</span>
-                  <input type="file" accept=".md,.txt,.json,.markdown" class="hidden" onchange="handleKnowledgeFileUpload(event)">
+            <!-- Manual Raw Text Ingestion Box -->
+            <div class="p-4 bg-[#080a10] border border-dark-border rounded-2xl space-y-3 shadow-inner">
+              <div class="flex items-center justify-between">
+                <label class="text-xs font-bold text-white flex items-center gap-1.5">
+                  <i data-lucide="edit-3" class="w-3.5 h-3.5 text-amber-400"></i>
+                  <span>Paste Custom Text / FAQs Directly</span>
                 </label>
+                <button onclick="saveDirectTextKnowledge()" class="px-3 py-1 text-xs font-bold bg-red-600/20 hover:bg-red-600 text-red-300 hover:text-white border border-red-500/30 rounded-lg transition-all active:scale-95">
+                  Save Snippet →
+                </button>
               </div>
-              <textarea id="cfg-widget-knowledge" rows="3" oninput="updateSnippetView()" placeholder="Paste FAQs, services, pricing, or docs here... (e.g. Services: Full-Stack Web App, Pricing: $1500, Email: contact@site.com)"
-                class="w-full px-3 py-2 text-xs bg-dark-bg border border-dark-border rounded-lg text-slate-200 focus:outline-none focus:border-red-500 font-mono resize-y"></textarea>
+              <input type="text" id="kb-raw-title" placeholder="Document Title (e.g. Refund Policy, Company Pricing)" 
+                class="w-full px-3.5 py-2 text-xs bg-dark-bg border border-dark-border rounded-xl text-white focus:outline-none focus:border-red-500 font-sans">
+              <textarea id="kb-raw-content" rows="3" placeholder="Paste knowledge content, company policies, or service specs here..."
+                class="w-full px-3.5 py-2.5 text-xs bg-dark-bg border border-dark-border rounded-xl text-white focus:outline-none focus:border-red-500 font-mono resize-y"></textarea>
             </div>
           </div>
 
-          <pre id="code-box" class="p-4 bg-dark-card border border-dark-border rounded-xl text-xs font-mono text-red-300 overflow-x-auto leading-relaxed"></pre>
+          <!-- Right Column: URL Crawler & Active Knowledge Sources -->
+          <div class="space-y-5">
+            
+            <!-- Website URL Crawler -->
+            <div class="space-y-2">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+                <i data-lucide="globe" class="w-3.5 h-3.5 text-blue-400"></i>
+                1-Click URL Crawler
+              </h3>
+              <p class="text-[11px] text-slate-400">Scrape live documentation or pricing pages into clean markdown knowledge.</p>
+            </div>
 
-          <!-- Multi-Cloud Persistence & Setup Guide -->
-          <div class="mt-4 p-4 bg-dark-card/60 border border-dark-border rounded-xl space-y-2.5">
-            <h3 class="text-xs font-bold text-white flex items-center gap-1.5">
-              <i data-lucide="database" class="w-4 h-4 text-emerald-400"></i>
-              Permanent Cloud Storage & Persistence Guide:
-            </h3>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-[11px] text-slate-400 pt-1">
-              <div class="p-3 bg-dark-bg border border-dark-border rounded-lg space-y-1">
-                <div class="font-bold text-white flex items-center gap-1">
-                  <i data-lucide="hard-drive" class="w-3.5 h-3.5 text-blue-400"></i> Docker / VPS / Local
-                </div>
-                <p>Saved automatically to local disk at <code class="text-slate-300">data/metrics.json</code> with zero setup needed.</p>
+            <div class="p-4 bg-[#080a10] border border-dark-border rounded-2xl space-y-3 shadow-inner">
+              <div class="flex gap-2">
+                <input type="text" id="kb-crawl-url" placeholder="e.g. mapki.in/docs or https://mapki.in/pricing" 
+                  class="flex-1 px-3.5 py-2.5 text-xs bg-dark-bg border border-dark-border rounded-xl text-white focus:outline-none focus:border-red-500 font-sans">
+                <button onclick="crawlWebsiteUrl()" id="crawl-btn" 
+                  class="px-5 py-2.5 text-xs font-bold bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white rounded-xl transition-all active:scale-95 shadow-lg shadow-red-500/20 shrink-0 flex items-center gap-1.5">
+                  <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                  <span>Crawl URL</span>
+                </button>
               </div>
-              <div class="p-3 bg-dark-bg border border-dark-border rounded-lg space-y-1">
-                <div class="font-bold text-white flex items-center gap-1">
-                  <i data-lucide="cloud" class="w-3.5 h-3.5 text-orange-400"></i> Cloudflare Pages
-                </div>
-                <p>In Cloudflare Pages Settings → Functions, add a KV namespace binding named <code class="text-amber-300">METRICS_KV</code> for free global storage.</p>
+              <span id="crawl-status" class="block text-[11px] font-mono text-amber-400"></span>
+            </div>
+
+            <!-- Active Sources List -->
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <h4 class="text-xs font-bold text-white flex items-center gap-2">
+                  <i data-lucide="layers" class="w-4 h-4 text-purple-400"></i>
+                  <span>Active Knowledge Sources</span>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-purple-500/10 text-purple-300 border border-purple-500/20" id="kb-count">0</span>
+                </h4>
               </div>
-              <div class="p-3 bg-dark-bg border border-dark-border rounded-lg space-y-1">
-                <div class="font-bold text-white flex items-center gap-1">
-                  <i data-lucide="server" class="w-3.5 h-3.5 text-emerald-400"></i> Vercel / Multi-Region
+
+              <div id="kb-list" class="space-y-2.5 max-h-[300px] overflow-y-auto pr-1">
+                <div class="text-center py-8 text-xs text-slate-500 border border-dashed border-dark-border rounded-2xl">
+                  No knowledge documents uploaded yet.
                 </div>
-                <p>Add <code class="text-emerald-300">UPSTASH_REDIS_REST_URL</code> and Token in your environment variables for 100% free serverless storage.</p>
               </div>
             </div>
+
           </div>
         </div>
       </div>
+    </div>
+
     <!-- Dashboard Footer -->
     <footer class="pt-6 pb-2 border-t border-dark-border flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-500">
       <div class="flex items-center gap-2">
@@ -624,7 +761,6 @@
         </div>
       </div>
     </div>
-  </div>
 
   <!-- Provider Error Inspector Modal -->
   <div id="error-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4">
@@ -662,6 +798,124 @@
       </div>
 
       <div id="log-modal-body" class="space-y-3.5 max-h-[70vh] overflow-y-auto font-mono text-xs pr-1"></div>
+    </div>
+  </div>
+
+  <!-- Recover Account Modal -->
+  <div id="recover-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="glass-card max-w-md w-full rounded-3xl border border-red-500/30 p-6 sm:p-7 space-y-5 shadow-2xl relative">
+      <div class="flex items-center justify-between border-b border-dark-border pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400">
+            <i data-lucide="key-round" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm text-white">Recover Dashboard Access</h3>
+            <p class="text-[11px] text-slate-400">Restore your API key &amp; brand settings</p>
+          </div>
+        </div>
+        <button onclick="closeRecoverModal()" class="p-1 rounded hover:bg-dark-border text-slate-400 hover:text-white transition-all">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Step 1: Request OTP -->
+      <div id="recover-step-1" class="space-y-3">
+        <p class="text-xs text-slate-300 leading-relaxed">
+          Enter your registered email address. We'll dispatch a secure 6-digit verification code to verify ownership.
+        </p>
+        <div>
+          <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Your Registered Email</label>
+          <input type="email" id="recover-email" placeholder="name@company.com" 
+            class="w-full px-3.5 py-2.5 text-xs bg-dark-bg border border-dark-border rounded-xl text-white focus:outline-none focus:border-red-500 font-sans"
+            onkeydown="if(event.key==='Enter') requestRecoveryOtp()">
+        </div>
+        <div id="recover-error-1" class="hidden p-2.5 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-xl text-xs flex items-center gap-1.5"></div>
+      </div>
+
+      <!-- Step 2: Enter 6-Digit OTP -->
+      <div id="recover-step-2" class="space-y-3 hidden">
+        <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-300 text-xs flex items-center gap-2">
+          <i data-lucide="mail-check" class="w-4 h-4 shrink-0"></i>
+          <span>Verification code sent to <strong id="sent-email-label" class="text-white"></strong></span>
+        </div>
+        <div>
+          <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">6-Digit Security Code</label>
+          <input type="text" id="recover-otp" maxlength="6" placeholder="• • • • • •" 
+            class="w-full px-3.5 py-3 text-center text-lg font-mono tracking-widest bg-dark-bg border border-dark-border rounded-xl text-white focus:outline-none focus:border-red-500"
+            onkeydown="if(event.key==='Enter') submitOtpVerification()">
+        </div>
+        <div id="recover-error-2" class="hidden p-2.5 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-xl text-xs flex items-center gap-1.5"></div>
+        <button type="button" onclick="goToRecoverStep(1)" class="text-[11px] text-slate-400 hover:text-white underline">
+          ← Re-enter email address
+        </button>
+      </div>
+
+      <div class="flex items-center justify-end gap-2 pt-2 border-t border-dark-border">
+        <button onclick="closeRecoverModal()" class="px-3.5 py-2 text-xs font-semibold text-slate-400 hover:text-white">
+          Cancel
+        </button>
+        <button id="btn-submit-recover-1" onclick="requestRecoveryOtp()" class="px-5 py-2 text-xs font-bold bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white rounded-xl shadow-lg shadow-red-500/25 transition-all active:scale-95 flex items-center gap-1.5">
+          <span>Send Verification Code</span>
+          <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+        </button>
+        <button id="btn-submit-recover-2" onclick="submitOtpVerification()" class="hidden px-5 py-2 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl shadow-lg shadow-emerald-500/25 transition-all active:scale-95 flex items-center gap-1.5">
+          <span>Verify &amp; Enter Dashboard 🚀</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin / Customer Key Authentication Modal -->
+  <div id="key-auth-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="glass-card max-w-md w-full rounded-3xl border border-red-500/30 p-6 sm:p-7 space-y-5 shadow-2xl relative">
+      <div class="flex items-center justify-between border-b border-dark-border pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400">
+            <i data-lucide="lock" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm text-white">Gateway Authentication</h3>
+            <p class="text-[11px] text-slate-400">Enter your Admin or Customer live key</p>
+          </div>
+        </div>
+        <button onclick="closeAdminKeyModal()" class="p-1 rounded hover:bg-dark-border text-slate-400 hover:text-white transition-all">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3">
+        <p class="text-xs text-slate-300 leading-relaxed">
+          Authenticate to unlock master gateway controls, customize AI personas, or view your private analytics.
+        </p>
+        <div>
+          <label class="block text-[10px] font-semibold text-slate-400 uppercase mb-1">Access Key</label>
+          <div class="relative">
+            <input type="password" id="modal-auth-key" placeholder="Enter ADMIN_KEY or zr_live_..." 
+              class="w-full pl-3.5 pr-10 py-2.5 text-xs bg-dark-bg border border-dark-border rounded-xl text-white focus:outline-none focus:border-red-500 font-mono"
+              onkeydown="if(event.key==='Enter') submitKeyModalAuth()">
+            <button type="button" onclick="toggleModalKeyVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white">
+              <i data-lucide="eye" id="modal-key-eye" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+        <div id="modal-auth-error" class="hidden p-2.5 bg-rose-500/10 border border-rose-500/20 text-rose-400 rounded-xl text-xs flex items-center gap-1.5"></div>
+      </div>
+
+      <div class="flex items-center justify-between pt-2 border-t border-dark-border">
+        <button onclick="closeAdminKeyModal(); openRecoverModal();" class="text-[11px] text-red-400 hover:text-red-300 font-semibold underline">
+          ✉️ Lost your key?
+        </button>
+        <div class="flex items-center gap-2">
+          <button onclick="closeAdminKeyModal()" class="px-3.5 py-2 text-xs font-semibold text-slate-400 hover:text-white">
+            Cancel
+          </button>
+          <button onclick="submitKeyModalAuth()" class="px-5 py-2 text-xs font-bold bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white rounded-xl shadow-lg shadow-red-500/25 transition-all active:scale-95 flex items-center gap-1.5">
+            <span>Unlock</span>
+            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -739,6 +993,54 @@
     </div>
   </div>
 
+  <!-- ═══════════════════════════ INTEGRATION STEP-BY-STEP GUIDE MODAL ═══════════════════════════ -->
+  <div id="integration-guide-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="glass-card max-w-2xl w-full rounded-2xl border border-red-500/40 p-6 space-y-5 shadow-2xl relative max-h-[90vh] flex flex-col overflow-hidden">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b border-dark-border pb-3 shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-red-600 to-rose-600 flex items-center justify-center shadow-lg shadow-red-500/30 text-white">
+            <i data-lucide="book-open" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm text-white flex items-center gap-2">
+              Step-by-Step Integration Guide
+            </h3>
+            <p class="text-[11px] text-slate-400">Choose your platform to see exact 60-second setup instructions.</p>
+          </div>
+        </div>
+        <button onclick="closeIntegrationGuideModal()" class="p-1.5 rounded hover:bg-dark-border text-slate-400 hover:text-white transition-all">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Platform Tabs -->
+      <div class="flex overflow-x-auto gap-2 pb-1 scrollbar-none shrink-0 border-b border-dark-border">
+        <button onclick="showGuidePlatform('agent')" id="guide-tab-agent" class="px-3 py-1.5 text-xs rounded-xl bg-red-600 text-white font-bold transition-all shrink-0">🤖 Claude Code / Cursor</button>
+        <button onclick="showGuidePlatform('html')" id="guide-tab-html" class="px-3 py-1.5 text-xs rounded-xl bg-dark-bg border border-dark-border text-slate-300 font-semibold transition-all shrink-0">🌐 HTML / Webflow</button>
+        <button onclick="showGuidePlatform('wp')" id="guide-tab-wp" class="px-3 py-1.5 text-xs rounded-xl bg-dark-bg border border-dark-border text-slate-300 font-semibold transition-all shrink-0">📦 WordPress</button>
+        <button onclick="showGuidePlatform('shopify')" id="guide-tab-shopify" class="px-3 py-1.5 text-xs rounded-xl bg-dark-bg border border-dark-border text-slate-300 font-semibold transition-all shrink-0">🛍️ Shopify</button>
+        <button onclick="showGuidePlatform('next')" id="guide-tab-next" class="px-3 py-1.5 text-xs rounded-xl bg-dark-bg border border-dark-border text-slate-300 font-semibold transition-all shrink-0">⚡ Next.js / React</button>
+        <button onclick="showGuidePlatform('sdk')" id="guide-tab-sdk" class="px-3 py-1.5 text-xs rounded-xl bg-dark-bg border border-dark-border text-slate-300 font-semibold transition-all shrink-0">🐍 Python SDK</button>
+      </div>
+
+      <!-- Guide Content Container -->
+      <div id="guide-content-box" class="space-y-4 overflow-y-auto pr-1 text-xs text-slate-300 leading-relaxed">
+        <!-- Injected via JS -->
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="pt-3 border-t border-dark-border flex items-center justify-between shrink-0">
+        <span class="text-[11px] text-slate-500">Need help? Email <a href="mailto:mapkisolutions@gmail.com" class="text-red-400 underline">support</a></span>
+        <button onclick="closeIntegrationGuideModal()" class="px-4 py-2 text-xs font-semibold bg-white/10 hover:bg-white/20 text-white rounded-xl transition-all">
+          Got it!
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Notification Toast -->
   <div id="toast" class="fixed bottom-6 right-6 px-4 py-3 rounded-xl bg-dark-card border border-red-500/50 shadow-2xl text-xs font-medium text-slate-100 flex items-center gap-2.5 z-50 transition-all translate-y-20 opacity-0 pointer-events-none"></div>
 
@@ -756,55 +1058,234 @@
       gemini: "https://aistudio.google.com/app/apikey",
       nvidia: "https://build.nvidia.com/",
       cloudflare: "https://dash.cloudflare.com/?to=/:account/workers/ai",
-      cohere: "https://dashboard.cohere.com/api-keys"
+      cohere: "https://dashboard.cohere.com/api-keys",
+      huggingface: "https://huggingface.co/settings/tokens",
+      bazaarlink: "https://bazaarlink.ai/"
     };
 
     const el = id => document.getElementById(id);
-    const getKey = () => sessionStorage.getItem("ai_router_key") || el("auth-key").value;
+    const getKey = () => localStorage.getItem("ai_router_key") || sessionStorage.getItem("ai_router_key") || "";
     
-    function highlightKeyInputs(isSuccess) {
-      const inp = el("auth-key");
-      if (!inp) return;
-      if (isSuccess) {
-        inp.classList.remove("ring-2", "ring-rose-500", "border-rose-500", "animate-shake");
-        inp.classList.add("ring-2", "ring-emerald-500", "border-emerald-500");
-        setTimeout(() => inp.classList.remove("ring-2", "ring-emerald-500", "border-emerald-500"), 2500);
-      } else {
-        inp.classList.remove("ring-2", "ring-emerald-500", "border-emerald-500");
-        inp.classList.add("ring-2", "ring-rose-500", "border-rose-500", "animate-shake");
-        setTimeout(() => inp.classList.remove("ring-2", "ring-rose-500", "border-rose-500", "animate-shake"), 3000);
+    function openAdminKeyModal() {
+      const modal = el("key-auth-modal");
+      if (modal) {
+        modal.classList.remove("hidden");
+        const inp = el("modal-auth-key");
+        const current = getKey();
+        if (inp) {
+          inp.value = current || "";
+          setTimeout(() => inp.focus(), 100);
+        }
+        const err = el("modal-auth-error");
+        if (err) err.classList.add("hidden");
+      }
+      lucide.createIcons();
+    }
+
+    function closeAdminKeyModal() {
+      const modal = el("key-auth-modal");
+      if (modal) modal.classList.add("hidden");
+    }
+
+    function toggleModalKeyVisibility() {
+      const inp = el("modal-auth-key");
+      const eye = el("modal-key-eye");
+      if (inp) {
+        if (inp.type === "password") {
+          inp.type = "text";
+          if (eye) eye.setAttribute("data-lucide", "eye-off");
+        } else {
+          inp.type = "password";
+          if (eye) eye.setAttribute("data-lucide", "eye");
+        }
+        lucide.createIcons();
       }
     }
 
-    const saveKey = () => {
-      const val = el("auth-key").value.trim();
+    async function submitKeyModalAuth() {
+      const inp = el("modal-auth-key");
+      const errBox = el("modal-auth-error");
+      const val = inp ? inp.value.trim() : "";
+
+      if (!val) {
+        if (errBox) {
+          errBox.classList.remove("hidden");
+          errBox.textContent = "⚠️ Please enter a key or click Cancel.";
+        }
+        return;
+      }
+
+      localStorage.setItem("ai_router_key", val);
       sessionStorage.setItem("ai_router_key", val);
-      load(true);
-    };
+
+      // Verify token immediately against /api/customer/me
+      try {
+        const res = await fetch("/api/customer/me", { headers: { "Authorization": `Bearer ${val}` } });
+        if (!res.ok) throw new Error("Invalid or expired key. Please verify and try again.");
+
+        const data = await res.json();
+        closeAdminKeyModal();
+        showToast(data.role === "admin" ? "👑 Admin master access authenticated!" : `✅ Logged in as ${data.customer.company}!`);
+        load(true);
+      } catch (err) {
+        if (errBox) {
+          errBox.classList.remove("hidden");
+          errBox.textContent = "❌ " + err.message;
+        }
+      }
+    }
+
+    function unlockFromBanner() {
+      openAdminKeyModal();
+    }
 
     function requireKey(action = "perform this action") {
       const key = getKey();
       if (!key || !key.trim()) {
-        showToast(`🔐 Admin Key required to ${action}. Please enter your key in the top box.`);
-        highlightKeyInputs(false);
-        const authInput = el("auth-key");
-        if (authInput) authInput.focus();
+        showToast(`🔐 Authentication required to ${action}.`);
+        openAdminKeyModal();
         return false;
       }
       return true;
     }
 
-    function unlockFromBanner() {
-      const authInput = el("auth-key");
-      const key = authInput && authInput.value.trim();
-      if (!key) {
-        showToast("⚠️ Please enter your ADMIN_KEY in the top-right box and click Unlock");
-        highlightKeyInputs(false);
-        if (authInput) authInput.focus();
+    let pendingRecoverEmail = "";
+
+    function openRecoverModal() {
+      const modal = el("recover-modal");
+      if (modal) {
+        modal.classList.remove("hidden");
+        goToRecoverStep(1);
+      }
+    }
+
+    function closeRecoverModal() {
+      const modal = el("recover-modal");
+      if (modal) modal.classList.add("hidden");
+      pendingRecoverEmail = "";
+    }
+
+    function goToRecoverStep(step) {
+      const step1 = el("recover-step-1");
+      const step2 = el("recover-step-2");
+      const btn1 = el("btn-submit-recover-1");
+      const btn2 = el("btn-submit-recover-2");
+      const err1 = el("recover-error-1");
+      const err2 = el("recover-error-2");
+
+      if (err1) err1.classList.add("hidden");
+      if (err2) err2.classList.add("hidden");
+
+      if (step === 1) {
+        if (step1) step1.classList.remove("hidden");
+        if (step2) step2.classList.add("hidden");
+        if (btn1) btn1.classList.remove("hidden");
+        if (btn2) btn2.classList.add("hidden");
+        const input = el("recover-email");
+        if (input) setTimeout(() => input.focus(), 100);
+      } else {
+        if (step1) step1.classList.add("hidden");
+        if (step2) step2.classList.remove("hidden");
+        if (btn1) btn1.classList.add("hidden");
+        if (btn2) btn2.classList.remove("hidden");
+        const otpInput = el("recover-otp");
+        if (otpInput) {
+          otpInput.value = "";
+          setTimeout(() => otpInput.focus(), 100);
+        }
+      }
+      lucide.createIcons();
+    }
+
+    async function requestRecoveryOtp() {
+      const emailInput = el("recover-email");
+      const btn = el("btn-submit-recover-1");
+      const errBox = el("recover-error-1");
+      const email = emailInput?.value.trim();
+
+      if (!email || !email.includes("@")) {
+        if (errBox) {
+          errBox.classList.remove("hidden");
+          errBox.textContent = "⚠️ Please enter a valid email address.";
+        }
         return;
       }
-      sessionStorage.setItem("ai_router_key", key);
-      load(true);
+
+      btn.disabled = true;
+      btn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i> Sending Code...';
+      if (errBox) errBox.classList.add("hidden");
+
+      try {
+        const res = await fetch("/api/customer/recover", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email })
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Account not found");
+
+        pendingRecoverEmail = email;
+        const label = el("sent-email-label");
+        if (label) label.textContent = email;
+
+        showToast("📬 Verification code sent to " + email);
+        goToRecoverStep(2);
+      } catch (err) {
+        if (errBox) {
+          errBox.classList.remove("hidden");
+          errBox.textContent = "❌ " + err.message;
+        }
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>Send Verification Code</span><i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>';
+        lucide.createIcons();
+      }
+    }
+
+    async function submitOtpVerification() {
+      const otpInput = el("recover-otp");
+      const btn = el("btn-submit-recover-2");
+      const errBox = el("recover-error-2");
+      const code = otpInput?.value.trim();
+
+      if (!code || code.length < 6) {
+        if (errBox) {
+          errBox.classList.remove("hidden");
+          errBox.textContent = "⚠️ Please enter the 6-digit verification code.";
+        }
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i> Verifying...';
+      if (errBox) errBox.classList.add("hidden");
+
+      try {
+        const res = await fetch("/api/customer/verify-otp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: pendingRecoverEmail, code })
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Invalid code");
+
+        // Success: Store key and reload dashboard into customer mode!
+        localStorage.setItem("ai_router_key", data.key);
+        showToast("✅ Identity verified! Welcome back, " + data.customer.company + " 🎉");
+        closeRecoverModal();
+        load(true);
+      } catch (err) {
+        if (errBox) {
+          errBox.classList.remove("hidden");
+          errBox.textContent = "❌ " + err.message;
+        }
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>Verify &amp; Enter Dashboard 🚀</span>';
+        lucide.createIcons();
+      }
     }
 
     // isHtml=true is only for trusted static HTML (e.g. action buttons with known provider IDs)
@@ -829,25 +1310,142 @@
     }
 
     function switchTab(tabId) {
-      ['providers', 'analytics', 'playground', 'logs', 'code'].forEach(t => {
+      ['providers', 'analytics', 'playground', 'logs', 'knowledge', 'code'].forEach(t => {
         const contentEl = el('tab-content-' + t);
         if (contentEl) contentEl.classList.toggle('hidden', t !== tabId);
         const btn = el('tab-btn-' + t);
         if (btn) {
           if (t === tabId) {
-            btn.className = 'tab-nav-btn px-3 py-1.5 text-xs font-semibold text-red-500 border-b-2 border-red-500 flex items-center gap-1.5 transition-all shrink-0 whitespace-nowrap';
+            btn.classList.add('text-red-500', 'border-red-500', 'font-semibold');
+            btn.classList.remove('text-slate-400', 'border-transparent', 'font-medium');
           } else {
-            btn.className = 'tab-nav-btn px-3 py-1.5 text-xs font-medium text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 transition-all shrink-0 whitespace-nowrap';
+            btn.classList.remove('text-red-500', 'border-red-500', 'font-semibold');
+            btn.classList.add('text-slate-400', 'border-transparent', 'font-medium');
           }
         }
       });
+      if (tabId === 'knowledge') {
+        fetchKnowledgeDocs();
+      }
       lucide.createIcons();
+    }
+
+    let currentRole = "guest";
+    let customerData = null;
+
+    function adaptDashboardForRole(role, customer) {
+      const isCustomer = role === "customer" && customer;
+      const isAdmin = role === "admin";
+      const isLocked = !isCustomer && !isAdmin;
+      
+      // 1. Tab buttons visibility
+      const providerTabBtn = el("tab-btn-providers");
+      const analyticsTabBtn = el("tab-btn-analytics");
+      const crmHeaderBtn = el("header-crm-link");
+      const keyModalBtn = document.querySelector('button[onclick="openKeyModal()"]');
+      const starBtn = document.querySelector('a[href*="github.com/amjadlle/ZeroRoute"]');
+      const coffeeBtn = document.querySelector('a[href*="buymeacoffee.com"]');
+      const publicSiteBtn = document.querySelector('a[href="/"]');
+
+      if (providerTabBtn) providerTabBtn.style.display = isAdmin ? "flex" : "none";
+      if (analyticsTabBtn) analyticsTabBtn.style.display = isAdmin ? "flex" : "none";
+      if (crmHeaderBtn) crmHeaderBtn.style.display = isAdmin ? "inline-flex" : "none";
+      if (keyModalBtn) keyModalBtn.style.display = isAdmin ? "inline-flex" : "none";
+      if (starBtn) starBtn.style.display = isAdmin ? "inline-flex" : "none";
+
+      // 2. Metrics Ribbon: Hide when locked (0/0 zeros look bad to visitors), show scoped when active
+      const metricsRibbon = document.querySelector('.grid.grid-cols-2.lg\\:grid-cols-4');
+      const cacheCard = el("cache-savings-val")?.closest(".glass-card");
+      const providersCard = el("active-count")?.closest(".glass-card");
+
+      if (metricsRibbon) {
+        metricsRibbon.style.display = isLocked ? "none" : "grid";
+      }
+      if (cacheCard) cacheCard.style.display = isCustomer ? "none" : "block";
+      if (providersCard) providersCard.style.display = isCustomer ? "none" : "block";
+
+      // 3. Hide internal cache flush, clear logs, and origin filter dropdown for customer & guests
+      const flushBtn = document.querySelector('button[onclick="clearCache()"]');
+      const clearLogsBtn = document.querySelector('button[onclick="clearLogs()"]');
+      const originFilter = el("log-origin-filter");
+      if (flushBtn) flushBtn.style.display = isAdmin ? "inline-block" : "none";
+      if (clearLogsBtn) clearLogsBtn.style.display = isAdmin ? "inline-block" : "none";
+      if (originFilter) originFilter.style.display = isAdmin ? "inline-block" : "none";
+
+      // 4. If guest or customer is on hidden tab, switch to Playground
+      if (isLocked || isCustomer) {
+        const activeTab = el("tab-content-providers");
+        if (activeTab && !activeTab.classList.contains("hidden")) {
+          switchTab("playground");
+        }
+      }
+
+      // Update header authentication button label
+      const authLabel = el("header-auth-label");
+      if (authLabel) {
+        if (isAdmin) authLabel.textContent = "Admin";
+        else if (isCustomer) authLabel.textContent = customer.company || "Pro Account";
+        else authLabel.textContent = "Enter Key";
+      }
+
+      if (isCustomer) {
+        // Update Header Badge
+        const versionBadge = document.querySelector('header .bg-red-500\\/10');
+        if (versionBadge) {
+          versionBadge.textContent = "Pro Subscription Active";
+          versionBadge.className = "inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono";
+        }
+
+        // Auto-fill customer persona & widget settings
+        if (customer.company && el("gen-company")) el("gen-company").value = customer.company;
+        if (customer.botRole && el("gen-role")) el("gen-role").value = customer.botRole;
+        if (customer.tone && el("gen-tone")) el("gen-tone").value = customer.tone;
+        if (customer.persona && el("system-persona")) el("system-persona").value = customer.persona;
+        if (customer.company && el("cfg-widget-title")) el("cfg-widget-title").value = `${customer.company} AI`;
+        if (customer.greeting && el("cfg-widget-greeting")) el("cfg-widget-greeting").value = customer.greeting;
+      }
     }
 
     async function load(triggeredByUser = false) {
       try {
-        const key = sessionStorage.getItem("ai_router_key");
-        if (key && !el("auth-key").value) el("auth-key").value = key;
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlKey = urlParams.get("key");
+        const subId = urlParams.get("subscription_id");
+        const subEmail = urlParams.get("email");
+
+        if (urlKey) {
+          localStorage.setItem("ai_router_key", urlKey);
+        } else if (subEmail && subId) {
+          // Customer arrived via Dodo Payments success redirect!
+          try {
+            const syncRes = await fetch("/api/customer/recover", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email: subEmail })
+            });
+            if (syncRes.ok) {
+              showToast("🎉 Subscription Active! Welcome to ZeroRoute Pro.");
+            }
+          } catch {}
+        }
+
+        const key = localStorage.getItem("ai_router_key") || sessionStorage.getItem("ai_router_key");
+        if (key && el("auth-key") && !el("auth-key").value) {
+          el("auth-key").value = key;
+        }
+
+        // 1. Fetch Profile / Role Check
+        const meRes = await fetch("/api/customer/me", { headers: getHeaders() });
+        if (meRes.ok) {
+          const meData = await meRes.json();
+          currentRole = meData.role || "admin";
+          customerData = meData.customer || null;
+          adaptDashboardForRole(currentRole, customerData);
+        } else {
+          currentRole = "guest";
+          customerData = null;
+          adaptDashboardForRole("guest", null);
+        }
         
         const [hRes, pRes, mRes] = await Promise.all([
           fetch("/health"),
@@ -2109,12 +2707,12 @@
 
     function showSnippet(tab) {
       currentSnippet = tab;
-      ['widget', 'js', 'py', 'curl'].forEach(t => {
+      ['widget', 'ai', 'js', 'py', 'curl'].forEach(t => {
         const btn = el('snip-btn-' + t);
         if (btn) {
           btn.className = t === tab 
-            ? 'px-3 py-1 text-xs rounded-md bg-red-600 text-white font-semibold transition-all'
-            : 'px-3 py-1 text-xs rounded-md bg-dark-card text-slate-400 hover:text-white font-semibold transition-all';
+            ? 'px-3.5 py-1.5 text-xs rounded-xl bg-red-600 text-white font-bold transition-all shadow-md'
+            : 'px-3.5 py-1.5 text-xs rounded-xl bg-dark-bg border border-dark-border text-slate-300 hover:text-white font-semibold transition-all';
         }
       });
       updateSnippetView();
@@ -2133,7 +2731,12 @@
     }
 
     function updateSnippetView() {
-      const host = window.location.origin;
+      // Use clean production origin (zeroroute.mapki.in) or current window origin
+      let host = window.location.origin;
+      if (host.includes("localhost") || host.includes("127.0.0.1")) {
+        // In local development, use https://zeroroute.mapki.in if desired, or window.location.origin
+        host = window.location.origin;
+      }
       const key = getKey() || "";
       const authAttr = key ? '\n  data-key="' + key + '"' : '';
       
@@ -2146,7 +2749,7 @@
 
       const customizerEl = el('widget-customizer');
       if (customizerEl) {
-        customizerEl.style.display = currentSnippet === 'widget' ? 'block' : 'none';
+        customizerEl.style.display = (currentSnippet === 'widget' || currentSnippet === 'ai') ? 'block' : 'none';
       }
 
       let widgetTag = '<!-- 1-LINE CHATBOT WIDGET: Paste anywhere in your HTML, Webflow, WordPress, Next.js, or React app -->\n<' + 'script\n  src="' + host + '/widget.js"\n  data-title="' + customTitle + '"';
@@ -2173,8 +2776,27 @@
 
       widgetTag += '\n  data-color="' + customColor + '"' + authAttr + '\n  defer>\n<' + '/script>';
 
+      const aiAgentPrompt = `Please embed the ZeroRoute AI customer support chatbot into this project's website / web app.
+
+Instructions:
+1. Locate the main HTML layout / index / root layout (e.g. \`index.html\`, \`app/layout.tsx\`, \`pages/_app.tsx\`, \`theme.liquid\`, or root HTML template).
+2. Insert the following lightweight script tag right before the closing \`</body>\` tag:
+
+\`\`\`html
+${widgetTag}
+\`\`\`
+
+3. Configuration Details:
+- Bot Title: "${customTitle}"
+- Brand Accent Color: "${customColor}"
+- Greeting: "${customGreeting || 'Hi! How can I help you today?'}"
+- Live API Key: "${key || 'zr_live_...'}"
+
+Ensure the script loads on all customer-facing pages without blocking initial DOM rendering.`;
+
       const snippets = {
         widget: widgetTag,
+        ai: aiAgentPrompt,
         js: '// Web Chatbot / Node.js\nconst response = await fetch("' + host + '/v1/chat/completions", {\n  method: "POST",\n  headers: {\n    "Content-Type": "application/json",\n    "Authorization": "Bearer ' + (key || "your-router-api-key") + '"\n  },\n  body: JSON.stringify({\n    stream: true,\n    messages: [\n      { role: "system", content: "You are an AI assistant." },\n      { role: "user", content: "Hello!" }\n    ]\n  })\n});',
         py: '# Python (Official openai SDK)\nfrom openai import OpenAI\n\nclient = OpenAI(\n    base_url="' + host + '/v1",\n    api_key="' + (key || "your-router-api-key") + '"\n)\n\nresponse = client.chat.completions.create(\n    model="default",\n    messages=[{"role": "user", "content": "Hello!"}]\n)\n\nprint(response.choices[0].message.content)',
         curl: '# cURL Streaming\ncurl -N ' + host + '/v1/chat/completions \\\n  -H "Authorization: Bearer ' + (key || "your-router-api-key") + '" \\\n  -H "Content-Type: application/json" \\\n  -d "{\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Hello!\"}]}"'
@@ -2183,9 +2805,482 @@
       el("code-box").textContent = snippets[currentSnippet] || snippets.widget;
     }
 
+    function openIntegrationGuideModal() {
+      const modal = el("integration-guide-modal");
+      if (modal) {
+        modal.classList.remove("hidden");
+        showGuidePlatform('agent');
+      }
+      lucide.createIcons();
+    }
+
+    function closeIntegrationGuideModal() {
+      const modal = el("integration-guide-modal");
+      if (modal) modal.classList.add("hidden");
+    }
+
+    function showGuidePlatform(platform) {
+      const platforms = ['agent', 'html', 'wp', 'shopify', 'next', 'sdk'];
+      platforms.forEach(p => {
+        const btn = el('guide-tab-' + p);
+        if (btn) {
+          btn.className = p === platform 
+            ? 'px-3 py-1.5 text-xs rounded-xl bg-red-600 text-white font-bold transition-all shrink-0'
+            : 'px-3 py-1.5 text-xs rounded-xl bg-dark-bg border border-dark-border text-slate-300 font-semibold transition-all shrink-0';
+        }
+      });
+
+      const box = el('guide-content-box');
+      if (!box) return;
+
+      const guides = {
+        agent: `
+          <div class="p-4 rounded-xl bg-red-950/20 border border-red-500/30 space-y-3">
+            <div class="flex items-center gap-2 font-bold text-white text-sm">
+              <span>🤖 Method 1: Let AI Coding Agents Do It (Easiest)</span>
+            </div>
+            <p class="text-slate-300">If you use <strong>Claude Code, Cursor IDE, Codex, Copilot, or v0</strong>:</p>
+            <ol class="list-decimal list-inside space-y-2 text-slate-300 pl-1">
+              <li>Click the <strong>"🤖 AI Agent Prompt"</strong> button in the integration tab above.</li>
+              <li>Click <strong>"Copy Code"</strong> to copy the prompt.</li>
+              <li>Open your project in <strong>Cursor / Claude Code</strong> and paste the prompt into chat.</li>
+              <li>Your AI agent will automatically detect your project structure, place the script tag, and configure your keys in 10 seconds!</li>
+            </ol>
+          </div>
+        `,
+        html: `
+          <div class="p-4 rounded-xl bg-dark-card border border-dark-border space-y-3">
+            <div class="font-bold text-white text-sm">🌐 Standard HTML / Webflow / Framer Setup</div>
+            <ol class="list-decimal list-inside space-y-2 text-slate-300 pl-1">
+              <li>Click <strong>"✨ 1-Line Website Widget"</strong> above and copy the script tag.</li>
+              <li>Open your <code class="text-red-400 bg-red-950/40 px-1 py-0.5 rounded font-mono">index.html</code> (or Webflow Project Settings → Custom Code → Footer Code).</li>
+              <li>Paste the script tag directly before the closing <code class="text-red-400 bg-red-950/40 px-1 py-0.5 rounded font-mono">&lt;/body&gt;</code> tag.</li>
+              <li>Save and publish your site. The floating chat bubble appears instantly!</li>
+            </ol>
+          </div>
+        `,
+        wp: `
+          <div class="p-4 rounded-xl bg-dark-card border border-dark-border space-y-3">
+            <div class="font-bold text-white text-sm">📦 WordPress 1-Click Embed</div>
+            <ol class="list-decimal list-inside space-y-2 text-slate-300 pl-1">
+              <li>Copy the <strong>"✨ 1-Line Website Widget"</strong> script tag above.</li>
+              <li>Log into your <strong>WordPress Admin Dashboard</strong>.</li>
+              <li>Go to <strong>Plugins → Add New</strong> and search for <em>"WPCode"</em> or <em>"Insert Headers and Footers"</em> (if not installed).</li>
+              <li>Go to <strong>Code Snippets → Header & Footer</strong>.</li>
+              <li>Paste the script tag into the <strong>Footer</strong> box and click <strong>Save Changes</strong>.</li>
+            </ol>
+          </div>
+        `,
+        shopify: `
+          <div class="p-4 rounded-xl bg-dark-card border border-dark-border space-y-3">
+            <div class="font-bold text-white text-sm">🛍️ Shopify Store Integration</div>
+            <ol class="list-decimal list-inside space-y-2 text-slate-300 pl-1">
+              <li>Copy the <strong>"✨ 1-Line Website Widget"</strong> script tag above.</li>
+              <li>Log into your <strong>Shopify Admin</strong>.</li>
+              <li>Go to <strong>Online Store → Themes</strong>.</li>
+              <li>Click the <strong>"..."</strong> button next to your active theme and select <strong>Edit code</strong>.</li>
+              <li>Open <code class="text-red-400 bg-red-950/40 px-1 py-0.5 rounded font-mono">theme.liquid</code> in the Layout directory.</li>
+              <li>Scroll to the bottom and paste the script right before <code class="text-red-400 bg-red-950/40 px-1 py-0.5 rounded font-mono">&lt;/body&gt;</code>.</li>
+              <li>Click <strong>Save</strong>!</li>
+            </ol>
+          </div>
+        `,
+        next: `
+          <div class="p-4 rounded-xl bg-dark-card border border-dark-border space-y-3">
+            <div class="font-bold text-white text-sm">⚡ Next.js / React (App Router & Pages Router)</div>
+            <ol class="list-decimal list-inside space-y-2 text-slate-300 pl-1">
+              <li>Select <strong>"JavaScript / React"</strong> or <strong>"1-Line Website Widget"</strong> in the main tab to copy your snippet.</li>
+              <li>Open your root layout file (<code class="text-red-400 bg-red-950/40 px-1 py-0.5 rounded font-mono">app/layout.tsx</code> or <code class="text-red-400 bg-red-950/40 px-1 py-0.5 rounded font-mono">pages/_app.tsx</code>).</li>
+              <li>Import <code class="text-red-400 bg-red-950/40 px-1 py-0.5 rounded font-mono">Script</code> from <code class="text-red-400 bg-red-950/40 px-1 py-0.5 rounded font-mono">'next/script'</code>.</li>
+              <li>Add the <code class="text-red-400 bg-red-950/40 px-1 py-0.5 rounded font-mono">&lt;Script strategy="lazyOnload" /&gt;</code> component right before the closing <code class="text-red-400 bg-red-950/40 px-1 py-0.5 rounded font-mono">&lt;/body&gt;</code> tag.</li>
+              <li>Deploy or run <code class="text-red-400 bg-red-950/40 px-1 py-0.5 rounded font-mono">npm run dev</code> — your chatbot renders seamlessly!</li>
+            </ol>
+          </div>
+        `,
+        sdk: `
+          <div class="p-4 rounded-xl bg-dark-card border border-dark-border space-y-3">
+            <div class="font-bold text-white text-sm">🐍 Python & Backend SDK Integration</div>
+            <ol class="list-decimal list-inside space-y-2 text-slate-300 pl-1">
+              <li>Select <strong>"Python (OpenAI SDK)"</strong> or <strong>"cURL Terminal"</strong> in the main tab to copy your code.</li>
+              <li>Install the official client if not already installed: <code class="text-red-400 bg-red-950/40 px-1 py-0.5 rounded font-mono">pip install openai</code>.</li>
+              <li>Set <code class="text-red-400 bg-red-950/40 px-1 py-0.5 rounded font-mono">base_url="https://zeroroute.mapki.in/v1"</code> and pass your API key.</li>
+              <li>Call <code class="text-red-400 bg-red-950/40 px-1 py-0.5 rounded font-mono">client.chat.completions.create(...)</code> — ZeroRoute handles multi-cloud failover automatically!</li>
+            </ol>
+          </div>
+        `
+      };
+
+      box.innerHTML = guides[platform] || guides.agent;
+      lucide.createIcons();
+    }
+
     function copySnippet() {
       navigator.clipboard.writeText(el("code-box").textContent);
       showToast("📋 Code snippet copied to clipboard!");
+    }
+
+    function toggleSystemPersona() {
+      const container = el("persona-container");
+      const chevron = el("persona-chevron");
+      if (!container) return;
+      const isHidden = container.classList.toggle("hidden");
+      if (chevron) {
+        chevron.style.transform = isHidden ? "rotate(0deg)" : "rotate(180deg)";
+      }
+    }
+
+    function generatePersonaSnippet() {
+      const company = (el("gen-company")?.value || "Our Company").trim();
+      const role = (el("gen-role")?.value || "AI Support Assistant").trim();
+      const tone = el("gen-tone")?.value || "Friendly & Professional";
+
+      const prompt = `You are ${role}, the official AI representative for ${company}. Your mission is to assist visitors and customers with inquiries, explain services, answer questions, and solve problems with a ${tone.toLowerCase()} tone using verified company knowledge.`;
+      
+      const personaTextarea = el("system-persona");
+      if (personaTextarea) {
+        personaTextarea.value = prompt;
+        personaTextarea.classList.add("ring-2", "ring-red-500");
+        setTimeout(() => personaTextarea.classList.remove("ring-2", "ring-red-500"), 1500);
+      }
+
+      // Also update widget customizer if open
+      const widgetPersona = el("cfg-widget-persona");
+      if (widgetPersona) {
+        widgetPersona.value = prompt;
+        updateSnippetView();
+      }
+
+      showToast("✨ AI Persona generated and applied!");
+    }
+
+    // ─── Knowledge Base & Document Training Handlers ────────────────────────
+    let knowledgeDocs = [];
+
+    async function fetchKnowledgeDocs() {
+      try {
+        const res = await fetch("/api/knowledge", { headers: getHeaders() });
+        if (!res.ok) throw new Error("Failed to load knowledge");
+        const data = await res.json();
+        knowledgeDocs = data.documents || [];
+        renderKnowledgeList();
+      } catch (err) {
+        console.error("Knowledge fetch error:", err);
+      }
+    }
+
+    function renderKnowledgeList() {
+      const listEl = el("kb-list");
+      const countEl = el("kb-count");
+      if (countEl) countEl.textContent = knowledgeDocs.length;
+      if (!listEl) return;
+
+      if (knowledgeDocs.length === 0) {
+        listEl.innerHTML = '<div class="text-center py-6 text-xs text-slate-500 border border-dashed border-dark-border rounded-xl">No knowledge documents uploaded yet.</div>';
+        return;
+      }
+
+      listEl.innerHTML = knowledgeDocs.map(doc => {
+        const typeBadge = doc.type === 'pdf' 
+          ? '<span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-red-500/10 text-red-400 border border-red-500/20 font-mono">PDF</span>'
+          : doc.type === 'url'
+          ? '<span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono">URL</span>'
+          : '<span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">MD/TXT</span>';
+
+        const sizeKb = (doc.charCount / 1024).toFixed(1);
+
+        return `
+          <div class="p-2.5 bg-dark-bg border border-dark-border rounded-xl flex items-center justify-between gap-3 text-xs">
+            <div class="min-w-0 flex items-center gap-2">
+              <i data-lucide="${doc.type === 'url' ? 'globe' : 'file-text'}" class="w-4 h-4 text-slate-400 shrink-0"></i>
+              <div class="min-w-0">
+                <div class="font-semibold text-white truncate text-[11.5px]">${doc.title}</div>
+                <div class="text-[10px] text-slate-500 flex items-center gap-2 mt-0.5">
+                  ${typeBadge}
+                  <span>${sizeKb} KB</span>
+                  <span>•</span>
+                  <span>${new Date(doc.createdAt).toLocaleDateString()}</span>
+                </div>
+              </div>
+            </div>
+            <button onclick="deleteKnowledgeDoc('${doc.id}')" class="p-1.5 rounded-lg hover:bg-rose-500/10 text-slate-500 hover:text-rose-400 transition-all shrink-0" title="Delete document">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        `;
+      }).join('');
+      lucide.createIcons();
+    }
+
+    async function deleteKnowledgeDoc(id) {
+      if (!confirm("Are you sure you want to delete this knowledge source?")) return;
+      try {
+        const res = await fetch("/api/knowledge/" + id, {
+          method: "DELETE",
+          headers: getHeaders()
+        });
+        if (res.ok) {
+          showToast("🗑️ Document removed from Knowledge Base");
+          fetchKnowledgeDocs();
+        } else {
+          showToast("❌ Failed to delete document");
+        }
+      } catch (err) {
+        showToast("❌ Error deleting document: " + err.message);
+      }
+    }
+
+    async function saveDirectTextKnowledge() {
+      const titleInput = el("kb-raw-title");
+      const contentInput = el("kb-raw-content");
+      const title = titleInput.value.trim();
+      const content = contentInput.value.trim();
+
+      if (!title || !content) {
+        showToast("⚠️ Title and Content are required");
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/knowledge/upload", {
+          method: "POST",
+          headers: getHeaders(),
+          body: JSON.stringify({ title, content, type: "markdown" })
+        });
+        if (res.ok) {
+          showToast("✅ Knowledge snippet saved!");
+          titleInput.value = "";
+          contentInput.value = "";
+          fetchKnowledgeDocs();
+        } else {
+          showToast("❌ Failed to save knowledge snippet");
+        }
+      } catch (err) {
+        showToast("❌ Error: " + err.message);
+      }
+    }
+
+    async function crawlWebsiteUrl() {
+      const input = el("kb-crawl-url");
+      const statusEl = el("crawl-status");
+      const btn = el("crawl-btn");
+      const url = input.value.trim();
+
+      if (!url || !url.startsWith("http")) {
+        showToast("⚠️ Please enter a valid URL (http/https)");
+        return;
+      }
+
+      statusEl.textContent = "⏳ Crawling and parsing webpage markdown...";
+      btn.disabled = true;
+
+      try {
+        const res = await fetch("/api/knowledge/crawl", {
+          method: "POST",
+          headers: getHeaders(),
+          body: JSON.stringify({ url })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          showToast("✅ Webpage scraped and added to Knowledge Base!");
+          input.value = "";
+          statusEl.textContent = "";
+          fetchKnowledgeDocs();
+        } else {
+          statusEl.textContent = "❌ " + (data.error || "Crawl failed");
+        }
+      } catch (err) {
+        statusEl.textContent = "❌ Network error: " + err.message;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    // Drag and Drop & File Upload Handlers
+    function handleDragOver(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      el("dropzone").classList.add("border-red-500", "bg-red-500/5");
+    }
+
+    function handleDragLeave(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      el("dropzone").classList.remove("border-red-500", "bg-red-500/5");
+    }
+
+    function handleFileDrop(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      el("dropzone").classList.remove("border-red-500", "bg-red-500/5");
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        processUploadedFiles(e.dataTransfer.files);
+      }
+    }
+
+    function handleFileInputChange(e) {
+      if (e.target.files && e.target.files.length > 0) {
+        processUploadedFiles(e.target.files);
+      }
+    }
+
+    async function processUploadedFiles(files) {
+      const statusEl = el("upload-status");
+      statusEl.textContent = `Processing ${files.length} file(s)...`;
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const isPdf = file.name.toLowerCase().endsWith(".pdf");
+
+        try {
+          let text = "";
+          if (isPdf) {
+            statusEl.textContent = `Extracting PDF text from ${file.name}...`;
+            text = await extractTextFromPdf(file);
+          } else {
+            text = await file.text();
+          }
+
+          if (!text || text.trim().length === 0) {
+            showToast(`⚠️ No readable text found in ${file.name}`);
+            continue;
+          }
+
+          await fetch("/api/knowledge/upload", {
+            method: "POST",
+            headers: getHeaders(),
+            body: JSON.stringify({
+              title: file.name,
+              content: text,
+              type: isPdf ? "pdf" : "markdown"
+            })
+          });
+
+          showToast(`✅ Uploaded ${file.name}`);
+        } catch (err) {
+          console.error("Upload error:", err);
+          showToast(`❌ Failed to process ${file.name}: ${err.message}`);
+        }
+      }
+
+      statusEl.textContent = "✅ All files processed!";
+      setTimeout(() => { statusEl.textContent = ""; }, 3000);
+      fetchKnowledgeDocs();
+    }
+
+    async function extractTextFromPdf(file) {
+      if (!window.pdfjsLib) {
+        throw new Error("PDF parser worker is still loading. Please try again in a moment.");
+      }
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      let fullText = "";
+
+      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+        const page = await pdf.getPage(pageNum);
+        const textContent = await page.getTextContent();
+        const pageText = textContent.items.map(item => item.str).join(" ");
+        fullText += `\n--- Page ${pageNum} ---\n` + pageText;
+      }
+      return fullText;
+    }
+
+    async function fetchAdminCustomers() {
+      if (currentRole !== "admin") return;
+      const tbody = el("crm-customers-tbody");
+      if (!tbody) return;
+
+      try {
+        const res = await fetch("/api/admin/customers", { headers: getHeaders() });
+        if (!res.ok) throw new Error("Failed to fetch customer directory");
+        const data = await res.json();
+        const customers = data.customers || [];
+
+        // Update counts
+        if (el("crm-total-count")) el("crm-total-count").textContent = customers.length;
+        const activeCount = customers.filter(c => c.status === "active").length;
+        if (el("crm-active-count")) el("crm-active-count").textContent = activeCount;
+        if (el("crm-mrr-count")) el("crm-mrr-count").textContent = "$" + (activeCount * 1.99).toFixed(2);
+        
+        let totalKnowledge = 0;
+        customers.forEach(c => { if (c.knowledge) totalKnowledge++; });
+        if (el("crm-knowledge-count")) el("crm-knowledge-count").textContent = totalKnowledge;
+
+        if (customers.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="7" class="py-8 text-center text-slate-500">
+                <i data-lucide="users" class="w-6 h-6 mx-auto mb-2 text-slate-600"></i>
+                No active subscribers yet. Customers will appear here as soon as they complete checkout.
+              </td>
+            </tr>
+          `;
+          lucide.createIcons();
+          return;
+        }
+
+        tbody.innerHTML = customers.map(c => {
+          const createdStr = c.createdAt ? new Date(c.createdAt).toLocaleDateString() : 'Recent';
+          const maskedKey = c.key ? (c.key.substring(0, 10) + '...' + c.key.slice(-4)) : 'None';
+          const isAct = c.status === 'active';
+
+          return `
+            <tr class="hover:bg-dark-cardHover/60 transition-all">
+              <td class="py-3.5 px-4">
+                <div class="font-bold text-white">${escapeHtml(c.company || 'Individual Pro')}</div>
+                <div class="text-[11px] text-slate-400">${escapeHtml(c.email || 'N/A')}</div>
+              </td>
+              <td class="py-3.5 px-4 font-mono text-[11px] text-slate-300">
+                ${escapeHtml(c.subscriptionId || 'sub_direct')}
+              </td>
+              <td class="py-3.5 px-4">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${isAct ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400' : 'bg-rose-500/10 border border-rose-500/20 text-rose-400'}">
+                  <span class="w-1.5 h-1.5 rounded-full ${isAct ? 'bg-emerald-400' : 'bg-rose-400'}"></span>
+                  ${isAct ? 'ACTIVE' : 'EXPIRED'}
+                </span>
+              </td>
+              <td class="py-3.5 px-4 text-slate-300 font-medium">
+                ${escapeHtml(c.botTitle || 'Default AI')}
+              </td>
+              <td class="py-3.5 px-4 font-mono text-[11px] text-slate-400">
+                <span class="bg-[#050608] px-2 py-1 rounded border border-dark-border select-all">${escapeHtml(maskedKey)}</span>
+              </td>
+              <td class="py-3.5 px-4 text-slate-400 text-[11px]">
+                ${createdStr}
+              </td>
+              <td class="py-3.5 px-4 text-right">
+                <button onclick="deleteAdminCustomer('${c.key}')" class="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition-all" title="Revoke Subscriber Key">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+        lucide.createIcons();
+      } catch (err) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="py-6 text-center text-rose-400">
+              ❌ Failed to load customer directory: ${err.message}
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    async function deleteAdminCustomer(key) {
+      if (!confirm("Are you sure you want to revoke and delete this subscriber key? They will lose dashboard access.")) return;
+      try {
+        const res = await fetch("/api/admin/customers/" + encodeURIComponent(key), {
+          method: "DELETE",
+          headers: getHeaders()
+        });
+        if (!res.ok) throw new Error("Failed to delete customer");
+        showToast("🗑️ Subscriber key revoked.");
+        fetchAdminCustomers();
+      } catch (err) {
+        showToast("❌ " + err.message);
+      }
     }
 
     // Visibility-aware polling — pause when tab is in background (fix D)

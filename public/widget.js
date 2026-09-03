@@ -122,7 +122,7 @@
   var dot = document.createElement('span');
   dot.className = 'zr-badge-dot';
   badgeEl.appendChild(dot);
-  var badgeText = document.createTextNode(' Online • ZeroRoute');
+  var badgeText = document.createTextNode(key ? ' Active • Ready' : ' Online • ZeroRoute');
   badgeEl.appendChild(badgeText);
 
   infoBox.appendChild(titleEl);
@@ -188,15 +188,17 @@
   footer.appendChild(inputBox);
   footer.appendChild(sendBtn);
 
-  // Powered By
-  var powered = document.createElement('div');
-  powered.className = 'zr-powered';
-  powered.innerHTML = 'Fast free AI by <a href="https://github.com/amjadlle/ZeroRoute" target="_blank" rel="noopener">ZeroRoute</a>';
-
   win.appendChild(header);
   win.appendChild(msgBox);
   win.appendChild(footer);
-  win.appendChild(powered);
+
+  // White-label: Only show "Powered by ZeroRoute" on free/open-source landing demo without key
+  if (!key) {
+    var powered = document.createElement('div');
+    powered.className = 'zr-powered';
+    powered.innerHTML = 'Fast free AI by <a href="https://github.com/amjadlle/ZeroRoute" target="_blank" rel="noopener">ZeroRoute</a>';
+    win.appendChild(powered);
+  }
 
   function mount() {
     document.body.appendChild(bubble);
@@ -392,5 +394,26 @@
   sendBtn.onclick = send;
   inputBox.onkeydown = function(e) {
     if (e.key === 'Enter') send();
+  };
+
+  // Global Window API for programmatic triggers
+  window.ZeroRoute = window.ZeroRouteWidget = {
+    open: function() {
+      isOpen = true;
+      win.classList.add('zr-open');
+      inputBox.focus();
+    },
+    close: function() {
+      isOpen = false;
+      win.classList.remove('zr-open');
+    },
+    toggle: function() {
+      isOpen = !isOpen;
+      win.classList.toggle('zr-open', isOpen);
+      if (isOpen) inputBox.focus();
+    },
+    toggleChat: function() {
+      this.toggle();
+    }
   };
 })();

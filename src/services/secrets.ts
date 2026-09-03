@@ -11,6 +11,8 @@ const ENV_MAP: Record<string, string> = {
   gemini: "GEMINI_API_KEY",
   openrouter: "OPENROUTER_API_KEY",
   nvidia: "NVIDIA_API_KEY",
+  huggingface: "HUGGINGFACE_API_KEY",
+  bazaarlink: "BAZAARLINK_API_KEY",
   cloudflare: "CLOUDFLARE_API_KEY",
   cohere: "COHERE_API_KEY"
 };
@@ -49,9 +51,14 @@ function saveSecretsStore(store: SecretsStore): boolean {
 export function getProviderApiKey(providerId: string): string | undefined {
   // 1. Check environment variable (highest precedence for Docker / Vercel / Cloud)
   if (providerId === "cloudflare") {
-    const cfToken = process.env.CLOUDFLARE_API_TOKEN || process.env.CLOUDFLARE_API_KEY;
+    const cfToken = process.env.CF_AI_API_TOKEN || process.env.CLOUDFLARE_API_TOKEN || process.env.CLOUDFLARE_API_KEY;
     if (cfToken && cfToken !== "your-cloudflare-api-token") {
       return cfToken.trim();
+    }
+  } else if (providerId === "huggingface") {
+    const hfToken = process.env.HUGGINGFACE_API_KEY || process.env.HF_TOKEN || process.env.HUGGINGFACE_TOKEN;
+    if (hfToken && hfToken !== "your-huggingface-api-key") {
+      return hfToken.trim();
     }
   } else {
     const envVar = ENV_MAP[providerId];
@@ -100,12 +107,21 @@ export function maskKey(key?: string): string {
 
 export function getProviderCredentialsStatus(providerId: string): { configured: boolean; source: "env" | "ui" | "none"; masked: string } {
   if (providerId === "cloudflare") {
-    const cfToken = process.env.CLOUDFLARE_API_TOKEN || process.env.CLOUDFLARE_API_KEY;
+    const cfToken = process.env.CF_AI_API_TOKEN || process.env.CLOUDFLARE_API_TOKEN || process.env.CLOUDFLARE_API_KEY;
     if (cfToken && cfToken !== "your-cloudflare-api-token") {
       return {
         configured: true,
         source: "env",
         masked: maskKey(cfToken)
+      };
+    }
+  } else if (providerId === "huggingface") {
+    const hfToken = process.env.HUGGINGFACE_API_KEY || process.env.HF_TOKEN || process.env.HUGGINGFACE_TOKEN;
+    if (hfToken && hfToken !== "your-huggingface-api-key") {
+      return {
+        configured: true,
+        source: "env",
+        masked: maskKey(hfToken)
       };
     }
   } else {

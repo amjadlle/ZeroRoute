@@ -1,7 +1,7 @@
 import { providers } from "../dist/providers/providers.js";
 
 console.log("==================================================");
-console.log("⚡ TESTING ALL 8 AI PROVIDERS");
+console.log("⚡ TESTING ALL 10 AI PROVIDERS");
 console.log("==================================================\n");
 
 async function runBenchmark() {

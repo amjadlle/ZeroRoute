@@ -23,6 +23,8 @@ import { handleChatRoutes }     from "./routes/chat.js";
 import { handleProvidersRoutes } from "./routes/providers.js";
 import { handleKeysRoutes }     from "./routes/keys.js";
 import { handleMetricsRoutes }  from "./routes/metrics.js";
+import { handleKnowledgeRoutes } from "./routes/knowledge.js";
+import { handleCustomerRoutes }  from "./routes/customers.js";
 
 const port = Number(process.env.PORT ?? 8787);
 
@@ -45,6 +47,8 @@ export const handleRequest = async (req: IncomingMessage, res: ServerResponse): 
   if (await handleChatRoutes(req, res, url))           return;
   if (await handleProvidersRoutes(req, res, url))      return;
   if (await handleKeysRoutes(req, res, url))           return;
+  if (await handleCustomerRoutes(req, res, url))       return;
+  if (await handleKnowledgeRoutes(req, res, url))      return;
   if (handleMetricsRoutes(req, res, url))              return;
 
   // 404 fallback
@@ -83,10 +87,14 @@ function startSelfHealingHeartbeat() {
 const isServerless = Boolean(
   process.env.VERCEL ||
   process.env.AWS_LAMBDA_FUNCTION_NAME ||
-  process.env.NOW_REGION
+  process.env.NOW_REGION ||
+  typeof (globalThis as any).WebSocketPair !== "undefined" ||
+  typeof (globalThis as any).caches !== "undefined" ||
+  process.env.CLOUDFLARE_WORKER ||
+  (typeof navigator !== "undefined" && navigator.userAgent === "Cloudflare-Workers")
 );
 
-if (!isServerless) {
+if (!isServerless && typeof process.versions?.node === "string") {
   startSelfHealingHeartbeat();
   createServer(handleRequest).listen(port, () => {
     console.log(`⚡ ZeroRoute listening on http://localhost:${port}`);

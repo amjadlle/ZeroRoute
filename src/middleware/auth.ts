@@ -24,8 +24,10 @@ const isOriginAllowedByPattern = (origin: string, patternString?: string): boole
   return false;
 };
 
+import { CustomerStore } from "../services/customers.js";
+
 /**
- * Returns true if the request carries a valid bearer token for `secretKey`.
+ * Returns true if the request carries a valid bearer token for `secretKey` OR a valid customer live key.
  * When no key is configured the gateway runs in open/public mode (returns true).
  * Set ROUTER_API_KEY or ADMIN_KEY to require authentication.
  */
@@ -34,7 +36,12 @@ export const isAuthorized = (
   secretKey?: string,
   allowSameOrigin = false
 ): boolean => {
-  if (!secretKey || secretKey.trim() === "") return true; // no key configured → public mode
+  // If secretKey is undefined or empty:
+  // - If allowSameOrigin is true (e.g. public chat gateway mode), allow open access
+  // - If allowSameOrigin is false (e.g. admin API routes), fail closed (reject)
+  if (!secretKey || secretKey.trim() === "") {
+    return allowSameOrigin;
+  }
 
   // If same-origin is explicitly allowed (e.g. for the landing page's embedded live demo widget)
   if (allowSameOrigin) {
@@ -42,33 +49,40 @@ export const isAuthorized = (
     const origin = req.headers.origin;
     const referer = req.headers.referer;
     const secFetchSite = req.headers["sec-fetch-site"];
-    const corsOrigin = process.env.CORS_ORIGIN;
 
+    // Browser-verified same-origin request
     if (secFetchSite === "same-origin") return true;
     
-    // Dynamic same-host matching for any custom domain / deployment URL
-    const hostOnly = host.split(":")[0].toLowerCase();
-    if (origin) {
-      if (origin === `http://${host}` || origin === `https://${host}`) return true;
-      try {
-        const orgHost = new URL(origin).hostname.toLowerCase();
-        if (orgHost === hostOnly) return true;
-      } catch {}
-      if (corsOrigin && isOriginAllowedByPattern(origin, corsOrigin)) return true;
-    }
-    if (referer) {
-      try {
-        const refUrl = new URL(referer);
-        if (refUrl.host === host || refUrl.hostname.toLowerCase() === hostOnly) return true;
-        if (corsOrigin && isOriginAllowedByPattern(refUrl.origin, corsOrigin)) return true;
-      } catch {}
+    // Strict host matching (never wildcard)
+    if (host) {
+      const hostOnly = host.split(":")[0].toLowerCase();
+      if (origin) {
+        try {
+          const orgHost = new URL(origin).hostname.toLowerCase();
+          if (orgHost === hostOnly || orgHost === "localhost" || orgHost === "127.0.0.1") return true;
+        } catch {}
+      }
+      if (referer) {
+        try {
+          const refUrl = new URL(referer);
+          if (refUrl.hostname.toLowerCase() === hostOnly || refUrl.hostname === "localhost" || refUrl.hostname === "127.0.0.1") return true;
+        } catch {}
+      }
     }
   }
 
   const auth = req.headers.authorization;
   if (!auth) return false;
   const token = auth.startsWith("Bearer ") ? auth.slice(7).trim() : auth.trim();
-  return token === secretKey || (allowSameOrigin && (token === "free" || token === "public" || token === "zeroroute"));
+
+  // 1. Matches master router / admin key
+  if (token === secretKey) return true;
+
+  // 2. Matches active paid customer key (zr_live_...)
+  if (token.startsWith("zr_live_") && CustomerStore.isValid(token)) return true;
+
+  // 3. Demo tokens in same-origin mode
+  return Boolean(allowSameOrigin && (token === "free" || token === "public" || token === "zeroroute"));
 };
 
 // ─── Rate limiter ─────────────────────────────────────────────────────────────
@@ -88,19 +102,17 @@ export const isRateLimited = (key: string, limit: number, windowMs = 60_000): bo
   const entry = store.get(key);
   if (!entry || now - entry.windowStart > windowMs) {
     store.set(key, { count: 1, windowStart: now });
+    // Opportunistic pruning of expired entries (Cloudflare Worker safe)
+    if (store.size > 200) {
+      for (const [k, e] of store) {
+        if (now - e.windowStart > 120_000) store.delete(k);
+      }
+    }
     return false;
   }
   entry.count++;
   return entry.count > limit;
 };
-
-// Prune stale entries every minute to prevent unbounded memory growth
-setInterval(() => {
-  const now = Date.now();
-  for (const [key, entry] of store) {
-    if (now - entry.windowStart > 120_000) store.delete(key);
-  }
-}, 60_000).unref();
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 

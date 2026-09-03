@@ -68,8 +68,8 @@ export const handleProvidersRoutes = async (
     if (!isAuthorized(req, ADMIN_KEY)) {
       return sendJson(res, 401, { error: "Unauthorized: Invalid admin key" }), true;
     }
-    // Rate limit: 10 test calls/min per IP
-    if (isRateLimited(getClientIp(req), 10)) {
+    // Rate limit: 60 test calls/min per IP (allows full 10-provider concurrent benchmarks)
+    if (isRateLimited(getClientIp(req) + ":test", 60)) {
       return sendJson(res, 429, { error: "Rate limit exceeded for provider tests." }), true;
     }
 
