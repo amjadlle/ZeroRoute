@@ -691,11 +691,12 @@
           </div>
 
           <div class="space-y-2 pt-2">
-            <button type="button" onclick="openCheckoutModal()" 
+            <a href="https://zeroroute.mapki.in/#pricing" target="_blank" 
               class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white shadow-xl shadow-red-500/25 transition-all active:scale-95 cursor-pointer">
-              <span>🚀 Start 3-Day Free Trial ($3.99/mo)</span>
-            </button>
-            <p class="text-[11px] text-center text-slate-500">Cancel anytime. Instant automated activation.</p>
+              <span>🚀 Launch on ZeroRoute Cloud ($3.99/mo)</span>
+              <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            </a>
+            <p class="text-[11px] text-center text-slate-500">Hosted by Mapki • Instant automated activation.</p>
           </div>
         </div>
       </div>
@@ -731,38 +732,36 @@ print(response.choices[0].message.content)</code></pre>
       </div>
     </section>
 
-    <!-- ═══════════════════════════ FINAL CTA (HIDDEN / COMMENTED OUT) ═══════════════════════════ -->
-    <!--
-    <section class="text-center py-16 px-6 bg-gradient-to-b from-dark-card to-dark-bg border border-dark-border rounded-3xl max-w-4xl mx-auto space-y-6">
-      <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-        Ready to Build with Infinite Free Tokens?
+    <!-- ═══════════════════════════ 1-CLICK DEPLOY OPTIONS ═══════════════════════════ -->
+    <section class="text-center py-12 sm:py-16 px-6 bg-gradient-to-b from-dark-card to-dark-bg border border-dark-border rounded-3xl max-w-4xl mx-auto space-y-6">
+      <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+        Deploy Your Personal Free AI Gateway in Seconds
       </h2>
-      <p class="text-sm sm:text-base text-slate-400 max-w-xl mx-auto leading-relaxed">
-        Deploy your own personal ZeroRoute gateway to Cloudflare Pages, Vercel, or Render in seconds for $0.00/month.
+      <p class="text-xs sm:text-sm text-slate-400 max-w-xl mx-auto leading-relaxed">
+        Deploy your own high-availability ZeroRoute multi-cloud proxy to Cloudflare Pages, Vercel, or Render for $0.00/month.
       </p>
       <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
         <a href="https://dash.cloudflare.com/?to=/:account/workers-and-pages/create/pages" target="_blank" 
-          class="inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-[#f38020]/15 hover:bg-[#f38020]/25 text-[#f38020] border border-[#f38020]/40 rounded-xl transition-all shadow-lg active:scale-95">
+          class="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 text-xs font-bold bg-[#f38020]/15 hover:bg-[#f38020]/25 text-[#f38020] border border-[#f38020]/40 rounded-xl transition-all shadow-lg active:scale-95">
           <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M18.34 16.5c.34-.45.54-1 .54-1.6 0-1.57-1.27-2.85-2.84-2.85-.14 0-.28.01-.41.04C15.15 9.77 13.2 8 10.84 8c-2.3 0-4.22 1.68-4.73 3.91-.32-.09-.66-.14-1.01-.14-2.26 0-4.1 1.84-4.1 4.1 0 .22.02.43.05.63H18.34z"/></svg>
           <span>Deploy to Cloudflare</span>
         </a>
         <a href="https://vercel.com/new/clone?repository-url=https://github.com/amjadlle/zeroroute" target="_blank" 
-          class="inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-white text-black hover:bg-slate-200 rounded-xl transition-all shadow-xl active:scale-95">
+          class="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 text-xs font-bold bg-white text-black hover:bg-slate-200 rounded-xl transition-all shadow-xl active:scale-95">
           <svg class="w-3.5 h-3.5 fill-black" viewBox="0 0 24 24"><path d="M24 22.525H0l12-21.05 12 21.05z"/></svg>
           <span>Deploy to Vercel</span>
         </a>
         <a href="https://render.com/deploy?repo=https://github.com/amjadlle/zeroroute" target="_blank" 
-          class="inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/40 rounded-xl transition-all shadow-lg active:scale-95">
+          class="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 text-xs font-bold bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 border border-emerald-500/40 rounded-xl transition-all shadow-lg active:scale-95">
           <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M17.857 0a6.143 6.143 0 0 0-6.143 6.143c0 .285.02.564.057.838l-7.39 7.39A6.113 6.113 0 0 0 .857 14.857H0v9.143h9.143v-.857a6.113 6.113 0 0 0 .486-3.527l7.39-7.39c.274.037.553.057.838.057A6.143 6.143 0 0 0 24 6.143 6.143 6.143 0 0 0 17.857 0z"/></svg>
           <span>Deploy to Render</span>
         </a>
-        <a href="/app" class="inline-flex items-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-red-600 hover:bg-red-500 text-white rounded-xl shadow-lg shadow-red-500/25 transition-all active:scale-95">
+        <a href="/app" class="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 text-xs font-bold bg-red-600 hover:bg-red-500 text-white rounded-xl shadow-lg shadow-red-500/25 transition-all active:scale-95">
           <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
-          <span>Launch Console</span>
+          <span>Launch Dashboard</span>
         </a>
       </div>
     </section>
-    -->
 
     <!-- ═══════════════════════════ CREATOR & ENGINEER SHOWCASE SECTION ═══════════════════════════ -->
     <section class="max-w-4xl mx-auto pt-4">
