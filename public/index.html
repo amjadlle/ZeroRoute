@@ -892,6 +892,48 @@ print(response.choices[0].message.content)</code></pre>
     </div>
   </div>
 
+  <script>
+    lucide.createIcons();
+
+    function openProvidersModal() {
+      const modal = document.getElementById('providers-modal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        setTimeout(() => { modal.classList.remove('opacity-0'); }, 10);
+      }
+    }
+
+    function closeProvidersModal() {
+      const modal = document.getElementById('providers-modal');
+      if (modal) {
+        modal.classList.add('opacity-0');
+        setTimeout(() => { modal.classList.add('hidden'); }, 200);
+      }
+    }
+
+    // Close on backdrop click or Escape key
+    document.getElementById('providers-modal')?.addEventListener('click', (e) => {
+      if (e.target.id === 'providers-modal') closeProvidersModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeProvidersModal();
+    });
+
+    function copyWidgetCode() {
+      const code = document.getElementById('widget-code-snippet').textContent;
+      navigator.clipboard.writeText(code);
+      const btn = document.getElementById('copy-btn-text');
+      btn.textContent = 'Copied! ✓';
+      setTimeout(() => { btn.textContent = 'Copy Script'; }, 2000);
+    }
+
+    function toggleMobileMenu() {
+      const panel = document.getElementById('mobile-nav-panel');
+      if (panel) {
+        panel.classList.toggle('hidden');
+      }
+    }
+
     function openChatWidget() {
       if (window.ZeroRoute && typeof window.ZeroRoute.open === 'function') {
         window.ZeroRoute.open();
