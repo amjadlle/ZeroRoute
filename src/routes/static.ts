@@ -92,21 +92,5 @@ export const handleStaticRoutes = (
     return true;
   }
 
-  // Dedicated Admin Customer CRM & Subscriptions page
-  if (url === "/customers" || url === "/subscribers" || url === "/admin/customers") {
-    if (!servePublicFile(res, "customers.html", "text/html; charset=utf-8", 0, origin)) {
-      sendJson(res, 503, { error: { message: "CRM page not available" } });
-    }
-    return true;
-  }
-
-  // Customer Onboarding Setup Wizard
-  if (url === "/welcome" || url === "/onboarding" || url === "/setup") {
-    if (!servePublicFile(res, "welcome.html", "text/html; charset=utf-8", 0, origin)) {
-      sendJson(res, 503, { error: { message: "Onboarding page not available" } });
-    }
-    return true;
-  }
-
   return false; // not a static route
 };

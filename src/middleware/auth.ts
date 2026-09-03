@@ -24,10 +24,8 @@ const isOriginAllowedByPattern = (origin: string, patternString?: string): boole
   return false;
 };
 
-import { CustomerStore } from "../services/customers.js";
-
 /**
- * Returns true if the request carries a valid bearer token for `secretKey` OR a valid customer live key.
+ * Returns true if the request carries a valid bearer token for `secretKey`.
  * When no key is configured the gateway runs in open/public mode (returns true).
  * Set ROUTER_API_KEY or ADMIN_KEY to require authentication.
  */
@@ -78,10 +76,7 @@ export const isAuthorized = (
   // 1. Matches master router / admin key
   if (token === secretKey) return true;
 
-  // 2. Matches active paid customer key (zr_live_...)
-  if (token.startsWith("zr_live_") && CustomerStore.isValid(token)) return true;
-
-  // 3. Demo tokens in same-origin mode
+  // 2. Demo tokens in same-origin mode
   return Boolean(allowSameOrigin && (token === "free" || token === "public" || token === "zeroroute"));
 };
 
