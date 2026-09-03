@@ -148,6 +148,10 @@
           <i data-lucide="key" class="w-3.5 h-3.5 text-red-400"></i>
           <span id="header-auth-label">Enter Key</span>
         </button>
+        <button id="header-logout-btn" onclick="logoutKey()" class="hidden inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-lg transition-all active:scale-95 shadow-sm" title="Log out key">
+          <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+          <span class="hidden sm:inline">Logout</span>
+        </button>
       </div>
     </header>
 
@@ -1133,6 +1137,15 @@
       openAdminKeyModal();
     }
 
+    function logoutKey() {
+      localStorage.removeItem("ai_router_key");
+      sessionStorage.removeItem("ai_router_key");
+      const inp = el("modal-auth-key");
+      if (inp) inp.value = "";
+      showToast("🔒 Logged out successfully.");
+      load(true);
+    }
+
     function requireKey(action = "perform this action") {
       const key = getKey();
       if (!key || !key.trim()) {
@@ -1374,12 +1387,21 @@
         }
       }
 
-      // Update header authentication button label
+      // Update header authentication button label & logout button
       const authLabel = el("header-auth-label");
       if (authLabel) {
         if (isAdmin) authLabel.textContent = "Admin";
         else if (isCustomer) authLabel.textContent = customer.company || "Pro Account";
         else authLabel.textContent = "Enter Key";
+      }
+
+      const logoutBtn = el("header-logout-btn");
+      if (logoutBtn) {
+        if (isAdmin || isCustomer || getKey()) {
+          logoutBtn.classList.remove("hidden");
+        } else {
+          logoutBtn.classList.add("hidden");
+        }
       }
 
       if (isCustomer) {
