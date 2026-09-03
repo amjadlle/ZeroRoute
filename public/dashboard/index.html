@@ -860,7 +860,7 @@
   </div>
 
   <!-- Admin / Customer Key Authentication Modal -->
-  <div id="key-auth-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+  <div id="key-auth-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-[9999] hidden items-center justify-center p-4">
     <div class="glass-card max-w-md w-full rounded-3xl border border-red-500/30 p-6 sm:p-7 space-y-5 shadow-2xl relative">
       <div class="flex items-center justify-between border-b border-dark-border pb-3">
         <div class="flex items-center gap-2.5">
@@ -1059,6 +1059,7 @@
       const modal = el("key-auth-modal");
       if (modal) {
         modal.classList.remove("hidden");
+        modal.classList.add("flex");
         const inp = el("modal-auth-key");
         const current = getKey();
         if (inp) {
@@ -1073,7 +1074,10 @@
 
     function closeAdminKeyModal() {
       const modal = el("key-auth-modal");
-      if (modal) modal.classList.add("hidden");
+      if (modal) {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      }
     }
 
     function toggleModalKeyVisibility() {
