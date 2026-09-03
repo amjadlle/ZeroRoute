@@ -48,6 +48,6 @@ Optional widget attributes:
 - **Local Node.js**: `npm run build && npm start` (port 8787).
 
 ## Links
-- **GitHub**: https://github.com/amjadlle/ZeroRoute
-- **Documentation**: https://github.com/amjadlle/ZeroRoute/blob/main/docs/ARCHITECTURE.md
+- **GitHub**: https://github.com/amjadlle/zeroroute
+- **Documentation**: https://github.com/amjadlle/zeroroute/blob/main/docs/ARCHITECTURE.md
 - **License**: MIT License

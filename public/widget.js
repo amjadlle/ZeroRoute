@@ -196,7 +196,7 @@
   if (!key) {
     var powered = document.createElement('div');
     powered.className = 'zr-powered';
-    powered.innerHTML = 'Fast free AI by <a href="https://github.com/amjadlle/ZeroRoute" target="_blank" rel="noopener">ZeroRoute</a>';
+    powered.innerHTML = 'Fast free AI by <a href="https://github.com/amjadlle/zeroroute" target="_blank" rel="noopener">ZeroRoute</a>';
     win.appendChild(powered);
   }
 

@@ -5,7 +5,7 @@ Thank you for contributing! ZeroRoute is built by the community, for the communi
 ## Quick Start
 
 ```bash
-git clone https://github.com/amjadlle/ZeroRoute.git
+git clone https://github.com/amjadlle/zeroroute.git
 cd ZeroRoute
 cp .env.example .env   # add at least one provider API key
 npm install

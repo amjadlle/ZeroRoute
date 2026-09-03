@@ -19,13 +19,13 @@
     <img src="https://vercel.com/button" alt="Deploy with Vercel" />
   </a>
   &nbsp;
-  <a href="https://render.com/deploy?repo=https://github.com/amjadlle/ZeroRoute">
+  <a href="https://render.com/deploy?repo=https://github.com/amjadlle/zeroroute">
     <img src="https://render.com/images/deploy-to-render-button.svg" alt="Deploy to Render" />
   </a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/amjadlle/ZeroRoute"><img src="https://img.shields.io/github/stars/amjadlle/ZeroRoute?style=social" alt="GitHub Stars" /></a>
+  <a href="https://github.com/amjadlle/zeroroute"><img src="https://img.shields.io/github/stars/amjadlle/ZeroRoute?style=social" alt="GitHub Stars" /></a>
   <a href="https://buymeacoffee.com/amjadlle"><img src="https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Support-yellow.svg?style=flat&logo=buy-me-a-coffee" alt="Buy Me A Coffee" /></a>
   <img src="https://img.shields.io/badge/License-MIT-red.svg" alt="License: MIT" />
   <img src="https://img.shields.io/badge/Cost-100%25_Free_Tier-green.svg" alt="Free Tier" />
@@ -121,7 +121,7 @@ Top cloud AI companies (Mistral, Groq, Cohere, Cloudflare, SambaNova, Google Gem
 ## 💻 Local Quickstart
 
 ```bash
-git clone https://github.com/amjadlle/ZeroRoute.git
+git clone https://github.com/amjadlle/zeroroute.git
 cd ZeroRoute
 cp .env.example .env   # add your API keys
 npm install

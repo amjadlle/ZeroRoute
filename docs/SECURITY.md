@@ -73,6 +73,6 @@ If you discover a security issue, **do NOT open a public GitHub issue.**
 
 Report privately to: **📧 security@mapki.com**
 
-Or open a [GitHub Security Advisory](https://github.com/amjadlle/ZeroRoute/security/advisories/new).
+Or open a [GitHub Security Advisory](https://github.com/amjadlle/zeroroute/security/advisories/new).
 
 We will respond within 48 hours and issue a patch as quickly as possible.
